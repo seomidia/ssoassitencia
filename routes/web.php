@@ -13,15 +13,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
 });
 
 Auth::routes();
+//voyager ------------------- 
+Route::get('/vendor/voyager/orders','OrderController@index');
 
-Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/', 'HomeController@index')->name('home');
+Route::get('/empresa', 'EmpresaController@index')->name('empresa');
+Route::get('/carrinho', 'CartController@index')->name('cart');
+Route::get('/checkout', 'CheckoutController@index')->name('checkout');
