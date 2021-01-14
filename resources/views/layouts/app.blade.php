@@ -4,6 +4,7 @@
     <head>
         <title>Pharma &mdash; Colorlib Template</title>
         <meta charset="utf-8">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link href="https://fonts.googleapis.com/css?family=Rubik:400,700|Crimson+Text:400,400i" rel="stylesheet">
         <link rel="stylesheet" href="{{asset('fonts/icomoon/style.css')}}">
@@ -15,15 +16,26 @@
         <link rel="stylesheet" href="{{asset('css/aos.css')}}">
         <link rel="stylesheet" href="{{asset('css/style.css')}}">
         <link rel="stylesheet" href="{{asset('css/custom-style.css')}}">
-      </head>
-      
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+
+
+{{--        <script src="https://code.jquery.com/jquery-3.5.0.js"></script>--}}
+{{--        <script src="{{asset('js/jquery-ui.js')}}"></script>--}}
+
+
+
+
+
+    </head>
+
       <body>
-      
+
         <div class="site-wrap">
-      
+
           <!--HEADER-->
           <div class="site-navbar color-header py-2">
-      
+
             <!--CAMPO DE BUSCA DE EXAMES-->
             <div class="search-wrap">
               <div class="container">
@@ -33,7 +45,7 @@
                 </form>
               </div>
             </div>
-      
+
             <div class="container">
               <div class="d-flex align-items-center justify-content-between">
                 <div class="logo">
@@ -111,9 +123,13 @@
         </div>
     </footer>
     </div>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-    <script src="{{asset('js/jquery-3.3.1.min.js')}}"></script>
-    <script src="{{asset('js/jquery-ui.js')}}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <script src="{{asset('js/app.js')}}"></script>
     <script src="{{asset('js/popper.min.js')}}"></script>
     <script src="{{asset('js/bootstrap.min.js')}}"></script>
     <script src="{{asset('js/owl.carousel.min.js')}}"></script>
@@ -124,7 +140,7 @@
 
     <script>
     $(window).scroll(function() {
-        if ($(this).scrollTop() > 900){  
+        if ($(this).scrollTop() > 900){
             $('.site-navbar').addClass("header-fixo");
         }
         else{

@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use DB;
 
-class HomeController extends Controller
+class EmpresaController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -24,10 +23,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $produtos = DB::table('products')
-                 ->select('id','name','details','price','sale','slug')
-                 ->get();
-
-        return view('home',['produtos' => $produtos]);
+        return view('empresa');
     }
 }
