@@ -29,6 +29,7 @@ Route::post('/company-store', 'CompanyController@store')->name('company-store');
 Route::get('/produto/{slug}', 'ProductController@Single')->name('single');
 Route::get('/contato', 'ContatoController@index')->name('contato');
 
+
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
 });
