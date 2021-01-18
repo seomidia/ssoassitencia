@@ -10,10 +10,13 @@ class Cart extends Model
 
     protected function ChecCartFront()
     {
-
-        return DB::table('cart_products')
-            ->where('session_id',$_COOKIE["session_key"])
-            ->count();
+        if(isset($_COOKIE["session_key"])){
+            return DB::table('cart_products')
+                ->where('session_id',$_COOKIE["session_key"])
+                ->count();
+        }else{
+            return 0;
+        }
 
     }
     protected function CheckCart($session_id,$product_id)
