@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOrderProducts extends Migration
+class AddUfCompany extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,8 @@ class CreateOrderProducts extends Migration
      */
     public function up()
     {
-        Schema::create('order_products', function (Blueprint $table) {
-            $table->id();
-            $table->integer('order_id')->nullable();
-            $table->integer('product_id');
-            $table->integer('qtd');
-            $table->timestamps();
+        Schema::table('companies', function (Blueprint $table) {
+            $table->string('uf');
         });
     }
 
@@ -29,6 +25,8 @@ class CreateOrderProducts extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('order_products');
+        Schema::table('companies', function (Blueprint $table) {
+            $table->dropColumn('uf');
+        });
     }
 }

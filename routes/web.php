@@ -23,6 +23,11 @@ Route::post('/carrinho-update/{product}', 'CartController@update')->name('cart-u
 Route::get('/carrinho-delete/{product}', 'CartController@destroy')->name('cart-destroy');
 Route::get('/checkout', 'CheckoutController@index')->name('checkout');
 Route::post('/get-company', 'CheckoutController@Autocomplete')->name('autocomplete');
+Route::post('/finalizar', 'CheckoutController@finalizar')->name('finalizar');
+Route::get('/obrigado', 'CheckoutController@obrigado')->name('obrigado');
+Route::post('/company-store', 'CompanyController@store')->name('company-store');
+Route::get('/produto/{slug}', 'ProductController@Single')->name('single');
+Route::get('/contato', 'ContatoController@index')->name('contato');
 
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();

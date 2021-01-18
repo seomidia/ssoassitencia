@@ -2,12 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Cart;
 use DB;
+use App\Cart;
+use App\Checkout;
+use App\Order;
 use Illuminate\Http\Request;
+use Validator,Redirect,Response;
+
 
 class CheckoutController extends Controller
 {
+    protected $PAGSEGURO_API_URL;
+    protected $PAGSEGURO_EMAIL;
+    protected $PAGSEGURO_TOKEN;
+    protected $SANDBOX_ENVIRONMENT;
     /**
      * Create a new controller instance.
      *
@@ -15,7 +23,13 @@ class CheckoutController extends Controller
      */
     public function __construct()
     {
-        // $this->middleware('auth');
+        $this->PAGSEGURO_API_URL = 'https://ws.pagseguro.uol.com.br/v2';
+        if($this->SANDBOX_ENVIRONMENT){
+            $this->PAGSEGURO_API_URL = 'https://ws.sandbox.pagseguro.uol.com.br/v2';
+        }
+
+        $this->PAGSEGURO_EMAIL = 'suporte@seomidia.com.br';
+        $this->PAGSEGURO_TOKEN = '64E41DAABAFE41F29B6E431CB18C87CF';
     }
 
     /**
@@ -27,18 +41,23 @@ class CheckoutController extends Controller
     {
         $session_id = $_COOKIE["session_key"];
 
-        $products = DB::table('order_products')
-            ->join('products','order_products.product_id','=','products.id')
-            ->where('order_products.session_id',$session_id)
-            ->select('products.id','products.name','products.price','products.sale','order_products.qtd')
+        $products = DB::table('cart_products as cp')
+            ->join('products as p','cp.product_id','=','p.id')
+            ->where('cp.session_id',$session_id)
+            ->select('p.id','p.name','p.price','p.sale','cp.qtd')
             ->get();
 
         $calc = Cart::Calculo($products);
+        $sessionCode = Checkout::SessionCode('suporte@seomidia.com.br','64E41DAABAFE41F29B6E431CB18C87CF',true);
 
-        return view('checkout',['produtos' => $products, 'subtotal' => $calc['subtotal'], 'total' => $calc['total']]);
+        return view('checkout',[
+            'produtos' => $products,
+            'subtotal' => $calc['subtotal'],
+            'total' => $calc['total'],
+            'sessionCode' => $sessionCode
+        ]);
 
     }
-
     public function Autocomplete(Request $request)
     {
         $search = $request->input('search');
@@ -57,4 +76,14 @@ class CheckoutController extends Controller
 
         return response()->json($companies);
     }
+    public function obrigado()
+    {
+        return view('obrigado');
+    }
+    public function finalizar(Request $request)
+    {
+     return Order::CreateOrder($request->all());
+
+    }
+
 }

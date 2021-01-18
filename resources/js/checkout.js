@@ -50,6 +50,7 @@ jQuery(document).ready(function($) {
         select: function (event, ui) {
             // Set selection
             $(this).val(ui.item.label); // display the selected text
+            $('input[name="empresa_id"]').val(ui.item.value); // display the selected text
             // $('#selectuser_id').val(ui.item.value); // save selected id to input
             return false;
         }
@@ -65,7 +66,7 @@ jQuery(document).ready(function($) {
     }
 
     //Quando o campo cep perde o foco.
-    $("#cep").blur(function() {
+    $(".cep").blur(function() {
 
         //Nova variável "cep" somente com dígitos.
         var cep = $(this).val().replace(/\D/g, '');
@@ -89,7 +90,7 @@ jQuery(document).ready(function($) {
 
                     if (!("erro" in dados)) {
                         //Atualiza os campos com os valores da consulta.
-                        $("#endereco").val(dados.logradouro +' - 12'+ dados.bairro);
+                        $("#endereco").val(dados.logradouro +' - '+ dados.bairro);
                         $("#cidade").val(dados.localidade);
                         $("#uf").val(dados.uf);
                     } //end if.
@@ -115,6 +116,60 @@ jQuery(document).ready(function($) {
     $('#c_create_account').click(function (){
         $('#create_an_account').removeClass('hidden');
         $('#create_an_account').addClass('block');
+    });
+
+
+    // Pagameno ----------------------------------
+    // $('.loadpag').css('display','none');
+    // $('input[name="type_payment"]').val('cartao');
+    //
+    // $('a').click(function(){
+    //      var href = $(this).attr('href');
+    //
+    //      if(href =='#nav-tab-card'){
+    //         $('input[name="type_payment"]').val('cartao');
+    //      }else if(href =='#nav-tab-bank'){
+    //          $('input[name="type_payment"]').val('boleto');
+    //      }
+    //
+    //      console.log(href);
+    //  })
+
+    $('form[name="finalizar"]').submit(function(event){
+        event.preventDefault()
+
+        $.ajax({
+            url: window.location.origin + $(this).attr('action'),
+            type: 'post',
+            dataType: 'json',
+            data: $(this).serializeArray(),
+            success: function(response){
+
+                if(response.success){
+                    Swal.fire({
+                        title: 'Parabens',
+                        text: response.message,
+                        icon: response.icon,
+                    }).then((result) => {
+                        window.location = (response.link != '') ? response.link : '';
+                    });
+                }
+
+                if(!response.success){
+                    Swal.fire({
+                        title: 'Atenção',
+                        text: response.message,
+                        icon: response.icon,
+                    }).then((result) => {
+                        window.location = (response.link != '') ? response.link : '';
+                    });
+                }
+                console.log(response);
+            }
+        }).fail(function(jqXHR, textStatus){
+
+        });
+
     });
 
 

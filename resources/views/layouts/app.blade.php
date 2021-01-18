@@ -17,6 +17,7 @@
         <link rel="stylesheet" href="{{asset('css/style.css')}}">
         <link rel="stylesheet" href="{{asset('css/custom-style.css')}}">
         <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
 
 
 
@@ -35,7 +36,6 @@
 
           <!--HEADER-->
           <div class="site-navbar color-header py-2">
-
             <!--CAMPO DE BUSCA DE EXAMES-->
             <div class="search-wrap">
               <div class="container">
@@ -51,7 +51,7 @@
                 <div class="logo">
                   <div class="site-logo">
                   <a href="{{url('/')}}" class="js-logo-clone">
-                      <img src="images/header/logo_final_bx.jpg"  alt="Logo SSO - Assessoria em segurança & saude ocupacional" title="SSO - Assessoria em segurança & saude ocupacional">
+                      <img src="{{asset('images/header/logo_final_bx.jpg')}}"  alt="Logo SSO - Assessoria em segurança & saude ocupacional" title="SSO - Assessoria em segurança & saude ocupacional">
                     </a>
                   </div>
                 </div>
@@ -64,9 +64,12 @@
                   <a href="#" class="icons-btn d-inline-block js-search-open"><span class="icon-search"></span></a>
                   <a href="/carrinho" class="icons-btn d-inline-block bag">
                     <span class="icon-shopping-bag"></span>
-                    <span class="number">2</span>
+                    <span class="number">{{\App\Cart::ChecCartFront()}}</span>
                   </a>
-                  <a href="#" class="site-menu-toggle js-menu-toggle ml-3 d-inline-block d-lg-none"><span
+                    @if(Auth::check())
+                    <a href="#" style="color: darkred" class="icons-btn d-inline-block"><i class="fas fa-power-off"></i></a>
+                    @endif
+                    <a href="#" class="site-menu-toggle js-menu-toggle ml-3 d-inline-block d-lg-none"><span
                       class="icon-menu"></span></a>
                 </div>
               </div>

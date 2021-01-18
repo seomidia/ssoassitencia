@@ -30,10 +30,10 @@ class CartController extends Controller
     {
         $session_id = $_COOKIE["session_key"];
 
-        $products = DB::table('order_products')
-                     ->join('products','order_products.product_id','=','products.id')
-                     ->where('order_products.session_id',$session_id)
-                     ->select('products.id','products.name','products.price','products.sale','order_products.qtd')
+        $products = DB::table('cart_products as cp')
+                     ->join('products as p','cp.product_id','=','p.id')
+                     ->where('cp.session_id',$session_id)
+                     ->select('p.id','p.name','p.price','p.sale','cp.qtd')
                      ->get();
 
         $calc = Cart::Calculo($products);
@@ -48,7 +48,7 @@ class CartController extends Controller
         $existe = Cart::CheckCart($session_id,$product_id);
 
         if($existe == 0){
-            DB::table('order_products')->insert([
+            DB::table('cart_products')->insert([
                'session_id' => $session_id,
                 'product_id' => $product_id,
                 'qtd' => 1
@@ -63,7 +63,7 @@ class CartController extends Controller
         $qtd = $request->input('cart_qtd');
 
 
-       return $updateCard = DB::table('order_products')
+       return $updateCard = DB::table('cart_products')
             ->where('session_id',$session_id)
             ->where('product_id',$id)
             ->update(['qtd'=>$qtd]);
@@ -73,7 +73,7 @@ class CartController extends Controller
     {
         $session_id = $_COOKIE["session_key"];
 
-        DB::table('order_products')
+        DB::table('cart_products')
             ->where('session_id', '=', $session_id)
             ->where('product_id',$id)
             ->delete();

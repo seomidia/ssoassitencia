@@ -54,14 +54,14 @@
                                   <div class="input-group mb-3" style="max-width: 120px;margin: 0 auto;">
 
                                       <div class="input-group-prepend">
-                                        <button class="btn btn-outline-primary js-btn-minus updateqtd" type="submit">&minus;</button>
+                                        <button class="btn btn-outline-primary js-btn-minus updateqtd" type="button">&minus;</button>
                                       </div>
 
                                       <input type="text" class="form-control text-center" name="cart_qtd" value="{{$produto->qtd}}" placeholder=""
                                         aria-label="Example text with button addon" aria-describedby="button-addon1">
 
                                       <div class="input-group-append">
-                                        <button  class="btn btn-outline-primary js-btn-plus updateqtd" type="submit">&plus;</button>
+                                        <button  class="btn btn-outline-primary js-btn-plus updateqtd" type="button">&plus;</button>
                                       </div>
                                     </div>
                                   <button type="submit" style="display: none" class="update-card">envia</button>
