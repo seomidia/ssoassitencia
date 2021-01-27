@@ -19552,7 +19552,7 @@ jQuery(document).ready(function ($) {
             text: response.message,
             icon: response.icon
           }).then(function (result) {
-            window.location = response.link != '' ? response.link : '';
+            if (response.link != '') window.location = response.link != '' ? response.link : '';
           });
         }
 

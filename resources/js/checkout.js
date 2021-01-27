@@ -12,8 +12,6 @@ jQuery(document).ready(function($) {
            });
        }
     });
-
-
     $( "#c_companyname" ).autocomplete({
         source: function( request, response ) {
             // Fetch data
@@ -112,7 +110,6 @@ jQuery(document).ready(function($) {
             limpa_formulário_cep();
         }
     });
-
     $('#c_create_account').click(function (){
         $('#create_an_account').removeClass('hidden');
         $('#create_an_account').addClass('block');
@@ -161,6 +158,7 @@ jQuery(document).ready(function($) {
                         text: response.message,
                         icon: response.icon,
                     }).then((result) => {
+                        if(response.link != '')
                         window.location = (response.link != '') ? response.link : '';
                     });
                 }

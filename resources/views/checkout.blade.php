@@ -114,7 +114,7 @@
                 <div class="form-group row">
                   <div class="col-md-6">
                     <label for="c_fname" class="text-black">Primeiro nome <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="c_fname" name="nome">
+                    <input type="text" class="form-control" id="c_fname" name="nome" value="{{ $nome ?? '' }}">
                   </div>
                   <div class="col-md-6">
                     <label for="c_lname" class="text-black">Ultimo nome <span class="text-danger">*</span></label>
@@ -300,7 +300,7 @@
                                       </center>
                                   </div> <!-- tab-pane.// -->
                               </div> <!-- tab-content .// -->
-                              <input type="hidden" name="type_payment" value="boleto">
+                              <input type="hidden" name="type_payment" value="billet">
                               <button class="subscribe btn btn-primary btn-block" type="submit"> Pagar agora  </button>
 
                           </div> <!-- card-body.// -->

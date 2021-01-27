@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Product;
 use Illuminate\Http\Request;
 use DB;
 
@@ -24,9 +25,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $produtos = DB::table('products')
-                 ->select('id','name','details','price','sale','slug')
-                 ->get();
+        $produtos = Product::where('featured',1)->get();
 
         return view('home',['produtos' => $produtos]);
     }

@@ -23,12 +23,13 @@
     <div class="container">
       <div class="row">
         <div class="title-section text-center col-12">
-          <h2 class="text-uppercase">Exames mais procurados</h2>
+          <h2 class="text-uppercase">Consultas</h2>
         </div>
       </div>
 
       <div class="row">
           @foreach($produtos as $produto)
+              @if($produto->category_id == 3)
                 <div class="col-sm-6 py-5 col-lg-4 text-center item mb-4">
                     @if($produto->sale)
                           <span class="tag">Promoção</span>
@@ -50,60 +51,97 @@
                           <button class="btn btn-outline-secondary" type="submit">Add Carrinho</button>
                         </form>
                 </div>
+              @endif
           @endforeach
 
       </div>
       <div class="row mt-5">
         <div class="col-12 text-center">
-          <a href="shop.html" class="btn btn-primary-2 px-4 py-3">Ver todos os exames</a>
+          <a href="#" class="btn btn-primary-2 px-4 py-3">Ver todas consultas</a>
         </div>
       </div>
     </div>
   </div>
+
+<div class="site-section">
+    <div class="container">
+        <div class="row">
+            <div class="title-section text-center col-12">
+                <h2 class="text-uppercase">Exames</h2>
+            </div>
+        </div>
+
+        <div class="row">
+            @foreach($produtos as $produto)
+                @if($produto->category_id == 4)
+                    <div class="col-sm-6 py-5 col-lg-4 text-center item mb-4">
+                        @if($produto->sale)
+                            <span class="tag">Promoção</span>
+                        @endif
+                        <a href="produto/{{$produto->slug}}">
+                            <h3 class="text-dark">{{$produto->name}}</h3>
+                            <p class="price">
+                                @if($produto->sale == '')
+                                    R$ {{$produto->price}}
+                                @else
+                                    <del>R$ {{$produto->price}}</del>
+                                    @endif
+                                    @if($produto->sale != '') &mdash; R$ {{$produto->sale}} @endif
+                            </p>
+                        </a>
+                        <form action="/carrinho/add" name="{{$produto->slug}}" method="post">
+                            @csrf
+                            <input type="hidden" name="product_id" value="{{$produto->id}}">
+                            <button class="btn btn-outline-secondary" type="submit">Add Carrinho</button>
+                        </form>
+                    </div>
+                @endif
+            @endforeach
+
+        </div>
+        <div class="row mt-5">
+            <div class="col-12 text-center">
+                <a href="#" class="btn btn-primary-2 px-4 py-3">Ver todos exames</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
   <div class="site-section bg-light">
     <div class="container">
       <div class="row">
         <div class="title-section text-center col-12">
-          <h2 class="text-uppercase">Novos exames</h2>
+          <h2 class="text-uppercase">Serviços destaque</h2>
         </div>
       </div>
       <div class="row">
         <div class="col-md-12 block-3 products-wrap">
           <div class="nonloop-block-3 owl-carousel">
 
-          <div class=" py-5  text-center item mb-4">
-          <a href="shop-single.php">
-            <h3 class="text-dark">Bioderma</h3>
-            <p class="price"><del>95.00</del> &mdash; $55.00</p>
-            </a>
-            <a href="#" class="btn btn-outline-secondary">Add Carrinho</a>
-        </div>
+              @foreach($produtos as $produto)
 
-        <div class=" py-5  text-center item mb-4">
-          <a href="shop-single.php">
-            <h3 class="text-dark">Bioderma</h3>
-            <p class="price"><del>95.00</del> &mdash; $55.00</p>
-            </a>
-            <a href="#" class="btn btn-outline-secondary">Add Carrinho</a>
-        </div>
+                  <div class=" py-5  text-center item mb-4">
+                      <a href="produto/{{$produto->slug}}">
+                            <h3 class="text-dark">{{$produto->name}}</h3>
+                          <p class="price">
+                              @if($produto->sale == '')
+                                  R$ {{$produto->price}}
+                              @else
+                                  <del>R$ {{$produto->price}}</del>
+                                  @endif
+                                  @if($produto->sale != '') &mdash; R$ {{$produto->sale}} @endif
+                          </p>
+                            </a>
+                      <form action="/carrinho/add" name="{{$produto->slug}}" method="post">
+                          @csrf
+                          <input type="hidden" name="product_id" value="{{$produto->id}}">
+                          <button class="btn btn-outline-secondary" type="submit">Add Carrinho</button>
+                      </form>
+                </div>
 
-        <div class=" py-5  text-center item mb-4">
-          <a href="shop-single.php">
-            <h3 class="text-dark">Bioderma</h3>
-            <p class="price"><del>95.00</del> &mdash; $55.00</p>
-            </a>
-            <a href="#" class="btn btn-outline-secondary">Add Carrinho</a>
-        </div>
-
-        <div class=" py-5  text-center item mb-4">
-          <a href="shop-single.php">
-            <h3 class="text-dark">Bioderma</h3>
-            <p class="price"><del>95.00</del> &mdash; $55.00</p>
-            </a>
-            <a href="#" class="btn btn-outline-secondary">Add Carrinho</a>
-        </div>
+              @endforeach
 
           </div>
         </div>

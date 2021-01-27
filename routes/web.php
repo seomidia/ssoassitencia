@@ -35,6 +35,6 @@ Route::group(['prefix' => 'admin'], function () {
 });
 Auth::routes();
 //voyager -------------------
-Route::get('/admin/pedidos','OrderController@index');
+Route::get('/admin/area-cliente-avulso', 'AreasController@Cliente')->name('voyager.area.cliente');
 
 
