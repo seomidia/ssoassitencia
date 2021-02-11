@@ -87,7 +87,7 @@
                                             <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span>
                                         </a>
                                     </td>
-0                                </tr>
+                                </tr>
                                 </tbody>
                             </table>
                             <div class="col-sm-6">
