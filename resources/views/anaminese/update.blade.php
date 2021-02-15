@@ -45,18 +45,12 @@
                         </div>
                         <div class="row">
                             <div class="form-group col-md-6">
-                                <label for="message-text" class="col-form-label">Telefone:</label>
-                                <input type="text" class="form-control" name="telefone" data-mask="(00) 0000-0000">
+                                <label for="message-text" class="col-form-label">E-mail:</label>
+                                <input type="email" class="form-control" name="email">
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="message-text" class="col-form-label">Estado civil:</label>
-                                <select class="form-control" name="estado_civil">
-                                    <option value="">Selecione</option>
-                                    <option value="solteiro">Solteiro</option>
-                                    <option value="casado">Casado</option>
-                                    <option value="uniao_estavel">União estável</option>
-                                    <option value="outros">Outros</option>
-                                </select>
+                                <label for="message-text" class="col-form-label">Telefone:</label>
+                                <input type="text" class="form-control" name="telefone" data-mask="(00) 0000-0000">
                             </div>
                         </div>
                         <div class="row">
@@ -66,7 +60,7 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="message-text" class="col-form-label">RG:</label>
-                                <input id="cpf" type="text" class="form-control" name="RG" maxlength="12">
+                                <input id="cpf" type="text" class="form-control" name="rg" maxlength="12">
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="message-text" class="col-form-label">Nascimento:</label>
@@ -75,17 +69,28 @@
 
                         </div>
                         <div class="row">
-                            <div class="form-group col-md-6">
-                                <label for="message-text" class="col-form-label">Idade:</label>
-                                <input type="text" class="form-control" name="idade">
+                            <div class="form-group col-md-5">
+                                <label for="message-text" class="col-form-label">Estado civil:</label>
+                                <select class="form-control" name="estado_civil">
+                                    <option value="">Selecione</option>
+                                    <option value="solteiro">Solteiro</option>
+                                    <option value="casado">Casado</option>
+                                    <option value="uniao_estavel">União estável</option>
+                                    <option value="outros">Outros</option>
+                                </select>
                             </div>
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-5">
                                 <label for="message-text" class="col-form-label">Sexo:</label>
                                 <select class="form-control" name="sexo">
                                     <option value="">Selecione</option>
                                     <option value="masculino">Masculino</option>
                                     <option value="feminino">Feminino</option>
                                 </select>
+                            </div>
+
+                            <div class="form-group col-md-2">
+                                <label for="message-text" class="col-form-label">Idade:</label>
+                                <input type="text" class="form-control" name="idade">
                             </div>
                         </div>
                         <div class="row">
@@ -179,7 +184,7 @@
                                          <h3 class="border-left mb-5">Funcionário</h3>
                                         <div class="form-group  col-md-4 pessoa_cpf">
                                             <label for="pessoa_cpf">CPF</label>
-                                            <input type="text" class="form-control" name="pessoa" id="pessoa_cpf" placeholder="CPF">
+                                            <input type="text" class="form-control" name="pessoa_cpf" id="pessoa_cpf" placeholder="CPF">
                                             <small id="aviso" class="form-text text-muted"></small>
                                         </div>
                                         <div class="col-md-2" style="margin: 0px;margin-top: 21px;">
@@ -222,29 +227,18 @@
                                         <h3 class="border-left mb-5">Profissional</h3>
                                         <div class="form-group  col-md-3">
                                             <label for="pessoa_cpf">Ambiente de trabalho</label>
-                                            <select class="form-control select2" name="ambiente_Trabalho">
-                                                <option value="">Selecione</option>
-                                            </select>
+                                            <select class="form-control select2" name="ambiente_Trabalho"></select>
                                             <small id="aviso" class="form-text text-muted"></small>
                                         </div>
                                         <div class="form-group  col-md-3">
                                             <label for="pessoa_cpf">Cargo</label>
-                                            <select class="form-control select2" name="cargo">
-                                                <option value="">Selecione</option>
-                                            </select>
+                                            <select class="form-control select2" name="cargo"></select>
                                             <small id="aviso" class="form-text text-muted"></small>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <h3 class="border-left mb-5">Examinador</h3>
-                                        <div class="form-group  col-md-3">
-                                            <label for="pessoa_cpf">Medico</label>
-                                            <select class="form-control select2" name="medico">
-                                                <option value="">Selecione</option>
-                                            </select>
-                                            <small id="aviso" class="form-text text-muted"></small>
-                                        </div>
-                                    </div>
+                                <input type="hidden" name="anamnese_id" value="{{$anamnese_id}}">
+                                <input type="hidden" name="user_logged" value="{{$user_logged}}">
+                                <input type="hidden" name="user_funcionario">
                                 <button type="submit" class="btn btn-primary">Salvar</button>
                             </div>
                         </form>
@@ -282,12 +276,13 @@
                         if(response.status == 'ERROR'){
                             toastr.error(response.message);
                         }else{
+                            console.log(response.data);
 
-                            $('input[name="empresa_nome"]').val(response.fantasia);
-                            $('input[name="empresa_endereco"]').val(response.logradouro + ' - ' + response.bairro );
-                            $('input[name="empresa_numero"]').val(response.numero);
-                            $('input[name="empresa_cidade"]').val(response.municipio);
-                            $('input[name="empresa_uf"]').val(response.uf);
+                            $('input[name="empresa_nome"]').val(response.data.fantasia);
+                            $('input[name="empresa_endereco"]').val(response.data.logradouro + ' - ' + response.data.bairro );
+                            $('input[name="empresa_numero"]').val(response.data.numero);
+                            $('input[name="empresa_cidade"]').val(response.data.municipio);
+                            $('input[name="empresa_uf"]').val(response.data.uf);
 
                         }
 
@@ -315,8 +310,14 @@
                         type: 'post',
                         dataType: 'json',
                         success: function(response){
+                            console.log(response);
                             if(response.success){
-                                console.log('existe');
+                                $('input[name="user_funcionario"]').val(response.data.id);
+                                $('input[name="pessoa"]').val(response.data.nome);
+                                $('input[name="pessoa_rg"]').val(response.data.rg);
+                                $('input[name="pessoa_nascimento"]').val(response.data.nascimento);
+                                $('input[name="pessoa_idade"]').val(response.data.idade);
+                                $('select[name="pessoa_sexo"] option[value='+ response.data.sexo +']').attr('selected','selected');
                             }else{
                                 toastr.error('Pessoa não foi encontrada, realize o cadastro!');
                             }
@@ -326,13 +327,82 @@
                     })
                 }
             });
+
+            // select ambiente de trabalho ---------------------------------
+
+            $.ajax({
+                url: "/json/getworkplace/",
+                type: 'get',
+                dataType: 'json',
+                success: function(response){
+                    $('select[name="ambiente_Trabalho"]').append('<option value="">Selecione</option>');
+                    for(var i = 0; i < response.data.length; i++){
+                        $('select[name="ambiente_Trabalho"]').append('<option value="'+ response.data[i].name+'">'+response.data[i].name +'</option>');
+                    }
+                }
+            }).fail(function (jqXHR, textStatus) {
+                toastr.error(  'Erro ao obter os ambientes de trabalho: <br>' + jqXHR.responseJSON.message);
+            })
+
+            // select cargo ---------------------------------
+
+            $.ajax({
+                url: "/json/getCargo/",
+                type: 'get',
+                dataType: 'json',
+                success: function(response){
+                    $('select[name="cargo"]').append('<option value="">Selecione</option>');
+                    for(var i = 0; i < response.data.length; i++){
+                        $('select[name="cargo"]').append('<option value="'+ response.data[i].id+'">'+response.data[i].name +'</option>');
+                    }
+                }
+            }).fail(function (jqXHR, textStatus) {
+                toastr.error(  'Erro ao obter os cargos: <br>' + jqXHR.responseJSON.message);
+            })
+
+            // select cargo ---------------------------------
+
+            $.ajax({
+                url: "/json/getMedicos/",
+                type: 'get',
+                dataType: 'json',
+                success: function(response){
+                    $('select[name="medico"]').append('<option value="">Selecione</option>');
+                    for(var i = 0; i < response.data.length; i++){
+                        $('select[name="medico"]').append('<option value="'+ response.data[i].id+'">'+response.data[i].name +'</option>');
+                    }
+                }
+            }).fail(function (jqXHR, textStatus) {
+                toastr.error(  'Erro ao obter os medicos: <br>' + jqXHR.responseJSON.message);
+            })
+
             $('form[name="cadastro_pessoa"]').submit(function(event){
                 event.preventDefault();
                 $.post('{{ route('voyager.create.People') }}', $(this).serializeArray(), function (response) {
-                    console.log(response);
-                    // setTimeout(function (){
-                    //     window.location.href = 'anaminese/cadastro/' + response;
-                    // },2000);
+
+                    $('input[name="pessoa_cpf"]').val(response.data.cpf);
+                    $('input[name="pessoa"]').val(response.data.nome);
+                    $('input[name="pessoa_rg"]').val(response.data.rg);
+                    $('input[name="pessoa_nascimento"]').val(response.data.nascimento);
+                    $('input[name="pessoa_idade"]').val(response.data.idade);
+                    $('select[name="pessoa_sexo"] option[value='+ response.data.sexo +']').attr('selected','selected');
+
+                    $('#create_pessoa').modal('hide');
+
+                    toastr.success(response.message);
+                }).fail(function (jqXHR, textStatus) {
+                    toastr.error(jqXHR.responseJSON.message);
+                })
+            })
+            $('form[name="anaminese"]').submit(function(event){
+                event.preventDefault();
+                var anamnese_id = $('input[name="anamnese_id"]').val();
+
+                $.post('/admin/anamnese/' + anamnese_id, $(this).serializeArray(), function (response) {
+                    toastr.success('Anamnese criada com susesso!');
+                    setTimeout(function (){
+                        window.location.href = '/admin/anaminese';
+                    },2000);
                 }).fail(function (jqXHR, textStatus) {
                     toastr.error(jqXHR.responseJSON.message);
                 })

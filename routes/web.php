@@ -36,6 +36,7 @@ Route::group(['prefix' => 'admin'], function () {
 Auth::routes();
 //ANAMINESE  get-------------------
 Route::get('/admin/anaminese', 'AnamineseController@index')->name('voyager.anaminese');
+Route::post('/admin/anamnese/{anamnese}', 'AnamineseController@updade')->name('voyager.anaminese.update');
 Route::get('/admin/anaminese/cadastro/{anaminese}', 'AnamineseController@cadastro')->name('voyager.anaminese.cadastro');
 Route::get('/json/getcompany/{cnpj}', 'CompanyController@getEmpresa')->name('voyager.getEmpresa');
 
@@ -43,10 +44,19 @@ Route::get('/json/getcompany/{cnpj}', 'CompanyController@getEmpresa')->name('voy
 Route::post('/json/getpessoa/{cpf}', 'PeopleController@getPessoa')->name('voyager.getPeople');
 Route::post('/json/create-pessoa', 'PeopleController@CreatePessoa')->name('voyager.create.People');
 
+// ger ambiente de trabalho ------------------
+Route::get('/json/getworkplace', 'WorkplaceController@getworkplace')->name('voyager.get.workplace');
+
+// ger cargo ------------------
+Route::get('/json/getCargo', 'OfficeController@getCargo')->name('voyager.get.cargo');
+
+// ger medico ------------------
+Route::get('/json/getMedicos', 'UserController@getMedico')->name('voyager.get.medico');
+
 
 
 Route::post('/admin/office', 'OfficeController@store')->name('voyager.office.store');
-Route::post('/admin/office-update', 'OfficeController@update')->name('voyager.office.update');
+Route::post('/admin/office-update', 'OfficeController@update')->name('voyager.office.update1');
 Route::post('/admin/anaminese-questions', 'AnamineseQuestionController@store')->name('voyager.anaminesequestion.store');
 Route::post('/admin/anaminese-questions-update', 'AnamineseQuestionController@update')->name('voyager.anaminesequestion.update');
 Route::get('/admin/area-cliente-avulso', 'AreasController@Cliente')->name('voyager.area.cliente');

@@ -49,4 +49,13 @@ class OfficeController extends Controller
 
 
     }
+
+    public function getCargo(){
+        $office = DB::table('office')
+            ->select('id','name')
+            ->get();
+
+        return response()->json(['data' => $office]);
+
+    }
 }

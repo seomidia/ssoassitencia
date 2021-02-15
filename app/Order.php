@@ -4,8 +4,6 @@ namespace App;
 
 use Laravel\Scout\Searchable;
 use TCG\Voyager\Models\User;
-use TCG\Voyager\Models\Role;
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 use Illuminate\Support\Facades\Auth;
@@ -32,15 +30,7 @@ class Order extends Model
                     'link' => ''
                 ];
             }else{
-                $role = Role::where('name', 'cliente')->firstOrFail();
-
-                User::create([
-                    'name'           => $data['nome'],
-                    'email'          => $data['email'],
-                    'password'       => bcrypt($data['password']),
-                    'remember_token' => Str::random(60),
-                    'role_id'        => $role->id,
-                ]);
+                \App\User::User_register($data,'cliente');
             }
         }else{
             if(!Auth::check()){

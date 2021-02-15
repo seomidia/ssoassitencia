@@ -30,46 +30,56 @@
                             <table id="dataTable" class="table table-hover">
                                 <thead>
                                 <tr>
-                                    <th>#id</th>
-                                    <th>Tipo Serviço</th>
-                                    <th>Serviço</th>
-                                    <th>QTD</th>
+                                    <th>#Codigo</th>
+                                    <th>Empresa</th>
+                                    <th>Funcionario</th>
+                                    <th>Cargo</th>
+                                    <th>Ambiente</th>
+                                    <th>Cliente/RH</th>
                                     <th>Status</th>
                                     <th style="text-align: right">Ação</th>
                                 </tr>
                                 </thead>
                                 <tbody>
+                                    @foreach($anamnese as $key => $item)
                                 <tr>
-                                    <td>1</td>
-                                    <td>Exame</td>
-                                    <td>Exame de fezes</td>
-                                    <td>10</td>
-                                    <td class="btn btn-sm text-danger pull-center delete">Pendente</td>
+                                    <td>#{{$item->id}}</td>
+                                    <td>{{$item->empresa}}</td>
+                                    <td>{{$item->funcionario}}</td>
+                                    <td>{{$item->cargo}}</td>
+                                    <td>{{$item->ambiente_trabalho}}</td>
+                                    <td></td>
+                                    <td><div  class="alert-danger" style="width: 100px;padding: 10px;font-weight: bold;font-size: 13px;">Pendente p/ funcionario</div></td>
                                     <td>
+                                        <button  class="btn btn-sm btn-success pull-center">Atestado</button>
+                                        <button  class="btn btn-sm btn-primary pull-center">Editar</button>
+                                        <button  class="btn btn-sm btn-danger pull-center">Excluir</button>
+                                    </td>
                                     </td>
                                 </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
-                            <div class="col-sm-6">
-                                <div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">Showing 1 to 10 of 15 entries</div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
-                                    <ul class="pagination">
-                                        <li class="paginate_button previous disabled" aria-controls="dataTable" tabindex="0" id="dataTable_previous">
-                                            <a href="#">Anterior</a>
-                                        </li>
-                                        <li class="paginate_button active" aria-controls="dataTable" tabindex="0">
-                                            <a href="#">1</a></li>
-                                        <li class="paginate_button " aria-controls="dataTable" tabindex="0">
-                                            <a href="#">2</a>
-                                        </li>
-                                        <li class="paginate_button next" aria-controls="dataTable" tabindex="0" id="dataTable_next">
-                                            <a href="#">Proximo</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
+{{--                            <div class="col-sm-6">--}}
+{{--                                <div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">Showing 1 to 10 of 15 entries</div>--}}
+{{--                            </div>--}}
+{{--                            <div class="col-sm-6">--}}
+{{--                                <div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">--}}
+{{--                                    <ul class="pagination">--}}
+{{--                                        <li class="paginate_button previous disabled" aria-controls="dataTable" tabindex="0" id="dataTable_previous">--}}
+{{--                                            <a href="#">Anterior</a>--}}
+{{--                                        </li>--}}
+{{--                                        <li class="paginate_button active" aria-controls="dataTable" tabindex="0">--}}
+{{--                                            <a href="#">1</a></li>--}}
+{{--                                        <li class="paginate_button " aria-controls="dataTable" tabindex="0">--}}
+{{--                                            <a href="#">2</a>--}}
+{{--                                        </li>--}}
+{{--                                        <li class="paginate_button next" aria-controls="dataTable" tabindex="0" id="dataTable_next">--}}
+{{--                                            <a href="#">Proximo</a>--}}
+{{--                                        </li>--}}
+{{--                                    </ul>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
                         </div>
                     </div>
                 </div>
