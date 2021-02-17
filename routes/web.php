@@ -61,8 +61,10 @@ Route::post('/admin/anaminese-questions', 'AnamineseQuestionController@store')->
 Route::post('/admin/anaminese-questions-update', 'AnamineseQuestionController@update')->name('voyager.anaminesequestion.update');
 Route::get('/admin/area-cliente-avulso', 'AreasController@Cliente')->name('voyager.area.cliente');
 Route::get('/admin/area-rh', 'AreasController@Cliente')->name('voyager.area.rh');
-Route::get('/admin/anaminese', 'AnamineseController@index')->name('voyager.anaminese');
-Route::post('/admin/create-anaminesis', 'AnamineseController@create')->name('voyager.create.anaminese');
+Route::get('/admin/encaminhamento', 'AnamineseController@index')->name('voyager.encaminhamento');
+Route::post('/admin/encaminhamento', 'AnamineseController@create')->name('voyager.create.encaminhamento');
+Route::post('/admin/encaminhamento/{encaminhamento}', 'AnamineseController@updade')->name('voyager.update.encaminhamento');
+Route::post('/admin/encaminhamento/{encaminhamento}/delete', 'AnamineseController@destroy')->name('voyager.delete.encaminhamento');
 Route::get('/admin/servicos', 'ServicesController@index')->name('voyager.services');
 
 

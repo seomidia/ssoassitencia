@@ -26,12 +26,32 @@ class AnamineseController extends Controller
     }
     public function cadastro($id){
         $user_logged = Auth::user()->id;
-        return view('anaminese.update',['anamnese_id' => $id, 'user_logged' => $user_logged]);
+        $dados = DB::table('anamnesis as a')
+            ->leftjoin('companies as c','a.companies_id','=','c.id')
+            ->leftjoin('users as u','a.user_id_employee','=','u.id')
+            ->leftjoin('user_data as ud','a.user_id_employee','=','ud.user_id')
+            ->leftjoin('office as o','a.office_id','=','o.id')
+            ->select(
+                'a.*',
+                'c.*',
+                'ud.rg',
+                'ud.cpf',
+                'ud.nasc',
+                'ud.idade',
+                'ud.sexo',
+                'u.name as funcionario',
+                'o.name as cargo'
+            )
+            ->where('a.id',$id)
+            ->get();
+        return view('anaminese.update',['anamnese_id' => $id, 'user_logged' => $user_logged, 'dados'=> $dados]);
     }
     public function create(Request $request){
 
         return DB::table('anamnesis')->insertGetId([
             'user_id_logged' => Auth::user()->id,
+            'requester' => Auth::user()->id,
+            'step' => 'step_rh'
         ]);
 
     }
@@ -49,6 +69,7 @@ class AnamineseController extends Controller
                     'companies_id' => $companie_id['companie_id'],
                     'office_id' => $request->input('cargo'),
                     'ambiente_trabalho' => $request->input('ambiente_Trabalho'),
+                    'step' => 'step_fuci'
                 ]);
 
 
@@ -71,5 +92,23 @@ class AnamineseController extends Controller
             ],500);
 
         }
+    }
+    public function destroy($id){
+        $delete = DB::table('anamnesis')
+            ->where('id',$id)
+            ->delete();
+
+        if($delete){
+            return response()->json([
+                'success'=> true,
+                'message'=> 'Encaminhamento removido com sucesso!'
+            ],200);
+        }else{
+            return response()->json([
+                'success'=> false,
+                'message'=> 'Não foi possivel remover encaminhamento' . $updade
+            ],500);
+        }
+
     }
 }

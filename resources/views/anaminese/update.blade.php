@@ -10,13 +10,13 @@
         <i class="icon voyager-documentation"></i>
         {{ __('Anaminese')}}
     </h1>
-    <form name="create_anaminesis" action="#" type="delete" style="position: absolute;top: 97px;left: 362px;">
+    <form name="delete_anaminesis" action="#" type="post" style="position: absolute;top: 97px;left: 362px;">
         <button class="btn btn-danger btn-add-new">
             <i class="voyager-trash"></i> <span>{{ __('Cancelar') }}</span>
         </button>
     </form>
 
-    <a href="#" class="btn btn-warning btn-add-new">
+    <a href="{{Route('voyager.encaminhamento')}}" class="btn btn-warning btn-add-new">
         <i class="voyager-plus"></i> <span>{{ __('Voltar') }}</span>
     </a>
 
@@ -144,6 +144,7 @@
                 <div class="panel panel-bordered">
                     <div class="panel-body">
                         <form name="anaminese" action="" type="post">
+                            @foreach($dados as $key => $item)
                             <div class="col-md-12">
                                 <button type="submit" class="btn btn-primary mt-5">Salvar</button>
                                     <div style="clear: both">&nbsp;</div>
@@ -151,32 +152,32 @@
                                         <h3 class="border-left mb-5">Empresa</h3>
                                         <div class="form-group  col-md-4 pessoa_cpf">
                                             <label for="pessoa_cpf">CNPJ</label>
-                                            <input type="text" class="form-control" name="empresa" id="empresa_cnpj" placeholder="CNPJ">
+                                            <input type="text" class="form-control" name="empresa" id="empresa_cnpj" placeholder="CNPJ" value="{{ $item->cnpj ?? '' }}">
                                             <small id="aviso" class="form-text text-muted"></small>
                                         </div>
                                         <div class="form-group col-md-8">
                                             <label for="pessoa_nome">Nome da empresa</label>
-                                            <input type="text" class="form-control" id="empresa_nome" name="empresa_nome" placeholder="Empresa">
+                                            <input type="text" class="form-control" id="empresa_nome" name="empresa_nome" placeholder="Empresa" value="{{ $item->nome ?? '' }}">
                                             <small id="aviso" class="form-text text-muted"></small>
                                         </div>
                                         <div class="form-group col-md-5">
                                             <label for="pessoa_nome">Endereço</label>
-                                            <input type="text" class="form-control" id="empresa_endereco" name="empresa_endereco" placeholder="Endereço">
+                                            <input type="text" class="form-control" id="empresa_endereco" name="empresa_endereco" placeholder="Endereço" value="{{ $item->endereco ?? '' }}">
                                             <small id="aviso" class="form-text text-muted"></small>
                                         </div>
                                         <div class="form-group col-md-2">
                                             <label for="pessoa_nome">Numero</label>
-                                            <input type="text" class="form-control" id="empresa_numero" name="empresa_numero" placeholder="numero">
+                                            <input type="text" class="form-control" id="empresa_numero" name="empresa_numero" placeholder="numero" value="{{ $item->numero ?? '' }}">
                                             <small id="aviso" class="form-text text-muted"></small>
                                         </div>
                                         <div class="form-group col-md-3">
                                             <label for="pessoa_nome">Cidade</label>
-                                            <input type="text" class="form-control" id="empresa_cidade" name="empresa_cidade" placeholder="cidade">
+                                            <input type="text" class="form-control" id="empresa_cidade" name="empresa_cidade" placeholder="cidade" value="{{ $item->cidade ?? '' }}">
                                             <small id="aviso" class="form-text text-muted"></small>
                                         </div>
                                         <div class="form-group col-md-2">
                                             <label for="pessoa_nome">UF</label>
-                                            <input type="text" class="form-control" id="empresa_uf" name="empresa_uf" placeholder="UF">
+                                            <input type="text" class="form-control" id="empresa_uf" name="empresa_uf" placeholder="UF" value="{{ $item->uf ?? '' }}">
                                             <small id="aviso" class="form-text text-muted"></small>
                                         </div>
                                     </div>
@@ -184,7 +185,7 @@
                                          <h3 class="border-left mb-5">Funcionário</h3>
                                         <div class="form-group  col-md-4 pessoa_cpf">
                                             <label for="pessoa_cpf">CPF</label>
-                                            <input type="text" class="form-control" name="pessoa_cpf" id="pessoa_cpf" placeholder="CPF">
+                                            <input type="text" class="form-control" name="pessoa_cpf" id="pessoa_cpf" placeholder="CPF" value="{{ $item->cpf ?? '' }}">
                                             <small id="aviso" class="form-text text-muted"></small>
                                         </div>
                                         <div class="col-md-2" style="margin: 0px;margin-top: 21px;">
@@ -193,31 +194,31 @@
                                         </div>
                                         <div class="form-group col-md-6">
                                             <label for="pessoa_nome">Nome</label>
-                                            <input type="text" class="form-control" id="pessoa_nome" name="pessoa" placeholder="Nome">
+                                            <input type="text" class="form-control" id="pessoa_nome" name="pessoa" placeholder="Nome" value="{{ $item->funcionario ?? '' }}">
                                             <small id="aviso" class="form-text text-muted"></small>
                                         </div>
                                         <div class="form-group  col-md-4">
                                             <label for="pessoa_cpf">RG</label>
-                                            <input type="text" class="form-control" name="pessoa_rg" id="pessoa_rg" placeholder="RG">
+                                            <input type="text" class="form-control" name="pessoa_rg" id="pessoa_rg" placeholder="RG" value="{{ $item->rg ?? '' }}">
                                             <small id="aviso" class="form-text text-muted"></small>
                                         </div>
 
                                         <div class="form-group  col-md-3">
                                             <label for="pessoa_cpf">Nascimento</label>
-                                            <input type="date" class="form-control" name="pessoa_nascimento" id="pessoa_nascimento" placeholder="Nascimento">
+                                            <input type="date" class="form-control" name="pessoa_nascimento" id="pessoa_nascimento" placeholder="Nascimento" value="{{ $item->nasc ?? '' }}">
                                             <small id="aviso" class="form-text text-muted"></small>
                                         </div>
                                         <div class="form-group  col-md-2">
                                             <label for="pessoa_cpf">Idade</label>
-                                            <input type="text" class="form-control" name="pessoa_idade" id="pessoa_idade" placeholder="Idade">
+                                            <input type="text" class="form-control" name="pessoa_idade" id="pessoa_idade" placeholder="Idade" value="{{ $item->idade ?? '' }}">
                                             <small id="aviso" class="form-text text-muted"></small>
                                         </div>
                                         <div class="form-group  col-md-3">
                                             <label for="pessoa_cpf">Sexo</label>
-                                            <select class="form-control select2" name="pessoa_sexo">
+                                            <select class="form-control" name="pessoa_sexo">
                                                 <option value="">Selecione</option>
-                                                <option value="masculino">Masculino</option>
-                                                <option value="feminino">Feminino</option>
+                                                <option value="masculino" @if($item->sexo == 'masculino') selected @endif>Masculino</option>
+                                                <option value="feminino" @if($item->sexo == 'feminino') selected @endif>Feminino</option>
                                             </select>
                                             <small id="aviso" class="form-text text-muted"></small>
                                         </div>
@@ -227,20 +228,32 @@
                                         <h3 class="border-left mb-5">Profissional</h3>
                                         <div class="form-group  col-md-3">
                                             <label for="pessoa_cpf">Ambiente de trabalho</label>
-                                            <select class="form-control select2" name="ambiente_Trabalho"></select>
+                                            <select class="form-control select2" name="ambiente_Trabalho">
+                                                <option value="">Selecione</option>
+                                                @if(isset($item->ambiente_trabalho))
+                                                    <option selected value="{{$item->ambiente_trabalho}}">{{$item->ambiente_trabalho}}</option>
+                                                @endif
+                                            </select>
                                             <small id="aviso" class="form-text text-muted"></small>
                                         </div>
                                         <div class="form-group  col-md-3">
                                             <label for="pessoa_cpf">Cargo</label>
-                                            <select class="form-control select2" name="cargo"></select>
+                                            <select class="form-control select2" name="cargo">
+                                                <option value="">Selecione</option>
+                                                @if(isset($item->office_id))
+                                                    <option selected value="{{$item->office_id}}">{{$item->cargo}}</option>
+                                                @endif
+                                            </select>
                                             <small id="aviso" class="form-text text-muted"></small>
                                         </div>
                                     </div>
                                 <input type="hidden" name="anamnese_id" value="{{$anamnese_id}}">
                                 <input type="hidden" name="user_logged" value="{{$user_logged}}">
-                                <input type="hidden" name="user_funcionario">
+                                <input type="hidden" name="step" value="{{$item->step}}">
+                                <input type="hidden" name="user_funcionario" value="{{$item->user_id_employee}}">
                                 <button type="submit" class="btn btn-primary">Salvar</button>
                             </div>
+                            @endforeach
                         </form>
                     </div>
                 </div>
@@ -335,7 +348,6 @@
                 type: 'get',
                 dataType: 'json',
                 success: function(response){
-                    $('select[name="ambiente_Trabalho"]').append('<option value="">Selecione</option>');
                     for(var i = 0; i < response.data.length; i++){
                         $('select[name="ambiente_Trabalho"]').append('<option value="'+ response.data[i].name+'">'+response.data[i].name +'</option>');
                     }
@@ -351,7 +363,6 @@
                 type: 'get',
                 dataType: 'json',
                 success: function(response){
-                    $('select[name="cargo"]').append('<option value="">Selecione</option>');
                     for(var i = 0; i < response.data.length; i++){
                         $('select[name="cargo"]').append('<option value="'+ response.data[i].id+'">'+response.data[i].name +'</option>');
                     }
@@ -398,15 +409,31 @@
                 event.preventDefault();
                 var anamnese_id = $('input[name="anamnese_id"]').val();
 
-                $.post('/admin/anamnese/' + anamnese_id, $(this).serializeArray(), function (response) {
-                    toastr.success('Anamnese criada com susesso!');
+                $.post('/admin/encaminhamento/' + anamnese_id, $(this).serializeArray(), function (response) {
+                    toastr.success('Encaminhamento criado com susesso!');
                     setTimeout(function (){
-                        window.location.href = '/admin/anaminese';
+                        window.location.href = '/admin/encaminhamento';
                     },2000);
                 }).fail(function (jqXHR, textStatus) {
                     toastr.error(jqXHR.responseJSON.message);
                 })
             })
+
+            $('form[name="delete_anaminesis"]').submit(function(event){
+                event.preventDefault();
+
+                var anamnese_id = $('input[name="anamnese_id"]').val();
+
+                $.post('/admin/encaminhamento/' + anamnese_id + '/delete', function (response) {
+                    toastr.success('Encaminhamento removido com susesso!');
+                    setTimeout(function (){
+                        window.location.href = '/admin/encaminhamento';
+                    },2000);
+                }).fail(function (jqXHR, textStatus) {
+                    toastr.error(jqXHR.responseJSON.message);
+                })
+            })
+
 
         });
     </script>
