@@ -1,0 +1,27 @@
+.label{
+    text-shadow: rgba(0,0,0,.15) 0 0 1px;
+    font-size: 10px;
+    font-family: inherit;
+    font-weight: 500;
+    line-height: 1.1;
+    color: inherit;
+}
+
+.section-title{
+    font-size: 12px;
+    font-family: inherit;
+    font-weight: bold;
+    line-height: 1.1;
+    color: #ffffff;
+    background: #76838F;
+    padding-left:20px ;
+}
+.section-title.feminino{
+    background: #ff0925!important;
+}
+.section-title.masculino{
+    background: #2e72c3!important;
+}
+.question ul li span{
+    min-width: 300px ;
+}

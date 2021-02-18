@@ -9,6 +9,8 @@ use DB;
 
 class AnamineseController extends Controller
 {
+
+    // RH ------------------------------------------------------------
     public function index(){
         $listagem = DB::table('anamnesis as a')
             ->leftjoin('companies as c','a.companies_id','=','c.id')
@@ -20,6 +22,7 @@ class AnamineseController extends Controller
                 'u.name as funcionario',
                 'o.name as cargo'
             )
+            ->where('requester',Auth::user()->id)
             ->orderBy('a.id', 'desc')
             ->get();
         return view('anaminese.listagem',['anamnese' => $listagem]);
@@ -109,6 +112,73 @@ class AnamineseController extends Controller
                 'message'=> 'Não foi possivel remover encaminhamento' . $updade
             ],500);
         }
+
+    }
+
+    //FUNCTIONARIO ---------------------------------------------------
+
+    public function indexfunc()
+    {
+        $listagem = DB::table('anamnesis as a')
+            ->leftjoin('companies as c','a.companies_id','=','c.id')
+            ->leftjoin('users as u','a.user_id_employee','=','u.id')
+            ->leftjoin('office as o','a.office_id','=','o.id')
+            ->select(
+                'a.*',
+                'c.nome as empresa',
+                'u.name as funcionario',
+                'o.name as cargo'
+            )
+            ->where('user_id_employee',Auth::user()->id)
+            ->whereIn('step',['step_funci','step_med'])
+            ->orderBy('a.id', 'desc')
+            ->get();
+        return view('anaminese.funcionario.listagem',['anamnese' => $listagem]);
+    }
+
+    public function devolver($id)
+    {
+        $updade = DB::table('anamnesis')
+            ->where('id',$id)
+            ->update([
+                'step' => 'step_rh'
+            ]);
+
+        if($updade){
+            return response()->json([
+                'success'=> true,
+                'message'=> 'Anamnese devolvida para o RH responsável!'
+            ],200);
+        }else{
+            return response()->json([
+                'success'=> false,
+                'message'=> 'Não foi possivel devolver anamnese' . $updade
+            ],500);
+        }
+
+
+    }
+    public function question($id)
+    {
+        $dados = DB::table('anamnesis as a')
+            ->leftjoin('companies as c','a.companies_id','=','c.id')
+            ->leftjoin('users as u','a.user_id_employee','=','u.id')
+            ->leftjoin('user_data as ud','a.user_id_employee','=','ud.user_id')
+            ->leftjoin('office as o','a.office_id','=','o.id')
+            ->select(
+                'a.*',
+                'c.*',
+                'ud.rg',
+                'ud.cpf',
+                'ud.nasc',
+                'ud.idade',
+                'ud.sexo',
+                'u.name as funcionario',
+                'o.name as cargo'
+            )
+            ->where('a.id',$id)
+            ->get();
+        return view('anaminese.funcionario.update',['anamnese_id' => $id, 'dados'=> $dados]);
 
     }
 }

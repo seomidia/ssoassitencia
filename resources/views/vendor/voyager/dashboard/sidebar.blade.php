@@ -33,7 +33,7 @@
             @if(\Illuminate\Support\Facades\Auth::user()->role_id == 1)
                 <admin-menu :items="{{ menu('admin', '_json') }}"></admin-menu>
             @endif
-            @if(\Illuminate\Support\Facades\Auth::user()->role_id == 4)
+                @if(\Illuminate\Support\Facades\Auth::user()->role_id == 4)
                     <div id="adminmenu">
                         <ul class="nav navbar-nav">
                             <li class="">
@@ -43,9 +43,21 @@
                                 </a> <!---->
                             </li>
                             <li class="">
-                                <a target="_self" href="{{Route('voyager.anaminese')}}">
+                                <a target="_self" href="{{Route('voyager.encaminhamento')}}">
                                     <span class="icon voyager-documentation"></span>
-                                    <span class="title">Anaminese</span>
+                                    <span class="title">Encaminhamento</span>
+                                </a> <!---->
+                            </li>
+                        </ul>
+                    </div>
+                @endif
+                @if(\Illuminate\Support\Facades\Auth::user()->role_id == 5)
+                    <div id="adminmenu">
+                        <ul class="nav navbar-nav">
+                            <li class="">
+                                <a target="_self" href="{{Route('voyager.funcionario.anaminese')}}">
+                                    <span class="icon voyager-documentation"></span>
+                                    <span class="title">Anamnese</span>
                                 </a> <!---->
                             </li>
                         </ul>

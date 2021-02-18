@@ -34,10 +34,6 @@ Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
 });
 Auth::routes();
-//ANAMINESE  get-------------------
-Route::get('/admin/anaminese', 'AnamineseController@index')->name('voyager.anaminese');
-Route::post('/admin/anamnese/{anamnese}', 'AnamineseController@updade')->name('voyager.anaminese.update');
-Route::get('/admin/anaminese/cadastro/{anaminese}', 'AnamineseController@cadastro')->name('voyager.anaminese.cadastro');
 Route::get('/json/getcompany/{cnpj}', 'CompanyController@getEmpresa')->name('voyager.getEmpresa');
 
 // pessoal get --------------------
@@ -66,5 +62,14 @@ Route::post('/admin/encaminhamento', 'AnamineseController@create')->name('voyage
 Route::post('/admin/encaminhamento/{encaminhamento}', 'AnamineseController@updade')->name('voyager.update.encaminhamento');
 Route::post('/admin/encaminhamento/{encaminhamento}/delete', 'AnamineseController@destroy')->name('voyager.delete.encaminhamento');
 Route::get('/admin/servicos', 'ServicesController@index')->name('voyager.services');
+
+//funcionario -------------------
+
+Route::get('/admin/funcionario/anaminese', 'AnamineseController@indexfunc')->name('voyager.funcionario.anaminese');
+Route::get('/admin/anaminese/questionario/{anamnese}', 'AnamineseController@question')->name('voyager.funcionario.question');
+Route::post('/admin/anaminese/{anaminese}/devolver', 'AnamineseController@devolver')->name('voyager.funcionario.anaminese.devolver');
+//Route::post('/admin/anamnese/{anamnese}', 'AnamineseController@updade')->name('voyager.anaminese.update');
+//Route::get('/admin/anaminese/cadastro/{anaminese}', 'AnamineseController@cadastro')->name('voyager.anaminese.cadastro');
+
 
 
