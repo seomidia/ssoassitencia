@@ -136,27 +136,41 @@ class AnamineseController extends Controller
         return view('anaminese.funcionario.listagem',['anamnese' => $listagem]);
     }
 
-    public function devolver($id)
+    public function devolver(Request $request)
     {
+        $id = $request->input('anamnese_id');
+        $motivo = $request->input('motivo');
+
+        if($id == ''){
+            return response()->json([
+                'success'=> false,
+                'message'=> 'Não existe anamnse vinculada!'
+            ],500);
+        }elseif ($motivo == ''){
+            return response()->json([
+                'success'=> false,
+                'message'=> 'O motivo é obrigatório informar!'
+            ],500);
+        }else{
         $updade = DB::table('anamnesis')
             ->where('id',$id)
             ->update([
+                'message' => $motivo,
                 'step' => 'step_rh'
             ]);
 
-        if($updade){
-            return response()->json([
-                'success'=> true,
-                'message'=> 'Anamnese devolvida para o RH responsável!'
-            ],200);
-        }else{
-            return response()->json([
-                'success'=> false,
-                'message'=> 'Não foi possivel devolver anamnese' . $updade
-            ],500);
+            if($updade){
+                return response()->json([
+                    'success'=> true,
+                    'message'=> 'Anamnese devolvida para o RH responsável!'
+                ],200);
+            }else{
+                return response()->json([
+                    'success'=> false,
+                    'message'=> 'Não foi possivel devolver anamnese' . $updade
+                ],500);
+            }
         }
-
-
     }
     public function question($id)
     {

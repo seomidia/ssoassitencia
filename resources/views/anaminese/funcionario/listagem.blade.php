@@ -16,11 +16,11 @@
 @section('content')
     <div class="page-content browse container-fluid">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-12 col-sm-12">
                 <div class="panel panel-bordered">
                     <div class="panel-body">
-                        <div class="table-responsive">
-                            <table id="dataTable" class="table table-hover">
+                        <div class="table-responsive" style="display: none">
+                            <table class="table table-hover">
                                 <thead>
                                 <tr>
                                     <th style="text-align: center">#Codigo</th>
@@ -37,20 +37,20 @@
                                     @foreach($anamnese as $key => $item)
                                 <tr>
                                     <td style="text-align: center">#{{$item->id}}</td>
-                                    <td style="text-align: center">{{$item->empresa}}</td>
+                                    <td style="text-align: center" class="empresa">{{$item->empresa}}</td>
                                     <td style="text-align: center">{{$item->funcionario}}</td>
                                     <td style="text-align: center">{{$item->cargo}}</td>
                                     <td style="text-align: center">{{$item->ambiente_trabalho}}</td>
                                     <td style="text-align: center">
                                         <div  class="
-                                            @if($item->step == 'step_fuci')
+                                            @if($item->step == 'step_funci')
                                                 alert-success
                                             @endif
                                             @if($item->step == 'step_med')
                                                 alert-primary
                                             @endif
                                                 " style="padding: 3px;font-weight: bold;font-size: 13px;margin-top: 6px;">
-                                            @if($item->step == 'step_fuci')
+                                            @if($item->step == 'step_funci')
                                                 Disponivel
                                             @endif
                                             @if($item->step == 'step_med')
@@ -82,41 +82,151 @@
                                             Não avaliado
                                         @endif
                                         </div>
+                                    </td>
                                     </td  style="text-align: center">
                                     <td>
                                         @if($item->step == 'step_med' && !is_null($item->apt))
                                                 <button  class="btn btn-sm @if($item->apt == 1) btn-success @endif @if($item->apt == 0) btn-danger @endif pull-center" style="padding: 2px 7px;">Atestado</button>
                                         @else
                                             <a href="/admin/anaminese/questionario/{{$item->id}}"  class="btn btn-sm btn-primary pull-center" style="padding: 2px 7px;"><i class="voyager-edit"></i></a>
-                                            <a href="/admin/anaminese/{{$item->id}}/devolver" id="devolver"  class="btn btn-sm btn-primary pull-center" style="padding: 2px 7px;"><i class="voyager-move"></i> Devolver</a>
+                                            <a href="{{$item->id}}" class="btn btn-sm btn-primary pull-center devolver" style="padding: 2px 7px;"><i class="voyager-move"></i> Devolver</a>
                                         @endif
                                     </td>
                                     </td>
                                 </tr>
+                                <tr style="display: none" class="justificar-{{$item->id}}">
+                                    <td colspan="8" class="text-danger" style="text-align: right">
+                                        <form name="devolver" action="/admin/anaminese/devolver" type="post">
+                                            <textarea name="motivo" class="form-control" placeholder="Informe a causa da devolução"></textarea>
+                                            <input name="anamnese_id" value="{{$item->id}}" type="hidden">
+                                            <button type="submit"  class="btn btn-sm  btn-primary pull-center" style="padding: 2px 7px;">Enviar</button>
+                                            <a href="#" class="btn btn-sm  btn-danger pull-center cancelar" style="padding: 2px 7px;">Cancelar</a>
+                                        </form>
+                                    </td>
+                                </tr>
+
                                     @endforeach
+
+
+                                    @if(count($anamnese) == 0)
+                                        <tr>
+                                            <td colspan="8" style="text-align: center">Não existe Anamnese disponivel no momento!</td>
+                                        </tr>
+                                    @endif
+
                                 </tbody>
                             </table>
-{{--                            <div class="col-sm-6">--}}
-{{--                                <div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">Showing 1 to 10 of 15 entries</div>--}}
-{{--                            </div>--}}
-{{--                            <div class="col-sm-6">--}}
-{{--                                <div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">--}}
-{{--                                    <ul class="pagination">--}}
-{{--                                        <li class="paginate_button previous disabled" aria-controls="dataTable" tabindex="0" id="dataTable_previous">--}}
-{{--                                            <a href="#">Anterior</a>--}}
-{{--                                        </li>--}}
-{{--                                        <li class="paginate_button active" aria-controls="dataTable" tabindex="0">--}}
-{{--                                            <a href="#">1</a></li>--}}
-{{--                                        <li class="paginate_button " aria-controls="dataTable" tabindex="0">--}}
-{{--                                            <a href="#">2</a>--}}
-{{--                                        </li>--}}
-{{--                                        <li class="paginate_button next" aria-controls="dataTable" tabindex="0" id="dataTable_next">--}}
-{{--                                            <a href="#">Proximo</a>--}}
-{{--                                        </li>--}}
-{{--                                    </ul>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
                         </div>
+                        @foreach($anamnese as $key => $item)
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>#Codigo</th>
+                                        <td>{{$item->id}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Empresa</th>
+                                        <td>{{$item->empresa}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Funcionario</th>
+                                        <td>{{$item->funcionario}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Cargo</th>
+                                        <td>{{$item->cargo}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Ambiente</th>
+                                        <td>{{$item->ambiente_trabalho}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Status</th>
+                                        <td>
+                                            <div  class="
+                                            @if($item->step == 'step_funci')
+                                                alert-success
+                                            @endif
+                                            @if($item->step == 'step_med')
+                                                alert-primary
+                                            @endif
+                                                " style="padding: 3px;font-weight: bold;font-size: 13px;margin-top: 6px;">
+                                                @if($item->step == 'step_funci')
+                                                    Disponivel
+                                                @endif
+                                                @if($item->step == 'step_med')
+                                                    Medico
+                                                @endif
+                                            </div>
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Condição</th>
+                                        <td>
+                                            <div  class="
+                                        @if(!is_null($item->apt))
+                                            @if($item->apt == 0)
+                                                alert-danger
+@endif
+                                            @if($item->apt == 1)
+                                                alert-success
+@endif
+                                            @else
+                                                alert-primary
+@endif
+                                                " style="padding: 3px;font-weight: bold;font-size: 13px;margin-top: 6px;">
+                                                @if(!is_null($item->apt))
+                                                    @if($item->apt == 1)
+                                                        Apto
+                                                    @endif
+                                                    @if($item->apt == 0)
+                                                        Não Apto
+                                                    @endif
+                                                @else
+                                                    Não avaliado
+                                                @endif
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Ação</th>
+                                        <td>
+                                            @if($item->step == 'step_med' && !is_null($item->apt))
+                                                <button  class="btn btn-sm @if($item->apt == 1) btn-success @endif @if($item->apt == 0) btn-danger @endif pull-center" style="padding: 2px 7px;">Atestado</button>
+                                            @else
+                                                <a href="/admin/anaminese/questionario/{{$item->id}}"  class="btn btn-sm btn-primary pull-center" style="padding: 2px 7px;"><i class="voyager-edit"></i></a>
+                                                <a href="{{$item->id}}" class="btn btn-sm btn-primary pull-center devolver" style="padding: 2px 7px;"><i class="voyager-move"></i> Devolver</a>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    <tr style="display: none" class="justificar-{{$item->id}}">
+                                        <td colspan="2">
+                                            <form name="devolver" action="/admin/anaminese/devolver" type="post">
+                                                <textarea name="motivo" class="form-control" placeholder="Informe a causa da devolução"></textarea>
+                                                <input name="anamnese_id" value="{{$item->id}}" type="hidden">
+                                                <button type="submit"  class="btn btn-sm  btn-primary pull-center" style="padding: 2px 7px;">Enviar</button>
+                                                <a href="#" class="btn btn-sm  btn-danger pull-center cancelar" style="padding: 2px 7px;">Cancelar</a>
+                                            </form>
+
+                                        </td>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        @endforeach
+                        @if(count($anamnese) == 0)
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <td colspan="2" style="text-align: center">Não existe Anamnese disponivel no momento!</td>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -140,20 +250,33 @@
                 })
             })
 
-            $('a#devolver').click(function(event){
+            $('form[name="devolver"]').submit(function(event){
                 event.preventDefault();
+                var url= $(this).attr('action');
+                var data = $(this).serializeArray();
 
-                var url= $(this).attr('href');
-
-                $.post(url, function (response) {
-                    toastr.success(response.message);
+                $.post(url, $(this).serializeArray(), function (response) {
+                    toastr.success('Anaminese foi devolvida ao RH...');
                     setTimeout(function (){
-                        window.location.href = '/admin/funcionario/anaminese';
+                        window.location.href = 'anaminese';
                     },2000);
                 }).fail(function (jqXHR, textStatus) {
                     toastr.error(jqXHR.responseJSON.message);
                 })
             })
+
+            $('a.devolver').click(function (event) {
+                event.preventDefault();
+
+                var id = $(this).attr('href');
+                $('.justificar-' + id).toggle()
+            });
+            $('a.cancelar').click(function (event) {
+                event.preventDefault();
+                var id = $('a.devolver').attr('href');
+
+                $('.justificar-' + id).hide();
+            });
 
         });
     </script>
