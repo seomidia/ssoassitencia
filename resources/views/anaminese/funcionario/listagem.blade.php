@@ -14,20 +14,21 @@
 @stop
 
 @section('content')
+
     <div class="page-content browse container-fluid">
         <div class="row">
             <div class="col-md-12 col-sm-12">
                 <div class="panel panel-bordered">
                     <div class="panel-body">
-                        <div class="table-responsive" style="display: none">
+                        <div class="table-responsive desktop">
                             <table class="table table-hover">
                                 <thead>
                                 <tr>
                                     <th style="text-align: center">#Codigo</th>
                                     <th style="text-align: center">Empresa</th>
-                                    <th style="text-align: center">Funcionario</th>
+                                    <th class="field" style="text-align: center">Funcionario</th>
                                     <th style="text-align: center">Cargo</th>
-                                    <th style="text-align: center">Ambiente</th>
+                                    <th class="field" style="text-align: center">Ambiente</th>
                                     <th style="text-align: center">Status</th>
                                     <th style="text-align: center">Condição</th>
                                     <th style="text-align: center">Ação</th>
@@ -36,12 +37,12 @@
                                 <tbody>
                                     @foreach($anamnese as $key => $item)
                                 <tr>
-                                    <td style="text-align: center">#{{$item->id}}</td>
-                                    <td style="text-align: center" class="empresa">{{$item->empresa}}</td>
-                                    <td style="text-align: center">{{$item->funcionario}}</td>
-                                    <td style="text-align: center">{{$item->cargo}}</td>
-                                    <td style="text-align: center">{{$item->ambiente_trabalho}}</td>
-                                    <td style="text-align: center">
+                                    <td style="text-align: center;vertical-align: middle;">#{{$item->id}}</td>
+                                    <td style="text-align: center;vertical-align: middle;" class="empresa">{{$item->empresa}}</td>
+                                    <td class="field" style="text-align: center">{{$item->funcionario}}</td>
+                                    <td style="text-align: center;vertical-align: middle;">{{$item->cargo}}</td>
+                                    <td class="field" style="text-align: center">{{$item->ambiente_trabalho}}</td>
+                                    <td style="text-align: center;vertical-align: middle;">
                                         <div  class="
                                             @if($item->step == 'step_funci')
                                                 alert-success
@@ -49,7 +50,7 @@
                                             @if($item->step == 'step_med')
                                                 alert-primary
                                             @endif
-                                                " style="padding: 3px;font-weight: bold;font-size: 13px;margin-top: 6px;">
+                                            aviso">
                                             @if($item->step == 'step_funci')
                                                 Disponivel
                                             @endif
@@ -58,7 +59,7 @@
                                             @endif
                                         </div>
                                     </td>
-                                    <td  style="text-align: center">
+                                    <td  style="text-align: center;vertical-align: middle;">
                                         <div  class="
                                         @if(!is_null($item->apt))
                                              @if($item->apt == 0)
@@ -70,7 +71,7 @@
                                             @else
                                             alert-primary
                                         @endif
-                                            " style="padding: 3px;font-weight: bold;font-size: 13px;margin-top: 6px;">
+                                            aviso">
                                         @if(!is_null($item->apt))
                                             @if($item->apt == 1)
                                                 Apto
@@ -83,13 +84,13 @@
                                         @endif
                                         </div>
                                     </td>
-                                    </td  style="text-align: center">
+                                    </td  style="text-align: center;vertical-align: middle;">
                                     <td>
                                         @if($item->step == 'step_med' && !is_null($item->apt))
                                                 <button  class="btn btn-sm @if($item->apt == 1) btn-success @endif @if($item->apt == 0) btn-danger @endif pull-center" style="padding: 2px 7px;">Atestado</button>
                                         @else
-                                            <a href="/admin/anaminese/questionario/{{$item->id}}"  class="btn btn-sm btn-primary pull-center" style="padding: 2px 7px;"><i class="voyager-edit"></i></a>
-                                            <a href="{{$item->id}}" class="btn btn-sm btn-primary pull-center devolver" style="padding: 2px 7px;"><i class="voyager-move"></i> Devolver</a>
+                                            <a href="/admin/anaminese/questionario/{{$item->id}}"  class="btn btn-sm btn-primary pull-center question" ><i class="voyager-edit"></i>Questões</a>
+                                            <a href="{{$item->id}}" class="btn btn-sm btn-primary pull-center devolver"><i class="voyager-move"></i>Devolver</a>
                                         @endif
                                     </td>
                                     </td>
@@ -118,105 +119,105 @@
                             </table>
                         </div>
                         @foreach($anamnese as $key => $item)
-                            <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead>
-                                    <tr>
-                                        <th>#Codigo</th>
-                                        <td>{{$item->id}}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Empresa</th>
-                                        <td>{{$item->empresa}}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Funcionario</th>
-                                        <td>{{$item->funcionario}}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Cargo</th>
-                                        <td>{{$item->cargo}}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Ambiente</th>
-                                        <td>{{$item->ambiente_trabalho}}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Status</th>
-                                        <td>
-                                            <div  class="
+                            <div class="table-responsive mobile">
+                            <table class="table table-hover mb-display-{{$item->id}}">
+
+                                <tr>
+                                    <th>#Codigo</th>
+                                    <td>{{$item->id}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Empresa</th>
+                                    <td>{{$item->empresa}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Funcionario</th>
+                                    <td>{{$item->funcionario}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Cargo</th>
+                                    <td>{{$item->cargo}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Ambiente</th>
+                                    <td>{{$item->ambiente_trabalho}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Status</th>
+                                    <td>
+                                        <div  class="
+                                                @if($item->step == 'step_funci')
+                                            alert-success
+@endif
+                                        @if($item->step == 'step_med')
+                                            alert-primary
+@endif
+                                            " style="padding: 3px;font-weight: bold;font-size: 13px;margin-top: 6px;">
                                             @if($item->step == 'step_funci')
-                                                alert-success
+                                                Disponivel
                                             @endif
                                             @if($item->step == 'step_med')
-                                                alert-primary
+                                                Medico
                                             @endif
-                                                " style="padding: 3px;font-weight: bold;font-size: 13px;margin-top: 6px;">
-                                                @if($item->step == 'step_funci')
-                                                    Disponivel
-                                                @endif
-                                                @if($item->step == 'step_med')
-                                                    Medico
-                                                @endif
-                                            </div>
+                                        </div>
 
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Condição</th>
-                                        <td>
-                                            <div  class="
-                                        @if(!is_null($item->apt))
-                                            @if($item->apt == 0)
-                                                alert-danger
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Condição</th>
+                                    <td>
+                                        <div  class="
+                                            @if(!is_null($item->apt))
+                                        @if($item->apt == 0)
+                                            alert-danger
 @endif
-                                            @if($item->apt == 1)
-                                                alert-success
+                                        @if($item->apt == 1)
+                                            alert-success
 @endif
-                                            @else
-                                                alert-primary
+                                        @else
+                                            alert-primary
 @endif
-                                                " style="padding: 3px;font-weight: bold;font-size: 13px;margin-top: 6px;">
-                                                @if(!is_null($item->apt))
-                                                    @if($item->apt == 1)
-                                                        Apto
-                                                    @endif
-                                                    @if($item->apt == 0)
-                                                        Não Apto
-                                                    @endif
-                                                @else
-                                                    Não avaliado
+                                            " style="padding: 3px;font-weight: bold;font-size: 13px;margin-top: 6px;">
+                                            @if(!is_null($item->apt))
+                                                @if($item->apt == 1)
+                                                    Apto
                                                 @endif
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Ação</th>
-                                        <td>
-                                            @if($item->step == 'step_med' && !is_null($item->apt))
-                                                <button  class="btn btn-sm @if($item->apt == 1) btn-success @endif @if($item->apt == 0) btn-danger @endif pull-center" style="padding: 2px 7px;">Atestado</button>
+                                                @if($item->apt == 0)
+                                                    Não Apto
+                                                @endif
                                             @else
-                                                <a href="/admin/anaminese/questionario/{{$item->id}}"  class="btn btn-sm btn-primary pull-center" style="padding: 2px 7px;"><i class="voyager-edit"></i></a>
-                                                <a href="{{$item->id}}" class="btn btn-sm btn-primary pull-center devolver" style="padding: 2px 7px;"><i class="voyager-move"></i> Devolver</a>
+                                                Não avaliado
                                             @endif
-                                        </td>
-                                    </tr>
-                                    <tr style="display: none" class="justificar-{{$item->id}}">
-                                        <td colspan="2">
-                                            <form name="devolver" action="/admin/anaminese/devolver" type="post">
-                                                <textarea name="motivo" class="form-control" placeholder="Informe a causa da devolução"></textarea>
-                                                <input name="anamnese_id" value="{{$item->id}}" type="hidden">
-                                                <button type="submit"  class="btn btn-sm  btn-primary pull-center" style="padding: 2px 7px;">Enviar</button>
-                                                <a href="#" class="btn btn-sm  btn-danger pull-center cancelar" style="padding: 2px 7px;">Cancelar</a>
-                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Ação</th>
+                                    <td>
+                                        @if($item->step == 'step_med' && !is_null($item->apt))
+                                            <button  class="btn btn-sm @if($item->apt == 1) btn-success @endif @if($item->apt == 0) btn-danger @endif pull-center" style="padding: 2px 7px;">Atestado</button>
+                                        @else
+                                            <a href="/admin/anaminese/questionario/{{$item->id}}"  class="btn btn-sm btn-primary pull-center" style="padding: 2px 7px;"><i class="voyager-edit"></i></a>
+                                            <a href="{{$item->id}}" class="btn btn-sm btn-primary pull-center devolver" style="padding: 2px 7px;"><i class="voyager-move"></i> Devolver</a>
+                                        @endif
+                                    </td>
+                                </tr>
+                                <tr style="display: none" class="justificar-{{$item->id}}">
+                                    <td colspan="2">
+                                        <form name="devolver" action="/admin/anaminese/devolver" type="post">
+                                            <textarea name="motivo" class="form-control" placeholder="Informe a causa da devolução"></textarea>
+                                            <input name="anamnese_id" value="{{$item->id}}" type="hidden">
+                                            <button type="submit"  class="btn btn-sm  btn-primary pull-center" style="padding: 2px 7px;">Enviar</button>
+                                            <a href="#" class="btn btn-sm  btn-danger pull-center cancelar" style="padding: 2px 7px;">Cancelar</a>
+                                        </form>
 
-                                        </td>
-                                    </tr>
-                                    </thead>
-                                </table>
+                                    </td>
+                                </tr>
+                            </table>
                             </div>
                         @endforeach
-                        @if(count($anamnese) == 0)
+
+                    @if(count($anamnese) == 0)
                             <div class="table-responsive">
                                 <table class="table">
                                     <thead>

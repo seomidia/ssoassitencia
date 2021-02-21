@@ -1,27 +1,56 @@
-.label{
-    text-shadow: rgba(0,0,0,.15) 0 0 1px;
-    font-size: 10px;
-    font-family: inherit;
-    font-weight: 500;
-    line-height: 1.1;
-    color: inherit;
+.mobile{ display: block;}
+.desktop{ display: none;}
+.desktop .field{display: none;}
+.desktop span{display: none}
+
+/*Medium devices (tablets, 587px and up)*/
+@media only screen and (min-width: 768px) {
+    .mobile{ display: none;}
+    .desktop{ display: block;}
+    .devolver,.question{
+        padding: 6px 0px 6px 0px;
+        font-size: 10px;
+        font-weight: 600;
+        width: 73%;
+        float: left;
+        margin: 1px;
+    }
 }
 
-.section-title{
-    font-size: 12px;
-    font-family: inherit;
-    font-weight: bold;
-    line-height: 1.1;
-    color: #ffffff;
-    background: #76838F;
-    padding-left:20px ;
+@media only screen and (min-width: 768px) {
+    .mobile{ display: none;}
+    .desktop{ display: block;}
+    .devolver,.question{
+        padding: 6px 0px 6px 0px;
+        font-size: 10px;
+        font-weight: 600;
+        width: 73%;
+        float: left;
+        margin: 1px;
+    }
+    .aviso{
+        padding: 10px;
+        font-weight: bold;
+        font-size: 13px;
+        margin-top: 6px;
+    }
 }
-.section-title.feminino{
-    background: #ff0925!important;
-}
-.section-title.masculino{
-    background: #2e72c3!important;
-}
-.question ul li span{
-    min-width: 300px ;
+@media only screen and (min-width: 920px) {
+    .mobile{ display: none;}
+    .desktop{ display: block;}
+    .desktop .field{display: none!important;}
+    .devolver,.question{
+        padding: 6px 0px 6px 0px;
+        font-size: 10px;
+        font-weight: 600;
+        width: 73%;
+        float: left;
+        margin: 1px;
+    }
+    .aviso{
+        padding: 10px;
+        font-weight: bold;
+        font-size: 13px;
+        margin-top: 6px;
+    }
 }
