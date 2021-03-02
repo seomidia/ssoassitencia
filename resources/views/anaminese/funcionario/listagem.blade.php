@@ -87,10 +87,10 @@
                                     </td  style="text-align: center;vertical-align: middle;">
                                     <td>
                                         @if($item->step == 'step_med' && !is_null($item->apt))
-                                                <button  class="btn btn-sm @if($item->apt == 1) btn-success @endif @if($item->apt == 0) btn-danger @endif pull-center" style="padding: 2px 7px;">Atestado</button>
+                                                <a href="#"  class="btn btn-sm @if($item->apt == 1) btn-success @endif @if($item->apt == 0) btn-danger @endif pull-center btn2">Atestado</a>
                                         @else
-                                            <a href="/admin/anaminese/questionario/{{$item->id}}"  class="btn btn-sm btn-primary pull-center question" ><i class="voyager-edit"></i>Questões</a>
-                                            <a href="{{$item->id}}" class="btn btn-sm btn-primary pull-center devolver"><i class="voyager-move"></i>Devolver</a>
+                                            <a href="/admin/anaminese/questionario/{{$item->id}}"  class="btn btn-sm btn-primary pull-center btn2" ><i class="voyager-edit"></i>Questões</a>
+                                            <a href="{{$item->id}}" class="btn btn-sm btn-primary pull-center btn2 devolver"><i class="voyager-move"></i>Devolver</a>
                                         @endif
                                     </td>
                                     </td>
@@ -108,7 +108,6 @@
 
                                     @endforeach
 
-
                                     @if(count($anamnese) == 0)
                                         <tr>
                                             <td colspan="8" style="text-align: center">Não existe Anamnese disponivel no momento!</td>
@@ -118,6 +117,8 @@
                                 </tbody>
                             </table>
                         </div>
+
+                        {{--  Mobile  --}}
                         @foreach($anamnese as $key => $item)
                             <div class="table-responsive mobile">
                             <table class="table table-hover mb-display-{{$item->id}}">
@@ -170,13 +171,13 @@
                                             @if(!is_null($item->apt))
                                         @if($item->apt == 0)
                                             alert-danger
-@endif
+                                        @endif
                                         @if($item->apt == 1)
                                             alert-success
-@endif
+                                        @endif
                                         @else
                                             alert-primary
-@endif
+                                        @endif
                                             " style="padding: 3px;font-weight: bold;font-size: 13px;margin-top: 6px;">
                                             @if(!is_null($item->apt))
                                                 @if($item->apt == 1)

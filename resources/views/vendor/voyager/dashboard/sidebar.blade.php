@@ -33,7 +33,7 @@
             @if(\Illuminate\Support\Facades\Auth::user()->role_id == 1)
                 <admin-menu :items="{{ menu('admin', '_json') }}"></admin-menu>
             @endif
-                @if(\Illuminate\Support\Facades\Auth::user()->role_id == 4)
+                @if(\Illuminate\Support\Facades\Auth::user()->role_id == 3)
                     <div id="adminmenu">
                         <ul class="nav navbar-nav">
                             <li class="">
@@ -51,7 +51,7 @@
                         </ul>
                     </div>
                 @endif
-                @if(\Illuminate\Support\Facades\Auth::user()->role_id == 5)
+                @if(\Illuminate\Support\Facades\Auth::user()->role_id == 4)
                     <div id="adminmenu">
                         <ul class="nav navbar-nav">
                             <li class="">

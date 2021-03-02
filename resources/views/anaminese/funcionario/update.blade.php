@@ -11,7 +11,7 @@
         {{ __('Anaminese')}}
     </h1>
     <a href="/admin/funcionario/anaminese" class="btn btn-warning btn-add-new">
-        <i class="voyager-plus"></i> <span>{{ __('Voltar') }}</span>
+        <i class="voyager-double-left"></i> <span>{{ __('Voltar') }}</span>
     </a>
 
 
@@ -28,79 +28,262 @@
                         <div class="title">
                             <h4>SSO - ASSESSORIA EM SEGURANÇA E SAÚDE OCUPACIONAL</h4>
                         </div>
-                        <div class="row">
+                        <div class="row justify-content-start">
                             <div class="col-md-12 dados-funcionario">
-                                <span class="label">NOME: Kaio Henrique dos Santos</span>
-                                <span class="label">CPF: 949.934.402-00</span>
-                                <span class="label">Nasc: 23/11/1987</span>
+                                @foreach($dados as $key => $value)
+                                    <span class="label">NOME: {{$value->funcionario}}</span>
+                                    <span class="label">CPF: {{App\Http\Controllers\AnamineseController::formatar_cpf_cnpj($value->cpf)}}</span>
+                                    <span class="label">Nasc: {{App\Http\Controllers\AnamineseController::data($value->nasc)}}</span>
+                                @endforeach
                             </div>
                             <form>
-                                <div class="col-md-12 border">
-                                    <div class="col-md-6 col-sm-12 question">
-                                        <div class="section-title"><a href="123" class="tab"> ANTECEDENTES FAMILIARES </a> <i id="check-123" class="voyager-check-circle"></i><i id="warning-123" class="voyager-warning"></i></div>
-                                        <div id="tab-123" class="tab-toggle">
-                                            <p>The Radio button is exactly the same as the dropdown. You can specify a default if one has not been set and in the </p>
-                                            <ul class="radio">
-                                                <li>
-                                                    <input type="radio" id="question-123-sim"
-                                                           name="question-1"
-                                                           value="sim">
-                                                    <label for="question-123-sim">Sim</label>
-                                                    <div class="check"></div>
-                                                </li>
-                                                <li>
-                                                    <input type="radio" id="question-123-nao"
-                                                           name="question-1"
-                                                           value="nao">
-                                                    <label for="question-123-nao">nao</label>
-                                                    <div class="check"></div>
-                                                </li>
-                                            </ul>
-                                            <div style="clear: both"></div>
-                                        </div>
-                                        <div class="section-title"><a href="124" class="tab"> ANTECEDENTES FAMILIARES 2 </a><i id="check-124" class="voyager-check-circle"></i><i id="warning-124" class="voyager-warning"></i></div>
-                                        <div id="tab-124" class="tab-toggle">
-                                            <p>The Radio button is exactly the same as the dropdown. You can specify a default if one has not been set and in the </p>
-                                            <ul class="radio">
-                                                <li>
-                                                    <input type="radio" id="question-124-sim"
-                                                           name="question-2"
-                                                           value="sim">
-                                                    <label for="question-124-sim">Sim</label>
-                                                    <div class="check"></div>
-                                                </li>
-                                                <li>
-                                                    <input type="radio" id="question-124-nao"
-                                                           name="question-2"
-                                                           value="nao">
-                                                    <label for="question-124-nao">nao</label>
-                                                    <div class="check"></div>
-                                                </li>
-                                            </ul>
-                                            <div style="clear: both"></div>
-                                        </div>
-                                        <div class="section-title"><a href="125" class="tab"> ANTECEDENTES FAMILIARES 3 </a><i id="check-125" class="voyager-check-circle"></i><i id="warning-125" class="voyager-warning"></i></div>
-                                        <div id="tab-125" class="tab-toggle">
-                                            <p>The Radio button is exactly the same as the dropdown. You can specify a default if one has not been set and in the </p>
-                                            <ul class="radio">
-                                                <li>
-                                                    <input type="radio" id="question-125-sim"
-                                                           name="question-3"
-                                                           value="sim">
-                                                    <label for="question-125-sim">Sim</label>
-                                                    <div class="check"></div>
-                                                </li>
-                                                <li>
-                                                    <input type="radio" id="question-125-nao"
-                                                           name="question-3"
-                                                           value="nao">
-                                                    <label for="question-125-nao">nao</label>
-                                                    <div class="check"></div>
-                                                </li>
-                                            </ul>
-                                            <div style="clear: both"></div>
+                                <div class="col-md-10 border">
+                                    <div class="question">
+                                        <div class="section-questions">
+                                            <div class="section-title">
+                                                <h3>ANTECEDENTES FAMILIARES</h3>
+                                            </div>
+                                            <div class="pergunta">
+                                                <p>Doenças do coração, infartos, pressão alta? </p>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="antecedentes_familiares['doencas-do-coração-infartos-pressao-alta']" value="sim">
+                                                    <label class="form-check-label" for="">Sim</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="antecedentes_familiares['doencas-do-coração-infartos-pressao-alta']" value="nao">
+                                                    <label class="form-check-label" for="">Não</label>
+                                                </div>
+                                            </div>
+                                            <div class="line">&nbsp;</div>
+                                            <div class="pergunta">
+                                                <p>Derrame/AVC?</p>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="antecedentes_familiares[derrame-avc]" value="sim">
+                                                    <label class="form-check-label" for="">Sim</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="antecedentes_familiares[derrame-avc]" value="nao">
+                                                    <label class="form-check-label" for="">Não</label>
+                                                </div>
+                                            </div>
+                                            <div class="line">&nbsp;</div>
+                                            <div class="pergunta">
+                                                <p>Câncer/Tumor?</p>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="antecedentes_familiares[cancer-tumor]" value="sim">
+                                                    <label class="form-check-label" for="">Sim</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="antecedentes_familiares[cancer-tumor]" value="nao">
+                                                    <label class="form-check-label" for="">Não</label>
+                                                </div>
+                                            </div>
+                                            <div class="line">&nbsp;</div>
+                                            <div class="pergunta">
+                                                <p>Diabetes? </p>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="antecedentes_familiares['diabetes']" value="sim">
+                                                    <label class="form-check-label" for="">Sim</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="antecedentes_familiares['diabetes']" value="nao">
+                                                    <label class="form-check-label" for="">Não</label>
+                                                </div>
+                                            </div>
+                                            <div class="line">&nbsp;</div>
+                                            <div class="pergunta">
+                                                <p>Colesterol alterado?</p>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="antecedentes_familiares['colesterol-alterado']" value="sim">
+                                                    <label class="form-check-label" for="">Sim</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="antecedentes_familiares['colesterol-alterado']" value="nao">
+                                                    <label class="form-check-label" for="">Não</label>
+                                                </div>
+                                            </div>
+                                            <div class="line">&nbsp;</div>
+                                            <div class="pergunta">
+                                                <p>Doenças psiquiátricas? </p>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="antecedentes_familiares['doenças-psiquiatricas']" value="sim">
+                                                    <label class="form-check-label" for="">Sim</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="antecedentes_familiares['doenças-psiquiatricas']" value="nao">
+                                                    <label class="form-check-label" for="">Não</label>
+                                                </div>
+                                            </div>
+                                            <div class="line">&nbsp;</div>
                                         </div>
                                     </div>
+                                    <div class="question">
+                                        <div class="section-questions">
+                                            <div class="section-title">
+                                                <h3>HÁBITOS DE VIDA</h3>
+                                            </div>
+                                            <div class="pergunta">
+                                                <p>Prática atividade física? </p>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="habitos_vida['pratica-atividade-fisica'][]" value="sim">
+                                                    <label class="form-check-label" for="">Sim</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="habitos_vida['pratica-atividade-fisica'][]" value="nao">
+                                                    <label class="form-check-label" for="">Não</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="text" class="form-check-input" placeholder="Se Sim Qual?" name="habitos_vida['pratica-atividade-fisica'][]">
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="text" class="form-check-input" placeholder="Em qual frequencia?" name="habitos_vida['pratica-atividade-fisica'][]">
+                                                </div>
+
+                                            </div>
+                                            <div class="line">&nbsp;</div>
+                                            <div class="pergunta">
+                                                <p>Faz uso de bebida alcoólica?</p>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="habitos_vida[faz-uso-de-bebida-alcoolica][]" value="sim">
+                                                    <label class="form-check-label" for="">Sim</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="habitos_vida[faz-uso-de-bebida-alcoolica][]" value="nao">
+                                                    <label class="form-check-label" for="">Não</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="text" class="form-check-input" placeholder="Quantas vezes por semana?" name="habitos_vida['pratica-atividade-fisica'][]">
+                                                </div>
+                                            </div>
+                                            <div class="line">&nbsp;</div>
+                                            <div class="pergunta">
+                                                <p>Fumante? </p>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="habitos_vida['fumante'][]" value="sim">
+                                                    <label class="form-check-label" for="">Sim</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="habitos_vida['fumante'][]" value="nao">
+                                                    <label class="form-check-label" for="">Não</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="text" class="form-check-input" placeholder="Quantas vezes por semana?" name="habitos_vida['fumante'][]">
+                                                </div>
+                                            </div>
+                                            <div class="line">&nbsp;</div>
+                                            <div class="pergunta">
+                                                <p>Usa ou usou drogas?</p>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="habitos_vida['usa-o-usou-drogas']" value="sim">
+                                                    <label class="form-check-label" for="">Sim</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="habitos_vida['usa-o-usou-drogas']" value="nao">
+                                                    <label class="form-check-label" for="">Não</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="text" class="form-check-input" placeholder="Qual e em que frequência?" name="habitos_vida['usa-o-usou-drogas'][]">
+                                                </div>
+                                            </div>
+                                            <div class="line">&nbsp;</div>
+                                            <div class="pergunta">
+                                                <p>Tem vida sexualmente ativa? </p>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="habitos_vida['tem-vida-sexualmente-ativa']" value="sim">
+                                                    <label class="form-check-label" for="">Sim</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="habitos_vida['tem-vida-sexualmente-ativa']" value="nao">
+                                                    <label class="form-check-label" for="">Não</label>
+                                                </div>
+                                            </div>
+                                            <div class="line">&nbsp;</div>
+                                        </div>
+                                    </div>
+                                    <div class="question">
+                                        <div class="section-questions">
+                                            <div class="section-title">
+                                                <h3>ANTECEDENTES PESSOAIS</h3>
+                                            </div>
+                                            <div class="pergunta">
+                                                <p>Prática atividade física? </p>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="habitos_vida['pratica-atividade-fisica'][]" value="sim">
+                                                    <label class="form-check-label" for="">Sim</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="habitos_vida['pratica-atividade-fisica'][]" value="nao">
+                                                    <label class="form-check-label" for="">Não</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="text" class="form-check-input" placeholder="Se Sim Qual?" name="habitos_vida['pratica-atividade-fisica'][]">
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="text" class="form-check-input" placeholder="Em qual frequencia?" name="habitos_vida['pratica-atividade-fisica'][]">
+                                                </div>
+
+                                            </div>
+                                            <div class="line">&nbsp;</div>
+                                            <div class="pergunta">
+                                                <p>Faz uso de bebida alcoólica?</p>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="habitos_vida[faz-uso-de-bebida-alcoolica][]" value="sim">
+                                                    <label class="form-check-label" for="">Sim</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="habitos_vida[faz-uso-de-bebida-alcoolica][]" value="nao">
+                                                    <label class="form-check-label" for="">Não</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="text" class="form-check-input" placeholder="Quantas vezes por semana?" name="habitos_vida['pratica-atividade-fisica'][]">
+                                                </div>
+                                            </div>
+                                            <div class="line">&nbsp;</div>
+                                            <div class="pergunta">
+                                                <p>Fumante? </p>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="habitos_vida['fumante'][]" value="sim">
+                                                    <label class="form-check-label" for="">Sim</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="habitos_vida['fumante'][]" value="nao">
+                                                    <label class="form-check-label" for="">Não</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="text" class="form-check-input" placeholder="Quantas vezes por semana?" name="habitos_vida['fumante'][]">
+                                                </div>
+                                            </div>
+                                            <div class="line">&nbsp;</div>
+                                            <div class="pergunta">
+                                                <p>Usa ou usou drogas?</p>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="habitos_vida['usa-o-usou-drogas']" value="sim">
+                                                    <label class="form-check-label" for="">Sim</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="habitos_vida['usa-o-usou-drogas']" value="nao">
+                                                    <label class="form-check-label" for="">Não</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="text" class="form-check-input" placeholder="Qual e em que frequência?" name="habitos_vida['usa-o-usou-drogas'][]">
+                                                </div>
+                                            </div>
+                                            <div class="line">&nbsp;</div>
+                                            <div class="pergunta">
+                                                <p>Tem vida sexualmente ativa? </p>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="habitos_vida['tem-vida-sexualmente-ativa']" value="sim">
+                                                    <label class="form-check-label" for="">Sim</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="habitos_vida['tem-vida-sexualmente-ativa']" value="nao">
+                                                    <label class="form-check-label" for="">Não</label>
+                                                </div>
+                                            </div>
+                                            <div class="line">&nbsp;</div>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </form>
                         </div>

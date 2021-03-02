@@ -72,7 +72,7 @@ class AnamineseController extends Controller
                     'companies_id' => $companie_id['companie_id'],
                     'office_id' => $request->input('cargo'),
                     'ambiente_trabalho' => $request->input('ambiente_Trabalho'),
-                    'step' => 'step_fuci'
+                    'step' => 'step_funci'
                 ]);
 
 
@@ -133,9 +133,9 @@ class AnamineseController extends Controller
             ->whereIn('step',['step_funci','step_med'])
             ->orderBy('a.id', 'desc')
             ->get();
+
         return view('anaminese.funcionario.listagem',['anamnese' => $listagem]);
     }
-
     public function devolver(Request $request)
     {
         $id = $request->input('anamnese_id');
@@ -175,24 +175,30 @@ class AnamineseController extends Controller
     public function question($id)
     {
         $dados = DB::table('anamnesis as a')
-            ->leftjoin('companies as c','a.companies_id','=','c.id')
             ->leftjoin('users as u','a.user_id_employee','=','u.id')
             ->leftjoin('user_data as ud','a.user_id_employee','=','ud.user_id')
-            ->leftjoin('office as o','a.office_id','=','o.id')
             ->select(
-                'a.*',
-                'c.*',
-                'ud.rg',
                 'ud.cpf',
                 'ud.nasc',
-                'ud.idade',
-                'ud.sexo',
-                'u.name as funcionario',
-                'o.name as cargo'
+                'u.name as funcionario'
             )
             ->where('a.id',$id)
             ->get();
-        return view('anaminese.funcionario.update',['anamnese_id' => $id, 'dados'=> $dados]);
+
+        $questoes = DB::table('anaminese_sessions as AS')
+            ->leftjoin('anaminese_questions as AQ','AS.id','=','AQ.anaminese_sessions_id')
+            ->select('AS.name','AQ.id','AQ.description','AQ.parent','AQ.type_response')
+            ->get();
+
+        $result  = collect($questoes)
+            ->groupBy('name')
+            ->map(function ($item) {
+                return array_merge($item->toArray());
+            });
+
+
+        return view('anaminese.funcionario.update',['anamnese_id' => $id, 'dados'=> $dados, 'questoes' => $result]);
 
     }
 }
+

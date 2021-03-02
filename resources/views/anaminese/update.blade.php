@@ -390,7 +390,7 @@
             $('form[name="cadastro_pessoa"]').submit(function(event){
                 event.preventDefault();
                 $.post('{{ route('voyager.create.People') }}', $(this).serializeArray(), function (response) {
-
+                    $('input[name="user_funcionario"]').val(response.data.id);
                     $('input[name="pessoa_cpf"]').val(response.data.cpf);
                     $('input[name="pessoa"]').val(response.data.nome);
                     $('input[name="pessoa_rg"]').val(response.data.rg);

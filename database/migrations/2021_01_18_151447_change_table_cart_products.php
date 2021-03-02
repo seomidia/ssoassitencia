@@ -26,7 +26,7 @@ class ChangeTableCartProducts extends Migration
     public function down()
     {
         Schema::table('cart_products', function (Blueprint $table) {
-            //
+            $table->dropColumn('session_id');
         });
     }
 }

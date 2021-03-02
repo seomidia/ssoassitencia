@@ -156,7 +156,7 @@
                 $.post('{{ route('voyager.create.encaminhamento') }}', $(this).serializeArray(), function (response) {
                     toastr.success('Iniciando Anaminese...');
                     setTimeout(function (){
-                        window.location.href = 'anaminese/cadastro/' + response;
+                        window.location.href = 'encaminhamento/cadastro/' + response;
                     },2000);
                 }).fail(function (jqXHR, textStatus) {
                     toastr.error(jqXHR.responseJSON.message);

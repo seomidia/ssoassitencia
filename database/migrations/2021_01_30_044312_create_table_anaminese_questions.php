@@ -20,11 +20,6 @@ class CreateTableAnamineseQuestions extends Migration
             $table->integer('parent');
             $table->timestamps();
         });
-
-        Schema::table('anaminese_questions', function($table) {
-            $table->foreign('anaminese_sessions_id')->references('id')->on('anaminese_sessions');
-        });
-
     }
 
     /**

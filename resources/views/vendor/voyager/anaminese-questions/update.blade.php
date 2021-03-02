@@ -10,7 +10,7 @@
 @endphp
 
 <div class="form-group  col-md-12 ">
-    <label class="control-label" for="name">Sessão </label>
+    <label class="control-label" for="name">Seção </label>
     <select class="form-control select2" name="sessao">
         @php
           $session = DB::table('anaminese_sessions')
@@ -44,5 +44,16 @@
         @endphp
     </select>
 </div>
+<div class="form-group  col-md-12 ">
+    <label class="control-label" for="name">Tipo resposta </label>
+    <select class="form-control select2" name="type_response">
+        <option value="1" @if($dataTypeContent->type_response == 1) selected @endif>Sim & Não</option>
+        <option value="2" @if($dataTypeContent->type_response == 2) selected @endif>Tenho & Não tenho</option>
+        <option value="3" @if($dataTypeContent->type_response == 3) selected @endif>Numeral</option>
+        <option value="4" @if($dataTypeContent->type_response == 4) selected @endif>Checkbox</option>
+        <option value="5" @if($dataTypeContent->type_response == 5) selected @endif>Texto</option>
+    </select>
+</div>
+
 <input type="hidden" name="anaminese_questions_id" value="{{$dataTypeContent->id}}">
 

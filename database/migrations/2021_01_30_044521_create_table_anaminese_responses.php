@@ -21,12 +21,6 @@ class CreateTableAnamineseResponses extends Migration
             $table->text('description')->nullable();
             $table->timestamps();
         });
-
-        Schema::table('anaminese_responses', function($table) {
-            $table->foreign('anaminese_questions_id')->references('id')->on('anaminese_questions');
-            $table->foreign('anamnesis_id')->references('id')->on('anamnesis');
-        });
-
     }
 
     /**

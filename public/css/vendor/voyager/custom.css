@@ -7,11 +7,15 @@
     color: inherit;
 }
 
+.line{
+    border-bottom: 1px dashed #dddddd;
+    margin-bottom: 10px;
+}
+
 .section-title{
     background: #2e72c3;
     text-align: center;
     margin: 3px 0;
-    padding: 10px 0;
 }
 .section-title a{
     color: #ffffff;
@@ -40,6 +44,15 @@
     color: #c69500 !important;
     display: none;
 }
+
+.section-questions{
+    background: #f2f2f2;
+}
+.section-questions h3{
+    text-align: center;
+    font-size: 15px;
+    padding-top: 5px;
+}
 /*Alteração bootstrap */
 
 .col-sm-12{
@@ -60,8 +73,6 @@
 /* tab toggle */
 
 .tab-toggle{
-    background: #f2f2f2;
-    margin-top: -10px;
     display: none;
 }
 
@@ -90,26 +101,35 @@ ul.radio li{
 
 /*Medium devices (tablets, 587px and up)*/
 @media only screen and (min-width: 768px) {
+    .label{text-align: left!important;}
+    .title{text-align: left;}
+    .section-title{
+        text-align: left;
+    }
+    .section-questions h3 {
+        text-align: left;
+        padding: 10px 10px;
+        color: #ffffff;
+    }
+
+    .section-questions p{font-size: 18px}
+    .section-questions{
+        padding: 10px;
+    }
+    .form-check-inline{ display: inline}
     .question{
         width: auto!important;
         float: none!important;
+        margin: 10px 10px;
+    }
+    .question input{
+        background: transparent;
+        border: 0;
+        border-bottom: 1px solid #ddd;
     }
     .mobile{ display: none;}
     .desktop{ display: block;}
-    .devolver,.question{
-        padding: 6px 0px 6px 0px;
-        font-size: 10px;
-        font-weight: 600;
-        width: 73%;
-        float: left;
-        margin: 1px;
-    }
-}
-
-@media only screen and (min-width: 768px) {
-    .mobile{ display: none;}
-    .desktop{ display: block;}
-    .devolver,.question{
+    .btn2{
         padding: 6px 0px 6px 0px;
         font-size: 10px;
         font-weight: 600;
@@ -123,23 +143,17 @@ ul.radio li{
         font-size: 13px;
         margin-top: 6px;
     }
+
 }
 @media only screen and (min-width: 920px) {
     .mobile{ display: none;}
     .desktop{ display: block;}
     .desktop .field{display: none!important;}
-    .devolver,.question{
+    .btn2{
         padding: 6px 0px 6px 0px;
         font-size: 10px;
         font-weight: 600;
         width: 73%;
-        float: left;
         margin: 1px;
-    }
-    .aviso{
-        padding: 10px;
-        font-weight: bold;
-        font-size: 13px;
-        margin-top: 6px;
     }
 }

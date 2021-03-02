@@ -21,7 +21,7 @@ class PeopleController extends Controller
             'password'       => bcrypt($cpf)
         ];
 
-        $user_id = \App\User::User_register($data,'cliente');
+        $user_id = \App\User::User_register($data,'paciente');
 
         if($user_id['success']){
 
@@ -50,6 +50,7 @@ class PeopleController extends Controller
                     'success'=> true,
                     'message'=> 'Pessoa cadastrada com sucesso!',
                     'data' => [
+                        'id' => $user_id['data']['user_id'],
                         'cpf' => $request->input('cpf'),
                         'nome' => $request->input('nome'),
                         'rg' => $request->input('rg'),

@@ -18,12 +18,6 @@ class AlterAddCompanieId extends Migration
             $table->unsignedBigInteger('office_id')->nullable();
             $table->string('ambiente_trabalho')->nullable();
         });
-
-        Schema::table('anamnesis', function($table) {
-            $table->foreign('companies_id')->references('id')->on('companies');
-            $table->foreign('office_id')->references('id')->on('office');
-        });
-
     }
 
     /**
@@ -34,7 +28,10 @@ class AlterAddCompanieId extends Migration
     public function down()
     {
         Schema::table('anamnesis', function (Blueprint $table) {
-            //
+            $table->dropColumn('companies_id');
+            $table->dropColumn('office_id');
+            $table->dropColumn('ambiente_trabalho');
+
         });
     }
 }

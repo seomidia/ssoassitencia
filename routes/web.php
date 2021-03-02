@@ -33,6 +33,7 @@ Route::get('/contato', 'ContatoController@index')->name('contato');
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
 });
+
 Auth::routes();
 Route::get('/json/getcompany/{cnpj}', 'CompanyController@getEmpresa')->name('voyager.getEmpresa');
 
@@ -43,12 +44,17 @@ Route::post('/json/create-pessoa', 'PeopleController@CreatePessoa')->name('voyag
 // ger ambiente de trabalho ------------------
 Route::get('/json/getworkplace', 'WorkplaceController@getworkplace')->name('voyager.get.workplace');
 
+// get section ------------------
+Route::get('/json/getSection', 'AnamineseQuestionController@getSection')->name('voyager.get.section');
+
+// get section ------------------
+Route::get('/json/getParent', 'AnamineseQuestionController@getParent')->name('voyager.get.parent');
+
 // ger cargo ------------------
 Route::get('/json/getCargo', 'OfficeController@getCargo')->name('voyager.get.cargo');
 
 // ger medico ------------------
 Route::get('/json/getMedicos', 'UserController@getMedico')->name('voyager.get.medico');
-
 
 
 Route::post('/admin/office', 'OfficeController@store')->name('voyager.office.store');
@@ -58,6 +64,7 @@ Route::post('/admin/anaminese-questions-update', 'AnamineseQuestionController@up
 Route::get('/admin/area-cliente-avulso', 'AreasController@Cliente')->name('voyager.area.cliente');
 Route::get('/admin/area-rh', 'AreasController@Cliente')->name('voyager.area.rh');
 Route::get('/admin/encaminhamento', 'AnamineseController@index')->name('voyager.encaminhamento');
+Route::get('/admin/encaminhamento/cadastro/{anamnese}', 'AnamineseController@cadastro')->name('voyager.encaminhamento.cadastro');
 Route::post('/admin/encaminhamento', 'AnamineseController@create')->name('voyager.create.encaminhamento');
 Route::post('/admin/encaminhamento/{encaminhamento}', 'AnamineseController@updade')->name('voyager.update.encaminhamento');
 Route::post('/admin/encaminhamento/{encaminhamento}/delete', 'AnamineseController@destroy')->name('voyager.delete.encaminhamento');
@@ -69,7 +76,7 @@ Route::get('/admin/funcionario/anaminese', 'AnamineseController@indexfunc')->nam
 Route::get('/admin/anaminese/questionario/{anamnese}', 'AnamineseController@question')->name('voyager.funcionario.question');
 Route::post('/admin/anaminese/devolver', 'AnamineseController@devolver')->name('voyager.funcionario.anaminese.devolver');
 //Route::post('/admin/anamnese/{anamnese}', 'AnamineseController@updade')->name('voyager.anaminese.update');
-//Route::get('/admin/anaminese/cadastro/{anaminese}', 'AnamineseController@cadastro')->name('voyager.anaminese.cadastro');
+Route::get('/admin/anaminese/cadastro/{anaminese}', 'AnamineseController@cadastro')->name('voyager.anaminese.cadastro');
 
 
 

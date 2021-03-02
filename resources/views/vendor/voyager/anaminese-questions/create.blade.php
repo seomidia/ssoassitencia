@@ -31,3 +31,13 @@
         @endphp
     </select>
 </div>
+<div class="form-group  col-md-12 ">
+    <label class="control-label" for="name">Tipo resposta </label>
+    <select class="form-control select2" name="type_response">
+        <option value="1">Sim & Não</option>
+        <option value="2">Tenho & Não tenho</option>
+        <option value="3">Numeral</option>
+        <option value="4">Checkbox</option>
+        <option value="5">Texto</option>
+    </select>
+</div>
