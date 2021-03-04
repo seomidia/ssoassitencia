@@ -61,7 +61,7 @@
                                             @if($item->step == 'step_rh')
                                                 alert-danger
                                             @endif
-                                            @if($item->step == 'step_fuci')
+                                            @if($item->step == 'step_funci')
                                                 alert-success
                                             @endif
                                             @if($item->step == 'step_med')
@@ -71,7 +71,7 @@
                                             @if($item->step == 'step_rh')
                                                 Não iniciado
                                             @endif
-                                            @if($item->step == 'step_fuci')
+                                            @if($item->step == 'step_funci')
                                                 Funcionario
                                             @endif
                                             @if($item->step == 'step_med')
