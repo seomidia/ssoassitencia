@@ -16,6 +16,13 @@
     background: #2e72c3;
     text-align: center;
     margin: 3px 0;
+    padding: 10px;
+    color: #fff;
+    font-weight: 600;
+}
+
+.tab1{
+    text-align: center;
 }
 .section-title a{
     color: #ffffff;
@@ -181,6 +188,14 @@ ul.radio li{
 }
 /*Medium devices (tablets, 587px and up)*/
 @media only screen and (min-width: 768px) {
+    .section-title{
+        padding: 5px;
+    }
+
+    .tab1{
+        text-align: inherit;
+    }
+
     .label{text-align: left!important;}
     .title{text-align: left;}
     .section-title{

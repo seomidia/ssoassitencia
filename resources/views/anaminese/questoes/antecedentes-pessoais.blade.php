@@ -184,7 +184,7 @@
                         ])
                 @endcomponent
             </div>
-            <div class="line">&nbsp;</div>
+            <div style="clear:both;">&nbsp;</div>
         </div>
     </div>
 </div>
