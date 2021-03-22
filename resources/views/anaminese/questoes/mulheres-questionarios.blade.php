@@ -7,15 +7,15 @@
             <div class="pergunta">
                 <p>Tem filhos? </p>
                 @component('components.forms.radio',[
-                        'name' => 'mulher_questionario[tem-filhos][]',
+                        'name' => 'question[mulher_questionario][tem-filhos-mulher][]',
                         'valor'=>['sim','nao'],
-                        'slug'=>'tem-filhos'
+                        'slug'=>'tem-filhos-mulher'
                         ])
                 @endcomponent
                 <div style="clear: both"></div>
-                <div class="reply" id="reply-tem-filhos">
+                <div class="reply" id="reply-tem-filhos-mulher">
                     <div class="form-check form-check-inline">
-                        <input type="number" class="form-check-input" placeholder="Quantos?"  name="mulher_questionario['tem-filhos'][]">
+                        <input type="number" class="form-check-input" placeholder="Quantos?"  name="question[mulher_questionario][tem-filhos-mulher][]">
                     </div>
                 </div>
 
@@ -24,7 +24,7 @@
             <div class="pergunta">
                 <p>Abortamentos?</p>
                 @component('components.forms.radio',[
-                        'name' => 'mulher_questionario[abortamentos][]',
+                        'name' => 'question[mulher_questionario][abortamentos][]',
                         'valor'=>['sim','nao'],
                         'slug'=>'abortamentos'
                         ])
@@ -33,7 +33,7 @@
                 <div class="reply" id="reply-abortamentos">
 
                 <div class="form-check form-check-inline">
-                    <input type="number" class="form-check-input" placeholder="Quantos?"  name="mulher_questionario['abortamentos'][]">
+                    <input type="number" class="form-check-input" placeholder="Quantos?"  name="question[mulher_questionario][abortamentos][]">
                 </div>
 
                 </div>
@@ -42,7 +42,7 @@
             <div class="pergunta">
                 <p>Faz exames ginecológicos?</p>
                 @component('components.forms.radio',[
-                        'name' => 'mulher_questionario[faz-exames-ginecologicos][]',
+                        'name' => 'question[mulher_questionario][faz-exames-ginecologicos]',
                         'valor'=>['sim','nao'],
                         'slug'=>'faz-exames-ginecologicos'
                         ])
@@ -52,7 +52,7 @@
             <div class="pergunta">
                 <p>Usa contraceptivo? </p>
                 @component('components.forms.radio',[
-                        'name' => 'mulher_questionario[usa-contraceptivo][]',
+                        'name' => 'question[mulher_questionario][usa-contraceptivo]',
                         'valor'=>['sim','nao'],
                         'slug'=>'usa-contraceptivo'
                         ])
@@ -62,7 +62,7 @@
             <div class="pergunta">
                 <p>Data da última menstruação</p>
                 <div class="form-check form-check-inline">
-                    <input type="date" class="form-control" name="mulher_questionario['data-da-ultima-menstruacao']" value="sim">
+                    <input type="date" class="form-control" name="question[mulher_questionario][data-da-ultima-menstruacao]" value="sim">
                 </div>
             </div>
         </div>

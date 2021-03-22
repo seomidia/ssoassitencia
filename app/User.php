@@ -39,7 +39,7 @@ class User extends \TCG\Voyager\Models\User
         'email_verified_at' => 'datetime',
     ];
 
-    protected  function User_register(array $data, $role_name = 'cliente')
+    protected  function User_register(array $data, $role_name = 'paciente')
     {
         $role = Role::where('name', $role_name)->firstOrFail();
 
@@ -50,8 +50,10 @@ class User extends \TCG\Voyager\Models\User
                     'email'          => $data['email'],
                     'password'       => bcrypt($data['password']),
                     'remember_token' => Str::random(60),
-                    'role_id'        => $role->id,
+                    'role_id'        => 4,
                 ]);
+//                role adcional -------------------------
+            DB::table('user_roles')->insert(['user_id'=>$user->id,'role_id'=> $role->id]);
             if(isset($user->id)){
                 return [
                     'success'=> true,

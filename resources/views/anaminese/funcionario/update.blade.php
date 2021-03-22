@@ -36,7 +36,7 @@
                                     <span class="label">Nasc: {{App\Http\Controllers\AnamineseController::data($value->nasc)}}</span>
                                 @endforeach
                             </div>
-                            <form>
+                            <form name="questionario" action="">
                                 <div class="col-md-10 border">
                                     @include('anaminese.questoes.antecedentes-familiares')
                                     @include('anaminese.questoes.habitos-de-vida')
@@ -47,6 +47,9 @@
                                     @include('anaminese.questoes.avaliacao-ocupacional')
                                     @include('anaminese.questoes.sinais-vitais')
                                     @include('anaminese.questoes.biotipo')
+                                    <input type="hidden" name="user_id_employee" value="{{$user_id}}">
+                                    <input type="hidden" name="anamnesis_id" value="{{$anamnese_id}}">
+                                    <button type="submit" class="btn btn-primary">Enviar para o medico</button>
                             </form>
                         </div>
                     </div>
@@ -58,6 +61,23 @@
 @section('javascript')
 <script>
     $(document).ready(function(){
+
+        $('form[name="questionario"]').submit(function(event){
+            event.preventDefault();
+            // var anamnese_id = $('input[name="anamnese_id"]').val();
+
+            $.post('/admin/anaminese/questionario', $(this).serializeArray(), function (response) {
+                toastr.success('Anamnese encaminhada para o Medico!');
+                setTimeout(function (){
+                    window.location.href = '/admin/funcionario/anaminese';
+                },2000);
+            }).fail(function (jqXHR, textStatus) {
+                toastr.error(jqXHR.responseJSON.message);
+            })
+        })
+
+
+
         jQuery('.tab1').hide();
         $('.question').click(function(){
             var id = $(this).attr('id');

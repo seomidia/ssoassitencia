@@ -7,7 +7,7 @@
             <div class="pergunta">
                 <p>Prática atividade física? </p>
                 @component('components.forms.radio',[
-                    'name' => 'habitos_vida[pratica-atividade-fisica][]',
+                    'name' => 'question[habitos_vida][pratica-atividade-fisica][]',
                     'valor'=>['sim','nao'],
                     'slug'=>'pratica-atividade-fisica'
                     ])
@@ -15,10 +15,10 @@
                 <div style="clear: both"></div>
                 <div class="reply" id="reply-pratica-atividade-fisica">
                     <div class="form-check form-check-inline">
-                        <input type="text" class="form-control" placeholder="Se Sim Qual?" name="habitos_vida['pratica-atividade-fisica'][]">
+                        <input type="text" class="form-control" placeholder="Se Sim Qual?" name="question[habitos_vida][pratica-atividade-fisica][]">
                     </div>
                     <div class="form-check form-check-inline">
-                        <input type="text" class="form-control" placeholder="Em qual frequencia?" name="habitos_vida['pratica-atividade-fisica'][]">
+                        <input type="text" class="form-control" placeholder="Em qual frequencia?" name="question[habitos_vida][pratica-atividade-fisica][]">
                     </div>
                 </div>
             </div>
@@ -26,7 +26,7 @@
             <div class="pergunta">
                 <p>Faz uso de bebida alcoólica?</p>
                 @component('components.forms.radio',[
-                    'name' => 'habitos_vida[faz-uso-de-bebida-alcoolica][]',
+                    'name' => 'question[habitos_vida][faz-uso-de-bebida-alcoolica][]',
                     'valor'=>['sim','nao'],
                     'slug'=>'faz-uso-de-bebida-alcoolica'
                     ])
@@ -35,7 +35,7 @@
 
                 <div class="reply" id="reply-faz-uso-de-bebida-alcoolica">
                     <div class="form-check form-check-inline">
-                        <input type="text" class="form-control" placeholder="Quantas vezes por semana?" name="habitos_vida[faz-uso-de-bebida-alcoolica][]">
+                        <input type="text" class="form-control" placeholder="Quantas vezes por semana?" name="question[habitos_vida][faz-uso-de-bebida-alcoolica][]">
                     </div>
                 </div>
                 <div style="clear: both"></div>
@@ -44,7 +44,7 @@
             <div class="pergunta">
                 <p>Fumante? </p>
                 @component('components.forms.radio',[
-                    'name' => 'habitos_vida[fumante][]',
+                    'name' => 'question[habitos_vida][fumante][]',
                     'valor'=>['sim','nao'],
                     'slug'=>'fumante'
                     ])
@@ -53,7 +53,7 @@
 
                 <div class="reply" id="reply-fumante">
                     <div class="form-check form-check-inline">
-                        <input type="text" class="form-check-input" placeholder="Quantas vezes por semana?" name="habitos_vida['fumante'][]">
+                        <input type="text" class="form-check-input" placeholder="Quantas vezes por semana?" name="question[habitos_vida][fumante][]">
                     </div>
                 </div>
 
@@ -62,7 +62,7 @@
             <div class="pergunta">
                 <p>Usa ou usou drogas?</p>
                 @component('components.forms.radio',[
-                        'name' => 'habitos_vida[usa-o-usou-drogas][]',
+                        'name' => 'question[habitos_vida][usa-o-usou-drogas][]',
                         'valor'=>['sim','nao'],
                         'slug'=>'usa-o-usou-drogas'
                         ])
@@ -70,7 +70,7 @@
                 <div style="clear: both"></div>
                 <div class="reply" id="reply-usa-o-usou-drogas">
                     <div class="form-check form-check-inline">
-                        <input type="text" class="form-check-input" placeholder="Qual e em que frequência?" name="habitos_vida['usa-o-usou-drogas'][]">
+                        <input type="text" class="form-check-input" placeholder="Qual e em que frequência?" name="question[habitos_vida][usa-o-usou-drogas][]">
                     </div>
                 </div>
             </div>
@@ -78,7 +78,7 @@
             <div class="pergunta">
                 <p>Tem vida sexualmente ativa? </p>
                 @component('components.forms.radio',[
-                        'name' => 'habitos_vida[tem-vida-sexualmente-ativa][]',
+                        'name' => 'question[habitos_vida][tem-vida-sexualmente-ativa]',
                         'valor'=>['sim','nao'],
                         'slug'=>'tem-vida-sexualmente-ativa'
                         ])

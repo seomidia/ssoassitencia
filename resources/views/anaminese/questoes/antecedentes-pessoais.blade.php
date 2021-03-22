@@ -8,7 +8,7 @@
             <div class="pergunta">
                 <p>Tonturas, dores de cabeça, convulsões? </p>
                 @component('components.forms.radio',[
-                        'name' => 'antecedente_pessoais[tonturas-dores-de-cabeca-convulsoes]',
+                        'name' => 'question[antecedente_pessoais][tonturas-dores-de-cabeca-convulsoes]',
                         'valor'=>['tenho','nao tenho'],
                         'slug'=>'tonturas-dores-de-cabeca-convulsoes'
                         ])
@@ -18,7 +18,7 @@
             <div class="pergunta">
                 <p>Perda de visão, miopia, hipermetropia, astigmatismos?</p>
                 @component('components.forms.radio',[
-                        'name' => 'antecedente_pessoais[perda-de-visao-miopia-hipermetropia-astigmatismos]',
+                        'name' => 'question[antecedente_pessoais][perda-de-visao-miopia-hipermetropia-astigmatismos]',
                         'valor'=>['tenho','nao tenho'],
                         'slug'=>'perda-de-visao-miopia-hipermetropia-astigmatismos'
                         ])
@@ -28,7 +28,7 @@
             <div class="pergunta">
                 <p>Perda de audição, otite, zumbido, rebaixamento auditivo? </p>
                 @component('components.forms.radio',[
-                        'name' => 'antecedente_pessoais[perda-de-audicao-otite-zumbido-rebaixamento-auditivo]',
+                        'name' => 'question[antecedente_pessoais][perda-de-audicao-otite-zumbido-rebaixamento-auditivo]',
                         'valor'=>['tenho','nao tenho'],
                         'slug'=>'perda-de-audicao-otite-zumbido-rebaixamento-auditivo'
                         ])
@@ -38,7 +38,7 @@
             <div class="pergunta">
                 <p>Resfriados, bronquite, asma, sinusite, rinite?</p>
                 @component('components.forms.radio',[
-                        'name' => 'antecedente_pessoais[resfriados-bronquite-asma-sinusite-rinite]',
+                        'name' => 'question[antecedente_pessoais][resfriados-bronquite-asma-sinusite-rinite]',
                         'valor'=>['tenho','nao tenho'],
                         'slug'=>'resfriados-bronquite-asma-sinusite-rinite'
                         ])
@@ -48,7 +48,7 @@
             <div class="pergunta">
                 <p>Dores nos ombros e punhos? </p>
                 @component('components.forms.radio',[
-                        'name' => 'antecedente_pessoais[dores-nos-ombros-e-punhos]',
+                        'name' => 'question[antecedente_pessoais][dores-nos-ombros-e-punhos]',
                         'valor'=>['tenho','nao tenho'],
                         'slug'=>'dores-nos-ombros-e-punhos'
                         ])
@@ -58,7 +58,7 @@
             <div class="pergunta">
                 <p>Doenças de coração, infartos, pressão alta? </p>
                 @component('components.forms.radio',[
-                        'name' => 'antecedente_pessoais[doencas-de-coracao-infartos-pressao-alta]',
+                        'name' => 'question[antecedente_pessoais][doencas-de-coracao-infartos-pressao-alta]',
                         'valor'=>['tenho','nao tenho'],
                         'slug'=>'doencas-de-coracao-infartos-pressao-alta'
                         ])
@@ -68,7 +68,7 @@
             <div class="pergunta">
                 <p>Dores nas costas, coluna, hérnia de disco? </p>
                 @component('components.forms.radio',[
-                        'name' => 'antecedente_pessoais[dores-nas-costas-coluna-hernia-de-disco]',
+                        'name' => 'question[antecedente_pessoais][dores-nas-costas-coluna-hernia-de-disco]',
                         'valor'=>['tenho','nao tenho'],
                         'slug'=>'dores-nas-costas-coluna-hernia-de-disco'
                         ])
@@ -78,7 +78,7 @@
             <div class="pergunta">
                 <p>Sofreu alguma fratura óssea? </p>
                 @component('components.forms.radio',[
-                        'name' => 'antecedente_pessoais[sofreu-alguma-fratura-ossea]',
+                        'name' => 'question[antecedente_pessoais][sofreu-alguma-fratura-ossea]',
                         'valor'=>['tenho','nao tenho'],
                         'slug'=>'sofreu-alguma-fratura-ossea'
                         ])
@@ -88,7 +88,7 @@
             <div class="pergunta">
                 <p>Doenças do estomago, úlcera, gastrite? </p>
                 @component('components.forms.radio',[
-                        'name' => 'antecedente_pessoais[doencas-do-estomago-ulcera-gastrite]',
+                        'name' => 'question[antecedente_pessoais][doencas-do-estomago-ulcera-gastrite]',
                         'valor'=>['tenho','nao tenho'],
                         'slug'=>'doencas-do-estomago-ulcera-gastrite'
                         ])
@@ -98,7 +98,7 @@
             <div class="pergunta">
                 <p>Doenças do fígado, hepatite, cirrose? </p>
                 @component('components.forms.radio',[
-                        'name' => 'antecedente_pessoais[doencas-do-figado-hepatite-cirrose]',
+                        'name' => 'question[antecedente_pessoais][doencas-do-figado-hepatite-cirrose]',
                         'valor'=>['tenho','nao tenho'],
                         'slug'=>'doencas-do-figado-hepatite-cirrose'
                         ])
@@ -108,7 +108,7 @@
             <div class="pergunta">
                 <p>Doenças dos rins, nefrite, infecção urinária? </p>
                 @component('components.forms.radio',[
-                        'name' => 'antecedente_pessoais[doencas-dos-rins-nefrite-infeccao-urinaria]',
+                        'name' => 'question[antecedente_pessoais][doencas-dos-rins-nefrite-infeccao-urinaria]',
                         'valor'=>['tenho','nao tenho'],
                         'slug'=>'doencas-dos-rins-nefrite-infeccao-urinaria'
                         ])
@@ -118,7 +118,7 @@
             <div class="pergunta">
                 <p>Doenças de pele, urticárias eczemas? </p>
                 @component('components.forms.radio',[
-                        'name' => 'antecedente_pessoais[doencas-de-pele-urticarias-eczemas]',
+                        'name' => 'question[antecedente_pessoais][doencas-de-pele-urticarias-eczemas]',
                         'valor'=>['tenho','nao tenho'],
                         'slug'=>'doencas-de-pele-urticarias-eczemas'
                         ])
@@ -128,7 +128,7 @@
             <div class="pergunta">
                 <p>Reumatismos, dores nas juntas? </p>
                 @component('components.forms.radio',[
-                        'name' => 'antecedente_pessoais[reumatismos-dores-nas-juntas]',
+                        'name' => 'question[antecedente_pessoais][reumatismos-dores-nas-juntas]',
                         'valor'=>['tenho','nao tenho'],
                         'slug'=>'reumatismos-dores-nas-juntas'
                         ])
@@ -138,9 +138,9 @@
             <div class="pergunta">
                 <p>Diabetes? </p>
                 @component('components.forms.radio',[
-                        'name' => 'antecedente_pessoais[diabetes]',
+                        'name' => 'question[antecedente_pessoais][diabetes-antecedente_pessoais]',
                         'valor'=>['tenho','nao tenho'],
-                        'slug'=>'diabetes'
+                        'slug'=>'diabetes-antecedente_pessoais'
                         ])
                 @endcomponent
             </div>
@@ -148,7 +148,7 @@
             <div class="pergunta">
                 <p>Doenças psiquiátricas? </p>
                 @component('components.forms.radio',[
-                        'name' => 'antecedente_pessoais[doencas-psiquiatricas]',
+                        'name' => 'question[antecedente_pessoais][doencas-psiquiatricas]',
                         'valor'=>['tenho','nao tenho'],
                         'slug'=>'doencas-psiquiatricas'
                         ])
@@ -158,7 +158,7 @@
             <div class="pergunta">
                 <p>Já esteve internado? </p>
                 @component('components.forms.radio',[
-                        'name' => 'antecedente_pessoais[ja-esteve-internado]',
+                        'name' => 'question[antecedente_pessoais][ja-esteve-internado]',
                         'valor'=>['tenho','nao tenho'],
                         'slug'=>'ja-esteve-internado'
                         ])
@@ -168,7 +168,7 @@
             <div class="pergunta">
                 <p>Submetido à cirurgia? </p>
                 @component('components.forms.radio',[
-                        'name' => 'antecedente_pessoais[submetido-a-cirurgia]',
+                        'name' => 'question[antecedente_pessoais][submetido-a-cirurgia]',
                         'valor'=>['tenho','nao tenho'],
                         'slug'=>'submetido-a-cirurgia'
                         ])
@@ -178,7 +178,7 @@
             <div class="pergunta">
                 <p>Doenças vasculares, varizes/hemorroidas? </p>
                 @component('components.forms.radio',[
-                        'name' => 'antecedente_pessoais[doencas-vasculares-varizeshemorroidas]',
+                        'name' => 'question[antecedente_pessoais][doencas-vasculares-varizeshemorroidas]',
                         'valor'=>['tenho','nao tenho'],
                         'slug'=>'doencas-vasculares-varizeshemorroidas'
                         ])

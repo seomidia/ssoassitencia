@@ -186,6 +186,9 @@ ul.radio li{
         background-color: #21b4d0;
     }
 }
+
+/*personalização bio tipo */
+
 /*Medium devices (tablets, 587px and up)*/
 @media only screen and (min-width: 768px) {
     .section-title{

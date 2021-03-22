@@ -18,7 +18,6 @@
     <link rel="stylesheet" href="{{asset('css/custom-style.css')}}">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
-
 </head>
 
 <body>
@@ -51,12 +50,12 @@
                 </div>
                 <div class="icons">
                     <a href="#" class="icons-btn d-inline-block js-search-open"><span class="icon-search"></span></a>
-                    <a href="/carrinho" class="icons-btn d-inline-block bag">
+                    <a href="/carrinho" class="icons-btn d-inline-block bag" style="margin-right: 20px">
                         <span class="icon-shopping-bag"></span>
                         <span class="number">{{\App\Cart::ChecCartFront()}}</span>
                     </a>
                     @if(Auth::check())
-                        <form name="logout" action="admin/logout" type="post">
+                        <form name="logout" action="http://dev.sso.com/logout" method="post" style="float: right;">
                             @csrf
                             <button type="submit" style="color: #8b0000" class="icons-btn d-inline-block"><i class="fas fa-power-off"></i></button>
                         </form>

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Anamnesi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use App\Company;
 use DB;
@@ -54,7 +56,8 @@ class AnamineseController extends Controller
         return DB::table('anamnesis')->insertGetId([
             'user_id_logged' => Auth::user()->id,
             'requester' => Auth::user()->id,
-            'step' => 'step_rh'
+            'step' => 'step_rh',
+            'created_at' => date('Y-m-d H:i:s')
         ]);
 
     }
@@ -185,20 +188,89 @@ class AnamineseController extends Controller
             ->where('a.id',$id)
             ->get();
 
-        $questoes = DB::table('anaminese_sessions as AS')
-            ->leftjoin('anaminese_questions as AQ','AS.id','=','AQ.anaminese_sessions_id')
-            ->select('AS.name','AQ.id','AQ.description','AQ.parent','AQ.type_response')
+        return view('anaminese.funcionario.update',['anamnese_id' => $id, 'user_id' => Auth::user()->id, 'dados'=> $dados]);
+
+    }
+
+    public function questionStore(Request $request){
+        $data = $request->question;
+        $user = $request->input('user_id_employee');
+        $anamnese_id = $request->input('anamnesis_id');
+        $anamnese = Anamnesi::add_meta_question(['user_id_employee'=> $user,'anamnesis_id'=>$anamnese_id],$data);
+        if($anamnese['success']){
+           DB::table('anamnesis')
+                ->where('id',$anamnese_id)
+                ->update([
+                    'step' => 'step_med',
+                    'realization_date' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
+                ]);
+            return response()->json([
+                'success'=> true,
+                'message'=> 'Anamnese encaminhada para medico!'
+            ],200);
+        }
+    }
+
+    public function Busca(){
+
+        if(isset($_GET['filter']) && $_GET['filter'] =='nome' ){
+            $filter = 'user_id_employee';
+            $result = DB::table('users as u')
+                ->leftjoin('user_data as ud','u.id','=','ud.user_id')
+                ->select(
+                    'u.id',
+                    'u.name',
+                    'ud.cpf',
+                    'ud.nasc'
+                )
+                ->where('name',$_GET['buscar'])
+                ->get();
+            $value  = $result;
+        }elseif(isset($_GET['filter']) && $_GET['filter'] =='cpf'){
+            $filter = 'user_id_employee';
+            $result = DB::table('users as u')
+                ->leftjoin('user_data as ud','u.id','=','ud.user_id')
+                ->select(
+                    'u.id',
+                    'u.name',
+                    'ud.cpf',
+                    'ud.nasc'
+                )
+                ->where('cpf',$_GET['buscar'])
+                ->get();
+            $value  = $result;
+        }elseif(isset($_GET['filter']) && $_GET['filter'] =='cnpj'){
+            $filter = 'companies_id';
+            $result = DB::table('companies')->select('id')->where('cnpj',$_GET['buscar'])->get();
+            $value  = $result;
+        }
+
+        return view('vendor/voyager/index',['paciente' => $value,'filtro' => $filter]);
+    }
+
+    static function get_anamnese($filtro,$id){
+        return DB::table('anamnesis as a')
+            ->leftjoin('companies as c','a.companies_id','=','c.id')
+            ->select(
+                'a.*',
+                'c.nome',
+                'c.cnpj'
+            )
+            ->where($filtro,$id)->get();
+    }
+
+    static function questions($user_id,$anamnese_id){
+        $input = DB::table('meta_resposes')
+            ->where('user_id_employee',$user_id)
+            ->where('anamnesis_id',$anamnese_id)
             ->get();
 
-        $result  = collect($questoes)
-            ->groupBy('name')
+        return collect($input)
+            ->groupBy('section')
             ->map(function ($item) {
                 return array_merge($item->toArray());
             });
-
-
-        return view('anaminese.funcionario.update',['anamnese_id' => $id, 'dados'=> $dados, 'questoes' => $result]);
-
     }
 }
 

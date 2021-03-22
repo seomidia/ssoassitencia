@@ -21,7 +21,7 @@ class PeopleController extends Controller
             'password'       => bcrypt($cpf)
         ];
 
-        $user_id = \App\User::User_register($data,'paciente');
+        $user_id = \App\User::User_register($data);
 
         if($user_id['success']){
 

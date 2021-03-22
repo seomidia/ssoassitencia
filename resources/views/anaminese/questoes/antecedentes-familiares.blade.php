@@ -7,8 +7,7 @@
             <div class="pergunta">
                 <p>Doenças do coração, infartos, pressão alta? </p>
                 @component('components.forms.radio',[
-                    'tipo'=>['checked','checked-off'],
-                    'name' => 'antecedentes_familiares[doencas-do-coracao-infartos-pressao-alta]',
+                    'name' => 'question[antecedentes_familiares][doencas-do-coracao-infartos-pressao-alta]',
                     'valor'=>['sim','nao'],
                     'slug' => 'doencas-do-coracao-infartos-pressao-alta'
                     ])
@@ -18,8 +17,7 @@
             <div class="pergunta">
                 <p>Derrame/AVC?</p>
                     @component('components.forms.radio',[
-                        'tipo'=>['checked','checked-off'],
-                        'name' => 'antecedentes_familiares[derrame-avc]',
+                        'name' => 'question[antecedentes_familiares][derrame-avc]',
                         'valor'=>['sim','nao'],
                         'slug'=>'derrame-avc'
                         ])
@@ -29,7 +27,7 @@
             <div class="pergunta">
                 <p>Câncer/Tumor?</p>
                 @component('components.forms.radio',[
-                    'name' => 'antecedentes_familiares[cancer-tumor]',
+                    'name' => 'question[antecedentes_familiares][cancer-tumor]',
                     'valor'=>['sim','nao'],
                     'slug'=>'cancer-tumor'
                     ])
@@ -39,7 +37,7 @@
             <div class="pergunta">
                 <p>Diabetes? </p>
                 @component('components.forms.radio',[
-                    'name' => 'antecedentes_familiares[diabetes]',
+                    'name' => 'question[antecedentes_familiares][diabetes]',
                     'valor'=>['sim','nao'],
                     'slug'=>'diabetes'
                     ])
@@ -49,7 +47,7 @@
             <div class="pergunta">
                 <p>Colesterol alterado?</p>
                 @component('components.forms.radio',[
-                    'name' => 'antecedentes_familiares[colesterol-alterado]',
+                    'name' => 'question[antecedentes_familiares][colesterol-alterado]',
                     'valor'=>['sim','nao'],
                     'slug'=>'colesterol-alterado'
                     ])
@@ -59,7 +57,7 @@
             <div class="pergunta">
                 <p>Doenças psiquiátricas? </p>
                 @component('components.forms.radio',[
-                    'name' => 'antecedentes_familiares[doenças-psiquiatricas]',
+                    'name' => 'question[antecedentes_familiares][doenças-psiquiatricas]',
                     'valor'=>['sim','nao'],
                     'slug'=>'doenças-psiquiatricas'
                     ])

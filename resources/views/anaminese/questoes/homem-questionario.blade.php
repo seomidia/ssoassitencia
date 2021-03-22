@@ -7,7 +7,7 @@
             <div class="pergunta">
                 <p>Tem filhos? </p>
                 @component('components.forms.radio',[
-                        'name' => 'homem_questionario[tem-filhos][]',
+                        'name' => 'question[homem_questionario][tem-filhos][]',
                         'valor'=>['sim','nao'],
                         'slug'=>'tem-filhos'
                         ])
@@ -15,7 +15,7 @@
                 <div style="clear: both"></div>
                 <div class="reply" id="reply-tem-filhos">
                     <div class="form-check form-check-inline">
-                        <input type="number" class="form-check-input" placeholder="Quantos?"  name="homem_questionario['tem-filhos'][]">
+                        <input type="number" class="form-check-input" placeholder="Quantos?"  name="question[homem_questionario][tem-filhos][]">
                     </div>
                 </div>
             </div>
@@ -23,7 +23,7 @@
             <div class="pergunta">
                 <p>É vasectomizado?</p>
                 @component('components.forms.radio',[
-                        'name' => 'homem_questionario[vasectomizado]',
+                        'name' => 'question[homem_questionario][vasectomizado]',
                         'valor'=>['sim','nao'],
                         'slug'=>'vasectomizado'
                         ])
@@ -33,7 +33,7 @@
             <div class="pergunta">
                 <p>Passa por consulta urologica?</p>
                 @component('components.forms.radio',[
-                        'name' => 'homem_questionario[passa-por-consulta-urologica]',
+                        'name' => 'question[homem_questionario][passa-por-consulta-urologica]',
                         'valor'=>['sim','nao'],
                         'slug'=>'passa-por-consulta-urologica'
                         ])
@@ -43,7 +43,7 @@
             <div class="pergunta">
                 <p>Já fez exame de prostata? </p>
                 @component('components.forms.radio',[
-                        'name' => 'homem_questionario[ja-fez-exame-de-prostata]',
+                        'name' => 'question[homem_questionario][ja-fez-exame-de-prostata]',
                         'valor'=>['sim','nao'],
                         'slug'=>'ja-fez-exame-de-prostata'
                         ])
@@ -53,7 +53,7 @@
             <div class="pergunta">
                 <p>Câncer de próstata (pai, irmãos)</p>
                 @component('components.forms.radio',[
-                        'name' => 'homem_questionario[cancer-de-prostata]',
+                        'name' => 'question[homem_questionario][cancer-de-prostata]',
                         'valor'=>['sim','nao'],
                         'slug'=>'cancer-de-prostata'
                         ])
