@@ -8,6 +8,8 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use TCG\Voyager\Models\Role;
 use DB;
+use App\Notifications\invitePatient;
+
 class User extends \TCG\Voyager\Models\User
 {
     use Notifiable;
@@ -48,13 +50,20 @@ class User extends \TCG\Voyager\Models\User
                 $user = \TCG\Voyager\Models\User::create([
                     'name'           => $data['nome'],
                     'email'          => $data['email'],
-                    'password'       => bcrypt($data['password']),
+                    'password'       => $data['password'],
                     'remember_token' => Str::random(60),
                     'role_id'        => 4,
                 ]);
 //                role adcional -------------------------
             DB::table('user_roles')->insert(['user_id'=>$user->id,'role_id'=> $role->id]);
             if(isset($user->id)){
+
+                if($role_name == 'paciente'){
+                     //notification -------------------------
+
+                    $user->notify(new \App\Notifications\invitePatient());
+                }
+
                 return [
                     'success'=> true,
                     'data' => [

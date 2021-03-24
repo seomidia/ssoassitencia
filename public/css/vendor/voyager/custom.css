@@ -155,6 +155,14 @@ ul.radio li{
     background-image: url(../../../images/thumbs-down.jpeg);
 }
 
+.checked-nome label {
+    background-image: url(../../../images/nome-icon.png);
+}
+
+.checked-cpf label {
+    background-image: url(../../../images/cpf-icon.png);
+}
+
 
 .payment-methods input:focus + label {
     outline: 2px dotted #21b4d0;

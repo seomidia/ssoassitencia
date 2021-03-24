@@ -23,4 +23,5 @@ class AnamineseQuestion extends Model
 
 
 
+
 }

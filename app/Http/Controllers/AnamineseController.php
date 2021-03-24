@@ -7,11 +7,27 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use App\Company;
+use Illuminate\Notifications\Notifiable;
 use DB;
 
 class AnamineseController extends Controller
 {
+    use Notifiable;
 
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    //  feedback medico ----------------------------------------------
+    public function feedbackMedico(Request $request){
+
+        $user        = $request->input('employee');
+        $anamnese_id = $request->input('anamnese');
+
+        $anamnese = Anamnesi::add_meta_question(['user_id_employee'=> $user,'anamnesis_id'=>$anamnese_id],$request->all(),false);
+
+    }
     // RH ------------------------------------------------------------
     public function index(){
         $listagem = DB::table('anamnesis as a')
@@ -67,19 +83,24 @@ class AnamineseController extends Controller
 
         if($companie_id['success']){
 
+            $func = $request->input('user_funcionario');
+
+            $data = [
+                'user_id_employee' => $func,
+                'user_id_logged' => $request->input('user_logged'),
+                'companies_id' => $companie_id['companie_id'],
+                'office_id' => $request->input('cargo'),
+                'ambiente_trabalho' => $request->input('ambiente_Trabalho'),
+                'step' => 'step_funci'
+            ];
+
+
             $updade = DB::table('anamnesis')
                 ->where('id',$id)
-                ->update([
-                    'user_id_employee' => $request->input('user_funcionario'),
-                    'user_id_logged' => $request->input('user_logged'),
-                    'companies_id' => $companie_id['companie_id'],
-                    'office_id' => $request->input('cargo'),
-                    'ambiente_trabalho' => $request->input('ambiente_Trabalho'),
-                    'step' => 'step_funci'
-                ]);
+                ->update($data);
 
-
-            if($updade){
+            if($updade == 1){
+                Anamnesi::notification($func);
                 return response()->json([
                     'success'=> true,
                     'message'=> 'Primeira etapa foi concluida e encaminhada para o funcionario!'
@@ -240,10 +261,6 @@ class AnamineseController extends Controller
                 ->where('cpf',$_GET['buscar'])
                 ->get();
             $value  = $result;
-        }elseif(isset($_GET['filter']) && $_GET['filter'] =='cnpj'){
-            $filter = 'companies_id';
-            $result = DB::table('companies')->select('id')->where('cnpj',$_GET['buscar'])->get();
-            $value  = $result;
         }
 
         return view('vendor/voyager/index',['paciente' => $value,'filtro' => $filter]);
@@ -272,5 +289,38 @@ class AnamineseController extends Controller
                 return array_merge($item->toArray());
             });
     }
+
+    public function atestado($id){
+
+        $anaminese = DB::table('anamnesis as a')
+            ->join('companies as c','a.companies_id','=','c.id')
+            ->join('users as u','a.user_id_employee','=','u.id')
+            ->join('user_data as ud','ud.user_id','=','u.id')
+            ->join('office as o','a.office_id','=','o.id')
+            ->select(
+                'a.apt',
+                'a.user_id_examining_doctor',
+                'c.nome_fantasia',
+                'c.cnpj',
+                'c.endereco',
+                'u.id as user_id',
+                'u.name as user_name',
+                'u.email as user_email',
+                'ud.cpf as user_cpf',
+                'ud.rg as user_rg',
+                'ud.nasc as user_nasc',
+                'ud.idade as user_idade',
+                'ud.sexo as user_sexo',
+                'ud.estado_civil as user_estado_civil',
+                'o.name as cargo',
+                'o.workplace as ambiente'
+            )
+            ->where('a.id',$id)
+            ->get();
+
+//        dd($anaminese);
+        return view('atestado.atestado',['atestado' => $anaminese]);
+    }
+
 }
 

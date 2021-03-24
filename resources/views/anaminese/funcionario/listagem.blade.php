@@ -88,7 +88,7 @@
                                                 </td  style="text-align: center;vertical-align: middle;">
                                                 <td>
                                                     @if($item->step == 'step_med' && !is_null($item->apt))
-                                                        <a href="#"  class="btn btn-sm @if($item->apt == 1) btn-success @endif @if($item->apt == 0) btn-danger @endif pull-center btn2">Atestado</a>
+                                                        <a href="/admin/anaminese/atestado/{{$item->id}}" style="padding: 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="btn btn-sm @if($item->apt == 1) btn-success @endif @if($item->apt == 0) btn-danger @endif pull-center btn2">Atestado</a>
                                                     @else
                                                         <a href="/admin/anaminese/questionario/{{$item->id}}"  class="btn btn-sm btn-primary pull-center btn2" ><i class="voyager-edit"></i>Questões</a>
                                                         <a href="{{$item->id}}" class="btn btn-sm btn-primary pull-center btn2 devolver"><i class="voyager-move"></i>Devolver</a>
