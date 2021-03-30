@@ -22,10 +22,101 @@ class AnamineseController extends Controller
     //  feedback medico ----------------------------------------------
     public function feedbackMedico(Request $request){
 
+
         $user        = $request->input('employee');
         $anamnese_id = $request->input('anamnese');
 
-        $anamnese = Anamnesi::add_meta_question(['user_id_employee'=> $user,'anamnesis_id'=>$anamnese_id],$request->all(),false);
+        if(!isset($request->medico['aparelho-auditivo-e-visual'])){
+            return response()->json([
+                'success' => false,
+                'message' => 'Informar Aparelho auditivo e visual é necessario!'
+            ],500);
+        }elseif(!isset($request->medico['cabeca-e-pescoco'])){
+            return response()->json([
+                'success' => false,
+                'message' => 'Informar cabeça e pescoço é necessario!'
+            ],500);
+        }elseif(!isset($request->medico['aparelho-cardiorrespiratorio-e-vascular'])){
+            return response()->json([
+                'success' => false,
+                'message' => 'Informar Aparelho Cardiorrespiratório e Vascular é necessario!'
+            ],500);
+        }elseif(!isset($request->medico['aparelho-locomotor'])){
+            return response()->json([
+                'success' => false,
+                'message' => 'Informar Aparelho Locomotor é necessario!'
+            ],500);
+        }elseif(!isset($request->medico['torax-abdomen'])){
+            return response()->json([
+                'success' => false,
+                'message' => 'Informar Tórax/Abdômen é necessario!'
+            ],500);
+        }elseif(!isset($request->medico['coluna-vertebral'])){
+            return response()->json([
+                'success' => false,
+                'message' => 'Informar Coluna Vertebral é necessario!'
+            ],500);
+        }elseif(!isset($request->medico['membros-superiores'])){
+            return response()->json([
+                'success' => false,
+                'message' => 'Informar Membros Superiores é necessario!'
+            ],500);
+        }elseif(!isset($request->medico['membros-inferiores'])){
+            return response()->json([
+                'success' => false,
+                'message' => 'Informar Membros Inferiores é necessario!'
+            ],500);
+        }elseif(!isset($request->medico['pele-e-anexos'])){
+            return response()->json([
+                'success' => false,
+                'message' => 'Informar Pele e Anexos é necessario!'
+            ],500);
+        }elseif(!isset($request->medico['avaliacao-psiquiatrica'])){
+            return response()->json([
+                'success' => false,
+                'message' => 'Informar Avaliação Psiquiátrica é necessario!'
+            ],500);
+        }elseif(!isset($request->medico['termo'])){
+            return response()->json([
+                'success' => false,
+                'message' => 'Informar o termo é necessario!'
+            ],500);
+        }elseif(!isset($request->medico['dataExame'])){
+            return response()->json([
+                'success' => false,
+                'message' => 'Informar a data do exame é necessario!'
+            ],500);
+        }elseif(!isset($request->medico['obs'])){
+            return response()->json([
+                'success' => false,
+                'message' => 'Informar Observações gerais é necessario!'
+            ],500);
+        }elseif(!isset($request->medico['procedure'])){
+            return response()->json([
+                'success' => false,
+                'message' => 'Informe o procedimento diagnostico!'
+            ],500);
+        }elseif(!isset($request->medico['termo'])){
+            return response()->json([
+                'success' => false,
+                'message' => 'Aceite o termo!'
+            ],500);
+        }else{
+            $count = DB::table('meta_resposes')
+                ->where(['anamnesis_id'=>$anamnese_id,'section'=>'medico'])
+                ->count();
+
+            if($count == 0){
+                Anamnesi::add_meta_question(['user_id_employee'=> $user,'anamnesis_id'=>$anamnese_id],$request->all());
+                Anamnesi::add_procedure($anamnese_id,$request->medico['procedure']);
+            }else{
+                Anamnesi::add_meta_question(['user_id_employee'=> $user,'anamnesis_id'=>$anamnese_id],$request->all(),false);
+                Anamnesi::add_procedure($anamnese_id,$request->medico['procedure'],true);
+            }
+
+        }
+
+
 
     }
     // RH ------------------------------------------------------------
@@ -263,7 +354,9 @@ class AnamineseController extends Controller
             $value  = $result;
         }
 
-        return view('vendor/voyager/index',['paciente' => $value,'filtro' => $filter]);
+        $procedures = DB::table('procedures')->get();
+
+        return view('vendor/voyager/index',['paciente' => $value,'filtro' => $filter, 'procedures' => $procedures]);
     }
 
     static function get_anamnese($filtro,$id){
@@ -283,12 +376,14 @@ class AnamineseController extends Controller
             ->where('anamnesis_id',$anamnese_id)
             ->get();
 
+
         return collect($input)
             ->groupBy('section')
             ->map(function ($item) {
                 return array_merge($item->toArray());
             });
     }
+
 
     public function atestado($id){
 
@@ -303,6 +398,11 @@ class AnamineseController extends Controller
                 'c.nome_fantasia',
                 'c.cnpj',
                 'c.endereco',
+                'c.numero',
+                'c.complemento',
+                'c.bairro',
+                'c.cidade',
+                'c.uf',
                 'u.id as user_id',
                 'u.name as user_name',
                 'u.email as user_email',
@@ -313,6 +413,7 @@ class AnamineseController extends Controller
                 'ud.sexo as user_sexo',
                 'ud.estado_civil as user_estado_civil',
                 'o.name as cargo',
+                'o.id as cargo_id',
                 'o.workplace as ambiente'
             )
             ->where('a.id',$id)
@@ -321,6 +422,7 @@ class AnamineseController extends Controller
 //        dd($anaminese);
         return view('atestado.atestado',['atestado' => $anaminese]);
     }
+
 
 }
 

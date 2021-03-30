@@ -61,15 +61,15 @@
                                                     <td>{{$amnesis->cnpj}}</td>
                                                     <td>
                                                         <div  class="
-                                            @if($amnesis->step == 'step_rh')
+                                                        @if($amnesis->step == 'step_rh')
                                                             alert-danger
-@endif
+                                                        @endif
                                                         @if($amnesis->step == 'step_funci')
                                                             alert-success
-@endif
+                                                        @endif
                                                         @if($amnesis->step == 'step_med')
                                                             alert-primary
-@endif
+                                                        @endif
                                                             " style="padding: 3px;font-weight: bold;font-size: 13px;margin-top: 6px;">
                                                             @if($amnesis->step == 'step_rh')
                                                                 Não iniciado
@@ -85,10 +85,10 @@
                                                     <td>
                                                         <div  class="
                                         @if(!is_null($amnesis->apt))
-                                                        @if($amnesis->apt == 0)
+                                                        @if(in_array($amnesis->apt,[0,'-1','-2','-3']))
                                                             alert-danger
-@endif
-                                                        @if($amnesis->apt == 1)
+                                                        @endif
+                                                        @if(in_array($amnesis->apt,[1,2,3]))
                                                             alert-success
 @endif
                                                         @else
@@ -96,10 +96,10 @@
 @endif
                                                             " style="padding: 3px;font-weight: bold;font-size: 13px;margin-top: 6px;text-align: center">
                                                             @if(!is_null($amnesis->apt))
-                                                                @if($amnesis->apt == 1)
+                                                                @if(in_array($amnesis->apt,[1,2,3]))
                                                                     Apto
                                                                 @endif
-                                                                @if($amnesis->apt == 0)
+                                                                @if(in_array($amnesis->apt,[0,'-1','-2','-3']))
                                                                     Não Apto
                                                                 @endif
                                                             @else
@@ -108,7 +108,7 @@
                                                         </div>
 
                                                     </td>
-                                                    <td>23/11/1987</td>
+                                                    <td>{{date('d/m/Y', strtotime($amnesis->created_at))}}</td>
                                                     <td><a id="detalhe" href="{{$amnesis->id}}" style="text-decoration: none;"><div class="voyager-search"></div> </a> </td>
                                                 </tr>
                                                 <tr>
@@ -149,18 +149,20 @@
                                                                             <td colspan="4">&nbsp;</td>
                                                                         </tr>
                                                                         @foreach(App\Http\Controllers\AnamineseController::questions($item->id,$amnesis->id) as $key3 => $section)
+                                                                            @if($key3 != 'medico')
                                                                             <tr style="background: #22a7f0;color: #fff;">
                                                                                 <th colspan="4" style="text-align: center">{{ucfirst(str_replace('_',' ',$key3))}}</th>
                                                                             </tr>
                                                                             @foreach($section as $key4 => $perguntas)
                                                                                 <tr>
                                                                                     <td>{{ucfirst(str_replace('-',' ',$perguntas->question))}}</td>
-                                                                                    <td>{{$perguntas->response}}</td>
+                                                                                    <td>{{ucfirst(str_replace('-',' ',$perguntas->response))}}</td>
                                                                                     <td>{{$perguntas->response2}}</td>
                                                                                     <td>{{$perguntas->response3}}</td>
                                                                                 </tr>
 
                                                                             @endforeach
+                                                                            @endif
                                                                         @endforeach
 
                                                                         <tr style="background: #ddd;color: #333;">
@@ -171,107 +173,144 @@
                                                                         </tr>
                                                                         <form name="form-medico" action="{{Route('feedback.medico')}}" method="post">
                                                                             <tr>
-                                                                                <td>Aparelho Auditivo e Visual</td>
+                                                                                <td>Aparelho Auditivo e Visual </td>
+                                                                                @php
+                                                                                  $aav = \App\Anamnesi::get_meta_question($amnesis->id,'aparelho-auditivo-e-visual');
+                                                                                @endphp
                                                                                 <td colspan="3">
-                                                                                    <input name="medico[aparelho-auditivo-e-visual]" id="checked-nada-digno-de-nota" type="radio"  value="nada-digno-de-nota">
+                                                                                    <input @if($aav == 'nada-digno-de-nota') checked @endif name="medico[aparelho-auditivo-e-visual]" id="checked-nada-digno-de-nota" type="radio"  value="nada-digno-de-nota">
                                                                                     <label for="checked-nada-digno-de-nota">Nada digno de nota</label>
-                                                                                    <input name="medico[aparelho-auditivo-e-visual]" type="radio" id="checked-a-declarar" value="a-declarar">
+                                                                                    <input  @if($aav == 'a-declarar') checked @endif  name="medico[aparelho-auditivo-e-visual]" type="radio" id="checked-a-declarar" value="a-declarar">
                                                                                     <label for="checked-a-declarar">A declarar</label>
 
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td>Cabeça e Pescoço</td>
+                                                                                @php
+                                                                                    $cp = \App\Anamnesi::get_meta_question($amnesis->id,'cabeca-e-pescoco');
+                                                                                @endphp
+
                                                                                 <td colspan="3">
-                                                                                    <input name="medico[cabeca-e-pescoco]" id="checked-nada-digno-de-nota" type="radio"  value="nada-digno-de-nota">
+                                                                                    <input @if($cp == 'nada-digno-de-nota') checked @endif name="medico[cabeca-e-pescoco]" id="checked-nada-digno-de-nota" type="radio"  value="nada-digno-de-nota">
                                                                                     <label for="checked-nada-digno-de-nota">Nada digno de nota</label>
-                                                                                    <input name="medico[cabeca-e-pescoco]" type="radio" id="checked-a-declarar" value="a-declarar">
+                                                                                    <input @if($cp == 'a-declarar') checked @endif name="medico[cabeca-e-pescoco]" type="radio" id="checked-a-declarar" value="a-declarar">
                                                                                     <label for="checked-a-declarar">A declarar</label>
 
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td>Aparelho Cardiorrespiratório e Vascular</td>
+                                                                                @php
+                                                                                    $acv = \App\Anamnesi::get_meta_question($amnesis->id,'aparelho-cardiorrespiratorio-e-vascular');
+                                                                                @endphp
+
                                                                                 <td colspan="3">
-                                                                                    <input name="medico[aparelho-cardiorrespiratorio-e-vascular]" id="checked-nada-digno-de-nota" type="radio"  value="nada-digno-de-nota">
+                                                                                    <input @if($acv == 'nada-digno-de-nota') checked @endif name="medico[aparelho-cardiorrespiratorio-e-vascular]" id="checked-nada-digno-de-nota" type="radio"  value="nada-digno-de-nota">
                                                                                     <label for="checked-nada-digno-de-nota">Nada digno de nota</label>
-                                                                                    <input name="medico[aparelho-cardiorrespiratorio-e-vascular]" type="radio" id="checked-a-declarar" value="a-declarar">
+                                                                                    <input @if($acv == 'a-declarar') checked @endif name="medico[aparelho-cardiorrespiratorio-e-vascular]" type="radio" id="checked-a-declarar" value="a-declarar">
                                                                                     <label for="checked-a-declarar">A declarar</label>
 
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td>Aparelho Locomotor</td>
+                                                                                @php
+                                                                                    $al = \App\Anamnesi::get_meta_question($amnesis->id,'aparelho-locomotor');
+                                                                                @endphp
                                                                                 <td colspan="3">
-                                                                                    <input name="medico[aparelho-locomotor]" id="checked-nada-digno-de-nota" type="radio"  value="nada-digno-de-nota">
+                                                                                    <input @if($al == 'nada-digno-de-nota') checked @endif name="medico[aparelho-locomotor]" id="checked-nada-digno-de-nota" type="radio"  value="nada-digno-de-nota">
                                                                                     <label for="checked-nada-digno-de-nota">Nada digno de nota</label>
-                                                                                    <input name="medico[aparelho-locomotor]" type="radio" id="checked-a-declarar" value="a-declarar">
+                                                                                    <input @if($al == 'a-declarar') checked @endif name="medico[aparelho-locomotor]" type="radio" id="checked-a-declarar" value="a-declarar">
                                                                                     <label for="checked-a-declarar">A declarar</label>
 
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td>Tórax/Abdômen</td>
+                                                                                @php
+                                                                                    $ta = \App\Anamnesi::get_meta_question($amnesis->id,'torax-abdomen');
+                                                                                @endphp
+
                                                                                 <td colspan="3">
-                                                                                    <input name="medico[torax-abdomen]" id="checked-nada-digno-de-nota" type="radio"  value="nada-digno-de-nota">
+                                                                                    <input @if($ta == 'nada-digno-de-nota') checked @endif  name="medico[torax-abdomen]" id="checked-nada-digno-de-nota" type="radio"  value="nada-digno-de-nota">
                                                                                     <label for="checked-nada-digno-de-nota">Nada digno de nota</label>
-                                                                                    <input name="medico[torax-abdomen]" type="radio" id="checked-a-declarar" value="a-declarar">
+                                                                                    <input @if($ta == 'a-declarar') checked @endif name="medico[torax-abdomen]" type="radio" id="checked-a-declarar" value="a-declarar">
                                                                                     <label for="checked-a-declarar">A declarar</label>
 
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td>Coluna Vertebral</td>
+                                                                                @php
+                                                                                    $cv = \App\Anamnesi::get_meta_question($amnesis->id,'coluna-vertebral');
+                                                                                @endphp
                                                                                 <td colspan="3">
-                                                                                    <input name="medico[coluna-vertebral]" id="checked-nada-digno-de-nota" type="radio"  value="nada-digno-de-nota">
+                                                                                    <input @if($cv == 'nada-digno-de-nota') checked @endif name="medico[coluna-vertebral]" id="checked-nada-digno-de-nota" type="radio"  value="nada-digno-de-nota">
                                                                                     <label for="checked-nada-digno-de-nota">Nada digno de nota</label>
-                                                                                    <input name="medico[coluna-vertebral]" type="radio" id="checked-a-declarar" value="a-declarar">
+                                                                                    <input @if($cv == 'a-declarar') checked @endif name="medico[coluna-vertebral]" type="radio" id="checked-a-declarar" value="a-declarar">
                                                                                     <label for="checked-a-declarar">A declarar</label>
 
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td>Membros Superiores</td>
+                                                                                @php
+                                                                                    $ms = \App\Anamnesi::get_meta_question($amnesis->id,'membros-superiores');
+                                                                                @endphp
                                                                                 <td colspan="3">
-                                                                                    <input name="medico[membros-superiores]" id="checked-nada-digno-de-nota" type="radio"  value="nada-digno-de-nota">
+                                                                                    <input @if($ms == 'nada-digno-de-nota') checked @endif name="medico[membros-superiores]" id="checked-nada-digno-de-nota" type="radio"  value="nada-digno-de-nota">
                                                                                     <label for="checked-nada-digno-de-nota">Nada digno de nota</label>
-                                                                                    <input name="medico[membros-superiores]" type="radio" id="checked-a-declarar" value="a-declarar">
+                                                                                    <input  @if($ms == 'a-declarar') checked @endif name="medico[membros-superiores]" type="radio" id="checked-a-declarar" value="a-declarar">
                                                                                     <label for="checked-a-declarar">A declarar</label>
 
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td>Membros Inferiores</td>
+                                                                                @php
+                                                                                    $mi = \App\Anamnesi::get_meta_question($amnesis->id,'membros-inferiores');
+                                                                                @endphp
                                                                                 <td colspan="3">
-                                                                                    <input name="medico[membros-inferiores]" id="checked-nada-digno-de-nota" type="radio"  value="nada-digno-de-nota">
+                                                                                    <input @if($mi == 'nada-digno-de-nota') checked @endif name="medico[membros-inferiores]" id="checked-nada-digno-de-nota" type="radio"  value="nada-digno-de-nota">
                                                                                     <label for="checked-nada-digno-de-nota">Nada digno de nota</label>
-                                                                                    <input name="medico[membros-inferiores]" type="radio" id="checked-a-declarar" value="a-declarar">
+                                                                                    <input @if($mi == 'a-declarar') checked @endif name="medico[membros-inferiores]" type="radio" id="checked-a-declarar" value="a-declarar">
                                                                                     <label for="checked-a-declarar">A declarar</label>
 
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td>Pele e Anexos</td>
+                                                                                @php
+                                                                                    $pa = \App\Anamnesi::get_meta_question($amnesis->id,'pele-e-anexos');
+                                                                                @endphp
                                                                                 <td colspan="3">
-                                                                                    <input name="medico[pele-e-anexos]" id="checked-nada-digno-de-nota" type="radio"  value="nada-digno-de-nota">
+                                                                                    <input @if($pa == 'nada-digno-de-nota') checked @endif name="medico[pele-e-anexos]" id="checked-nada-digno-de-nota" type="radio"  value="nada-digno-de-nota">
                                                                                     <label for="checked-nada-digno-de-nota">Nada digno de nota</label>
-                                                                                    <input name="medico[pele-e-anexos]" type="radio" id="checked-a-declarar" value="a-declarar">
+                                                                                    <input @if($pa == 'a-declarar') checked @endif name="medico[pele-e-anexos]" type="radio" id="checked-a-declarar" value="a-declarar">
                                                                                     <label for="checked-a-declarar">A declarar</label>
 
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td>Avaliação Psiquiátrica</td>
+                                                                                @php
+                                                                                    $ap = \App\Anamnesi::get_meta_question($amnesis->id,'avaliacao-psiquiatrica');
+                                                                                @endphp
                                                                                 <td colspan="3">
-                                                                                    <input name="medico[avaliacao-psiquiatrica]" id="checked-nada-digno-de-nota" type="radio"  value="nada-digno-de-nota">
+                                                                                    <input @if($ap == 'nada-digno-de-nota') checked @endif name="medico[avaliacao-psiquiatrica]" id="checked-nada-digno-de-nota" type="radio"  value="nada-digno-de-nota">
                                                                                     <label for="checked-nada-digno-de-nota">Nada digno de nota</label>
-                                                                                    <input name="medico[avaliacao-psiquiatrica]" type="radio" id="checked-a-declarar" value="a-declarar">
+                                                                                    <input @if($ap == 'a-declarar') checked @endif name="medico[avaliacao-psiquiatrica]" type="radio" id="checked-a-declarar" value="a-declarar">
                                                                                     <label for="checked-a-declarar">A declarar</label>
 
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
-                                                                                <td><input name="medico[termo]" type="checkbox"  value="sim"></td>
+                                                                                @php
+                                                                                    $termo = \App\Anamnesi::get_meta_question($amnesis->id,'termo');
+                                                                                @endphp
+
+                                                                                <td><input @if($termo == 'sim') checked @endif name="medico[termo]" type="checkbox"  value="sim"></td>
                                                                                 <td colspan="3">
                                                                                     DECLARO QUE AS INFORMAÇÕES PRESTADAS SÃO VERDADEIRA E ESTOU
                                                                                     CIENTE DO PROGRAMA DE CONTROLE MÉDICO DE SAÚDE OCUPACIONAL,
@@ -287,23 +326,51 @@
                                                                             </tr>
                                                                             <tr>
                                                                                 <td>Observações gerais</td>
+                                                                                @php
+                                                                                    $obs = \App\Anamnesi::get_meta_question($amnesis->id,'obs');
+                                                                                @endphp
+
                                                                                 <td colspan="3">
-                                                                                    <textarea name="medico[obs]" class="form-control"></textarea>
+                                                                                    <textarea  name="medico[obs]" class="form-control">{{$obs}}</textarea>
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td>Data do Exame</td>
+                                                                                @php
+                                                                                    $data = \App\Anamnesi::get_meta_question($amnesis->id,'dataExame');
+                                                                                @endphp
+
                                                                                 <td colspan="3">
-                                                                                    <input type="date" name="medico[dataExame]">
+                                                                                    <input  type="date" name="medico[dataExame]" value="{{str_replace('/','-',$data)}}">
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>Procedimentos diagnóstico</td>
+                                                                                <td colspan="3">
+                                                                                    <select class="form-control select2" name="medico[procedure][]" multiple="">
+                                                                                        @foreach($procedures as $key => $procedure)
+                                                                                        <option @if(\App\Anamnesi::count_procedure($amnesis->id,$procedure->id) > 0) selected @endif value="{{$procedure->id}}">{{$procedure->name}}</option>
+                                                                                        @endforeach
+                                                                                    </select>
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td>Status</td>
                                                                                 <td colspan="3">
-                                                                                    <input name="medico[status]" id="checked-apto" type="radio"  value="1">
-                                                                                    <label for="checked-nada-digno-de-nota">Apto</label>
-                                                                                    <input name="medico[status]" type="radio" id="checked-inapto" value="0">
-                                                                                    <label for="checked-a-declarar">Inapto</label>
+                                                                                    @php
+                                                                                        $status = \App\Anamnesi::get_meta_question($amnesis->id,'status');
+                                                                                    @endphp
+
+                                                                                    <select class="form-control select2" name="medico[status]">
+                                                                                            <option @if(is_null($amnesis->apt)) selected @endif value="">Selecione o status</option>
+                                                                                            <option @if($amnesis->apt == 1) selected @endif value="1">Apto sem restrições</option>
+                                                                                            <option @if($amnesis->apt == 2) selected @endif value="2">Apto p/ trabalho em altura</option>
+                                                                                            <option @if($amnesis->apt == 3) selected @endif value="3">Apto p/ trabalho espaço confinado</option>
+                                                                                            <option @if($amnesis->apt == 0) selected @endif value="0">Inapto</option>
+                                                                                            <option @if($amnesis->apt == -1) selected @endif value="-1">Inapto temporariamente</option>
+                                                                                            <option @if($amnesis->apt == -2) selected @endif value="-2">Inapto p/ trabalho em altura</option>
+                                                                                            <option @if($amnesis->apt == -3) selected @endif value="-3">Inapto p/ espaço confinado</option>
+                                                                                    </select>
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
@@ -368,11 +435,13 @@
 
                     var url = $(this).attr('action');
 
+                    var data = $(this).serializeArray();
+
                     $.post(url,$(this).serializeArray(), function (response) {
                         toastr.success('Anamnese atualizada com susesso!');
-                        // setTimeout(function (){
-                        //     window.location.href = '/admin/encaminhamento';
-                        // },2000);
+                        setTimeout(function () {
+                            window.location.href = 'buscar?filter=<?php echo $_GET['filter']?>&buscar=<?php echo $_GET['buscar']?>'
+                        },2000);
                     }).fail(function (jqXHR, textStatus) {
                         toastr.error(jqXHR.responseJSON.message);
                     })
