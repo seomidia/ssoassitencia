@@ -1,3 +1,14 @@
+#voyager-loader img {
+    width: 200px!important;
+    height: 200px!important;
+    top: 200px!important;
+    -webkit-animation:none!important;
+    animation:none!important;
+}
+a.disabled {
+    pointer-events: none;
+    cursor: default;
+}
 .label{
     text-shadow: rgba(0,0,0,.15) 0 0 1px;
     font-size: 10px;

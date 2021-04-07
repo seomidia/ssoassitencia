@@ -41,20 +41,24 @@ class User extends \TCG\Voyager\Models\User
         'email_verified_at' => 'datetime',
     ];
 
+    protected function UserCount($column = 'email',$value){
+        return DB::table('users')->where($column,$value)->count();
+    }
+
     protected  function User_register(array $data, $role_name = 'paciente')
     {
         $role = Role::where('name', $role_name)->firstOrFail();
-
         $total = DB::table('users')->where('email',$data['email'])->count();
+//        $totalcpf = DB::table('user_data')->where('cpf',$data['cpf'])->count();  && $totalcpf == 0
         if($total == 0){
                 $user = \TCG\Voyager\Models\User::create([
                     'name'           => $data['nome'],
                     'email'          => $data['email'],
                     'password'       => $data['password'],
-                    'remember_token' => Str::random(60),
-                    'role_id'        => 4,
+                    'remember_token' => Str::random(60)
                 ]);
 //                role adcional -------------------------
+            DB::table('users')->where(['id'=>$user->id])->update(['role_id'=>4]);
             DB::table('user_roles')->insert(['user_id'=>$user->id,'role_id'=> $role->id]);
             if(isset($user->id)){
 

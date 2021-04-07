@@ -56,7 +56,7 @@
                         <div class="row">
                             <div class="form-group col-md-4">
                                 <label for="message-text" class="col-form-label">CPF:</label>
-                                <input id="cpf" type="text" class="form-control" name="cpf" maxlength="12">
+                                <input id="cpf" type="text" class="form-control" name="cpf" maxlength="14" onkeypress='mascaraMutuario(this,cpfCnpj)'>
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="message-text" class="col-form-label">RG:</label>
@@ -152,7 +152,7 @@
                                         <h3 class="border-left mb-5">Empresa</h3>
                                         <div class="form-group  col-md-4 pessoa_cpf">
                                             <label for="pessoa_cpf">CNPJ</label>
-                                            <input type="text" class="form-control" name="empresa" id="empresa_cnpj" placeholder="CNPJ" value="{{ $item->cnpj ?? '' }}">
+                                            <input type="text" class="form-control"  name="empresa" id="empresa_cnpj" placeholder="CNPJ" value="{{ $item->cnpj ?? '' }}">
                                             <small id="aviso" class="form-text text-muted"></small>
                                         </div>
                                         <div class="form-group col-md-8">
@@ -185,7 +185,7 @@
                                          <h3 class="border-left mb-5">Funcionário</h3>
                                         <div class="form-group  col-md-4 pessoa_cpf">
                                             <label for="pessoa_cpf">CPF</label>
-                                            <input type="text" class="form-control" name="pessoa_cpf" id="pessoa_cpf" placeholder="CPF" value="{{ $item->cpf ?? '' }}">
+                                            <input type="text" maxlength="14" onkeypress='mascaraMutuario(this,cpfCnpj)' onblur='clearTimeout()' class="form-control" name="pessoa_cpf" id="pessoa_cpf" placeholder="CPF" value="{{ $item->cpf ?? '' }}">
                                             <small id="aviso" class="form-text text-muted"></small>
                                         </div>
                                         <div class="col-md-2" style="margin: 0px;margin-top: 21px;">
@@ -227,16 +227,6 @@
                                     <div class="row">
                                         <h3 class="border-left mb-5">Profissional</h3>
                                         <div class="form-group  col-md-3">
-                                            <label for="pessoa_cpf">Ambiente de trabalho</label>
-                                            <select class="form-control select2" name="ambiente_Trabalho">
-                                                <option value="">Selecione</option>
-                                                @if(isset($item->ambiente_trabalho))
-                                                    <option selected value="{{$item->ambiente_trabalho}}">{{$item->ambiente_trabalho}}</option>
-                                                @endif
-                                            </select>
-                                            <small id="aviso" class="form-text text-muted"></small>
-                                        </div>
-                                        <div class="form-group  col-md-3">
                                             <label for="pessoa_cpf">Cargo</label>
                                             <select class="form-control select2" name="cargo">
                                                 <option value="">Selecione</option>
@@ -264,14 +254,65 @@
 
 @section('javascript')
     <script>
-        $(document).ready(function(){
+        function mascaraMutuario(o,f){
+            v_obj=o
+            v_fun=f
+            setTimeout('execmascara()',1)
+        }
 
+        function execmascara(){
+            v_obj.value=v_fun(v_obj.value)
+        }
+
+        function cpfCnpj(v){
+
+            //Remove tudo o que não é dígito
+            v=v.replace(/\D/g,"")
+
+            if (v.length <= 14) { //CPF
+
+                //Coloca um ponto entre o terceiro e o quarto dígitos
+                v=v.replace(/(\d{3})(\d)/,"$1.$2")
+
+                //Coloca um ponto entre o terceiro e o quarto dígitos
+                //de novo (para o segundo bloco de números)
+                v=v.replace(/(\d{3})(\d)/,"$1.$2")
+
+                //Coloca um hífen entre o terceiro e o quarto dígitos
+                v=v.replace(/(\d{3})(\d{1,2})$/,"$1-$2")
+
+            } else { //CNPJ
+
+                //Coloca ponto entre o segundo e o terceiro dígitos
+                v=v.replace(/^(\d{2})(\d)/,"$1.$2")
+
+                //Coloca ponto entre o quinto e o sexto dígitos
+                v=v.replace(/^(\d{2})\.(\d{3})(\d)/,"$1.$2.$3")
+
+                //Coloca uma barra entre o oitavo e o nono dígitos
+                v=v.replace(/\.(\d{3})(\d)/,".$1/$2")
+
+                //Coloca um hífen depois do bloco de quatro dígitos
+                v=v.replace(/(\d{4})(\d)/,"$1-$2")
+
+            }
+
+            return v
+
+        }
+        $(document).ready(function(){
+            document.getElementById('empresa_cnpj').addEventListener('input', function (e) {
+                var x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,3})(\d{0,3})(\d{0,4})(\d{0,2})/);
+                e.target.value = !x[2] ? x[1] : x[1] + '.' + x[2] + '.' + x[3] + '/' + x[4] + (x[5] ? '-' + x[5] : '');
+            });
             $('button#create_pessoa').on('click',function(event){
                 event.preventDefault();
                 $('#create_pessoa').modal('show');
             });
             $('#empresa_cnpj').on('blur', function(){
                 var cnpj = $(this).val();
+                cnpj = cnpj.replace('.','');
+                cnpj = cnpj.replace('/','');
 
                 $('input[name="empresa_nome"]').val('...');
                 $('input[name="empresa_endereco"]').val('...');
@@ -291,7 +332,7 @@
                         }else{
                             console.log(response.data);
 
-                            $('input[name="empresa_nome"]').val(response.data.fantasia);
+                            $('input[name="empresa_nome"]').val(response.data.nome);
                             $('input[name="empresa_endereco"]').val(response.data.logradouro + ' - ' + response.data.bairro );
                             $('input[name="empresa_numero"]').val(response.data.numero);
                             $('input[name="empresa_cidade"]').val(response.data.municipio);
@@ -436,6 +477,66 @@
 
 
         });
+
+        function limpa_formulário_cep() {
+            // Limpa valores do formulário de cep.
+            $("#rua").val("");
+            $("#bairro").val("");
+            $("#cidade").val("");
+            $("#uf").val("");
+            $("#ibge").val("");
+        }
+
+        //Quando o campo cep perde o foco.
+        $('input[name="cep"]').blur(function() {
+
+            //Nova variável "cep" somente com dígitos.
+            var cep = $(this).val().replace(/\D/g, '');
+
+            //Verifica se campo cep possui valor informado.
+            if (cep != "") {
+
+                //Expressão regular para validar o CEP.
+                var validacep = /^[0-9]{8}$/;
+
+                //Valida o formato do CEP.
+                if(validacep.test(cep)) {
+
+                    //Preenche os campos com "..." enquanto consulta webservice.
+                    $("#company_endereco").val("...");
+                    $("#cidade").val("...");
+                    $("#uf").val("...");
+
+                    //Consulta o webservice viacep.com.br/
+                    $.getJSON("https://viacep.com.br/ws/"+ cep +"/json/?callback=?", function(dados) {
+                        console.log(dados);
+
+                        if (!("erro" in dados)) {
+                            //Atualiza os campos com os valores da consulta.
+                            $("#company_endereco").val(dados.logradouro +' - '+ dados.bairro);
+                            $("#company_bairro").val(dados.bairro);
+                            $("#company_cidade").val(dados.localidade);
+                            $("#company_estado").val(dados.uf);
+                        } //end if.
+                        else {
+                            //CEP pesquisado não foi encontrado.
+                            limpa_formulário_cep();
+                            alert("CEP não encontrado.");
+                        }
+                    });
+                } //end if.
+                else {
+                    //cep é inválido.
+                    limpa_formulário_cep();
+                    alert("Formato de CEP inválido.");
+                }
+            } //end if.
+            else {
+                //cep sem valor, limpa formulário.
+                limpa_formulário_cep();
+            }
+        });
+
     </script>
 @stop
 

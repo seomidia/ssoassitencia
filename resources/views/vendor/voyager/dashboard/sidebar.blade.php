@@ -30,7 +30,17 @@
 
         </div>
         <div id="adminmenu">
-                <admin-menu :items="{{ menu('admin', '_json') }}"></admin-menu>
+            @if(Auth::user()->role_id == 3)
+                {!! menu('gerente','partials.menu.rh.menu') !!}
+            @elseif(Auth::user()->role_id == 4)
+                {!! menu('paciente','partials.menu.paciente.menu') !!}
+            @elseif(Auth::user()->role_id == 6)
+                {!! menu('medico','partials.menu.medico.menu') !!}
+                @elseif(Auth::user()->role_id == 8)
+                    {!! menu('assistente','partials.menu.assistente.menu') !!}
+                @else
+                    <admin-menu :items="{{ menu('admin', '_json') }}"></admin-menu>
+                @endif
         </div>
     </nav>
 </div>

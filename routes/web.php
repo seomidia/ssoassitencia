@@ -83,5 +83,13 @@ Route::get('/admin/anaminese/cadastro/{anaminese}', 'AnamineseController@cadastr
 // busca medico --------------------------------
 Route::get('/admin/buscar', 'AnamineseController@busca')->name('voyager.busca');
 Route::post('/admin/feedback-medico', 'AnamineseController@feedbackMedico')->name('feedback.medico');
-
+Route::post('/admin/complementar/{anamnese}', 'AnamineseController@Complementar')->name('complementar.medico');
+Route::get('/admin/complementar', 'AnamineseController@Complementarlist')->name('voyager.complementar');
+Route::post('/admin/complementares/{anamnese}/status', 'AnamineseController@ComplementarStatus');
+Route::get('/admin/assistente', 'UserController@Assistente')->name('voyager.assistente');
+Route::get('/admin/criar-assistente', 'UserController@AssistenteCreate')->name('voyager.criar.assistente');
+Route::get('/admin/assistente/{assistente}/edit', 'UserController@AssistenteEdit')->name('voyager.update.assistente');
+Route::post('/admin/assistente/{assistente}/edit', 'UserController@AssistenteUpdate');
+Route::post('/admin/assistente', 'UserController@AssistenteStore')->name('voyager.store.assistente');
+Route::post('/admin/assistente/{assistente}/delete', 'UserController@AssistenteDelete')->name('voyager.delete.assistente');
 

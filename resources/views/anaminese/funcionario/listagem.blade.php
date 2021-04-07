@@ -15,6 +15,25 @@
 
 @section('content')
 
+
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" style="border: 1px solid #fff;height: 1135px;">
+                <div id="popup-atestado"></div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="print"><i class="fa fa-print" aria-hidden="true"></i>
+                    </button>
+                    </button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times-circle" aria-hidden="true"></i>
+                        Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
     <div class="page-content browse container-fluid">
         <div class="row">
             <div class="col-md-12 col-sm-12">
@@ -63,10 +82,10 @@
                                                 <td  style="text-align: center;vertical-align: middle;">
                                                     <div  class="
                                         @if(!is_null($item->apt))
-                                                    @if($item->apt == 0)
+                                                    @if(in_array($item->apt,[0,'-1','-2','-3']))
                                                         alert-danger
 @endif
-                                                    @if($item->apt == 1)
+                                                    @if(in_array($item->apt,[1,2,3]))
                                                         alert-success
 @endif
                                                     @else
@@ -74,10 +93,10 @@
 @endif
                                                         aviso">
                                                         @if(!is_null($item->apt))
-                                                            @if($item->apt == 1)
+                                                            @if(in_array($item->apt,[1,2,3]))
                                                                 Apto
                                                             @endif
-                                                            @if($item->apt == 0)
+                                                                @if(in_array($item->apt,[0,'-1','-2','-3']))
                                                                 Não Apto
                                                             @endif
                                                         @else
@@ -88,10 +107,10 @@
                                                 </td  style="text-align: center;vertical-align: middle;">
                                                 <td>
                                                     @if($item->step == 'step_med' && !is_null($item->apt))
-                                                        <a href="/admin/anamnese/atestado/{{$item->id}}" style="padding: 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="btn btn-sm @if($item->apt == 1) btn-success @endif @if($item->apt == 0) btn-danger @endif pull-center btn2">Atestado</a>
+                                                        <a data-toggle="modal" data-target=".bd-example-modal-lg" href="/admin/anamnese/atestado/{{$item->id}}" style="padding: 10px 22px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="atestado btn btn-sm @if(in_array($item->apt,[1,2,3])) btn-success @endif @if(in_array($item->apt,[0,'-1','-2','-3'])) btn-danger @endif pull-center btn2">Atestado</a>
                                                     @else
-                                                        <a href="/admin/anaminese/questionario/{{$item->id}}"  class="btn btn-sm btn-primary pull-center btn2" ><i class="voyager-edit"></i>Questões</a>
-                                                        <a href="{{$item->id}}" class="btn btn-sm btn-primary pull-center btn2 devolver"><i class="voyager-move"></i>Devolver</a>
+                                                        <a href="/admin/anaminese/questionario/{{$item->id}}" @if($item->step == 'step_med') disabled @endif  class="btn btn-sm btn-primary pull-center btn2  @if($item->step == 'step_med') disabled @endif" ><i class="voyager-edit"></i>Questões</a>
+                                                        <a href="{{$item->id}}" @if($item->step == 'step_med') disabled @endif class="btn btn-sm btn-primary pull-center btn2  @if($item->step != 'step_med') devolver @else disabled @endif"><i class="voyager-move"></i>Devolver</a>
                                                     @endif
                                                 </td>
                                                 </td>
@@ -235,7 +254,6 @@
             </div>
         </div>
     </div>
-
 @stop
 
 @section('javascript')
@@ -280,6 +298,20 @@
 
                 $('.justificar-' + id).hide();
             });
+            $('.atestado').click(function(){
+                var href = window.location.origin + $(this).attr('href');
+                console.log(href);
+                $('#popup-atestado').html('ola')
+                // $('#popup-atestado').load(href)
+            });
+            document.getElementById('print').onclick = function() {
+                var conteudo = document.getElementById('popup-atestado').innerHTML,
+                    tela_impressao = window.open('about:blank');
+
+                tela_impressao.document.write(conteudo);
+                tela_impressao.window.print();
+                tela_impressao.window.close();
+            };
 
         });
     </script>

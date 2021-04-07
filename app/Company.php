@@ -7,6 +7,9 @@ use DB;
 class Company extends Model
 {
     protected function Cheking($cnpj){
+
+        $cnpj = str_replace(['.','/','-'],['','',''],$cnpj);
+
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
@@ -27,6 +30,7 @@ class Company extends Model
         $response = curl_exec($curl);
         $data_vetor = json_decode($response);
         curl_close($curl);
+
 
 
         $total = DB::table('companies')

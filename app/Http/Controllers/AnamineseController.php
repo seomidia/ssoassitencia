@@ -106,18 +106,27 @@ class AnamineseController extends Controller
                 ->where(['anamnesis_id'=>$anamnese_id,'section'=>'medico'])
                 ->count();
 
+
             if($count == 0){
                 Anamnesi::add_meta_question(['user_id_employee'=> $user,'anamnesis_id'=>$anamnese_id],$request->all());
                 Anamnesi::add_procedure($anamnese_id,$request->medico['procedure']);
+                return response()->json([
+                    'success' => true,
+                    'anamnese_id' => $anamnese_id,
+                    'message' => 'Avaliação cadastrada com sucesso!'
+                ],200);
             }else{
                 Anamnesi::add_meta_question(['user_id_employee'=> $user,'anamnesis_id'=>$anamnese_id],$request->all(),false);
                 Anamnesi::add_procedure($anamnese_id,$request->medico['procedure'],true);
+                return response()->json([
+                    'success' => true,
+                    'anamnese_id' => $anamnese_id,
+                    'message' => 'Avaliação atualizada com sucesso!'
+                ],200);
+
             }
 
         }
-
-
-
     }
     // RH ------------------------------------------------------------
     public function index(){
@@ -190,19 +199,11 @@ class AnamineseController extends Controller
                 ->where('id',$id)
                 ->update($data);
 
-            if($updade == 1){
                 Anamnesi::notification($func);
                 return response()->json([
                     'success'=> true,
                     'message'=> 'Primeira etapa foi concluida e encaminhada para o funcionario!'
                 ],200);
-            }else{
-                return response()->json([
-                    'success'=> false,
-                    'message'=> 'Não foi possivel criar anamnese' . $updade
-                ],500);
-            }
-
         }else{
             return response()->json([
                 'success'=> false,
@@ -394,7 +395,9 @@ class AnamineseController extends Controller
             ->join('office as o','a.office_id','=','o.id')
             ->select(
                 'a.apt',
+                'a.id as anamnese_id',
                 'a.user_id_examining_doctor',
+                'a.message',
                 'c.nome_fantasia',
                 'c.cnpj',
                 'c.endereco',
@@ -419,10 +422,69 @@ class AnamineseController extends Controller
             ->where('a.id',$id)
             ->get();
 
-//        dd($anaminese);
         return view('atestado.atestado',['atestado' => $anaminese]);
     }
 
+    public function Complementar($id){
+            $update = DB::table('anamnesis')
+                ->where('id',$id)
+                ->update([
+                    'step' => 'step_complementar'
+                ]);
+
+        return response()->json([
+            'success'=> true,
+            'message'=> 'Anamnese aguardando como complementar!'
+        ],200);
+
+
+    }
+
+    public function Complementarlist(){
+
+        $doctor = (Auth::user()->role_id == 8) ? Auth::user()->parent : Auth::user()->id;
+
+        $listagem = DB::table('anamnesis as a')
+            ->leftjoin('companies as c','a.companies_id','=','c.id')
+            ->leftjoin('users as u','a.user_id_employee','=','u.id')
+            ->leftjoin('office as o','a.office_id','=','o.id')
+            ->select(
+                'a.*',
+                'c.nome as empresa',
+                'u.name as funcionario',
+                'o.name as cargo'
+            )
+            ->where(['step'=>'step_complementar','user_id_examining_doctor' => $doctor])
+            ->orderBy('a.id', 'desc')
+            ->get();
+        return view('anaminese.complementar',['anamnese' => $listagem]);
+    }
+
+    public function ComplementarStatus(Request $request,$id)
+    {
+        $update = DB::table('anamnesis')
+            ->where('id',$id)
+            ->update([
+                'step' => 'step_med',
+            ]);
+
+        $a = $request->all();
+
+        $data = [
+            'medico' =>[
+                'parecer_medico' => $a['obs_geral']
+            ]
+        ];
+
+        Anamnesi::add_meta_question(['user_id_employee'=> $a['user_id'],'anamnesis_id'=>$id],$data);
+
+
+        return response()->json([
+            'success'=> true,
+            'message'=> 'Encaminhado para medico com sucesso!'
+        ],200);
+
+    }
 
 }
 

@@ -1,6 +1,8 @@
 @extends('voyager::master')
 @section('css')
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+
 @stop
 
 @section('page_title', __('Encaminhamentos'))
@@ -27,6 +29,24 @@
 @stop
 
 @section('content')
+
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" style="border: 1px solid #fff;height: 1135px;">
+{{--                <div id="popup-atestado"></div>--}}
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="print"><i class="fa fa-print" aria-hidden="true"></i>
+                    </button>
+                    </button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times-circle" aria-hidden="true"></i>
+                    Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <div class="page-content browse container-fluid">
         <div class="row">
             <div class="col-md-12">
@@ -36,12 +56,9 @@
                             <table id="dataTable" class="table table-hover">
                                 <thead>
                                 <tr>
-                                    <th><input type="checkbox" name="deletecheck"></th>
-                                    <th style="text-align: center">#Codigo</th>
                                     <th style="text-align: center">Empresa</th>
                                     <th style="text-align: center">Funcionario</th>
                                     <th style="text-align: center">Cargo</th>
-                                    <th style="text-align: center">Ambiente</th>
                                     <th style="text-align: center">Status</th>
                                     <th style="text-align: center">Condição</th>
                                     <th style="text-align: center">Ação</th>
@@ -50,13 +67,10 @@
                                 <tbody>
                                     @foreach($anamnese as $key => $item)
                                 <tr>
-                                    <td><input type="checkbox" name="deletecheck" value="id[]"></td>
-                                    <td style="text-align: center">#{{$item->id}}</td>
-                                    <td style="text-align: center">{{$item->empresa}}</td>
-                                    <td style="text-align: center">{{$item->funcionario}}</td>
-                                    <td style="text-align: center">{{$item->cargo}}</td>
-                                    <td style="text-align: center">{{$item->ambiente_trabalho}}</td>
-                                    <td style="text-align: center">
+                                    <td style="vertical-align: middle">{{$item->empresa}}</td>
+                                    <td style="vertical-align: middle">{{$item->funcionario}}</td>
+                                    <td style="vertical-align: middle">{{$item->cargo}}</td>
+                                    <td style="vertical-align: middle">
                                         <div  class="
                                             @if($item->step == 'step_rh')
                                                 alert-danger
@@ -67,7 +81,7 @@
                                             @if($item->step == 'step_med')
                                                 alert-primary
                                             @endif
-                                                " style="padding: 3px;font-weight: bold;font-size: 13px;margin-top: 6px;">
+                                            aviso">
                                             @if($item->step == 'step_rh')
                                                 Não iniciado
                                             @endif
@@ -79,7 +93,7 @@
                                             @endif
                                         </div>
                                     </td>
-                                    <td  style="text-align: center">
+                                    <td  style="vertical-align: middle">
                                         <div  class="
                                         @if(!is_null($item->apt))
                                              @if($item->apt == 0)
@@ -91,7 +105,7 @@
                                             @else
                                             alert-primary
                                         @endif
-                                            " style="padding: 3px;font-weight: bold;font-size: 13px;margin-top: 6px;">
+                                            aviso">
                                         @if(!is_null($item->apt))
                                             @if($item->apt == 1)
                                                 Apto
@@ -103,16 +117,14 @@
                                             Não avaliado
                                         @endif
                                         </div>
-                                    </td  style="text-align: center">
-                                    <td>
-                                        @if($item->step == 'step_med')
-                                            @if(!is_null($item->apt))
-                                                <button  class="btn btn-sm @if($item->apt == 1) btn-success @endif @if($item->apt == 0) btn-danger @endif pull-center" style="padding: 2px 7px;">Atestado</button>
+                                    </td>
+                                    <td style="vertical-align: middle">
+                                            @if($item->step == 'step_med' && !is_null($item->apt))
+                                                <a data-toggle="modal" data-target=".bd-example-modal-lg" href="/admin/anamnese/atestado/{{$item->id}}" style="padding: 10px 22px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="atestado btn btn-sm @if(in_array($item->apt,[1,2,3])) btn-success @endif @if(in_array($item->apt,[0,'-1','-2','-3'])) btn-danger @endif pull-center btn2">Atestado</a>
+                                            @else
+                                                <a href="/admin/anaminese/cadastro/{{$item->id}}"  class="btn btn-sm btn-primary pull-center" style="padding: 2px 7px;"><i class="voyager-edit"></i></a>
+                                                <a href="/admin/encaminhamento/{{$item->id}}/delete" id="delete"  class="btn btn-sm btn-danger pull-center" style="padding: 2px 7px;"><i class="voyager-trash"></i></a>
                                             @endif
-                                        @endif
-
-                                        <a href="/admin/anaminese/cadastro/{{$item->id}}"  class="btn btn-sm btn-primary pull-center" style="padding: 2px 7px;"><i class="voyager-edit"></i></a>
-                                        <a href="/admin/encaminhamento/{{$item->id}}/delete" id="delete"  class="btn btn-sm btn-danger pull-center" style="padding: 2px 7px;"><i class="voyager-trash"></i></a>
                                     </td>
                                     </td>
                                 </tr>
@@ -176,8 +188,21 @@
                 }).fail(function (jqXHR, textStatus) {
                     toastr.error(jqXHR.responseJSON.message);
                 })
-            })
+            });
 
+            $('.atestado').click(function(){
+                var href = window.location.origin + $(this).attr('href');
+                console.log(href);
+                $('#popup-atestado').load(href)
+            });
+            document.getElementById('print').onclick = function() {
+                    var conteudo = document.getElementById('popup-atestado').innerHTML,
+                    tela_impressao = window.open('about:blank');
+
+                    tela_impressao.document.write(conteudo);
+                    tela_impressao.window.print();
+                    tela_impressao.window.close();
+            };
         });
     </script>
 @stop

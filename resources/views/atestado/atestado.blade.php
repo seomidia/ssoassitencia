@@ -1,12 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<html>
-<head>
-    <style>
-        table {border-collapse: collapse;}
-        table td {padding: 0px}
-    </style>
-</head>
-<body>
+
 @foreach($atestado as $key => $value)
 <div style="position:absolute;top:7.78in;left:0.55in;width:1.47in;line-height:0.14in;"><span style="font-style:normal;font-weight:bold;font-size:10pt;font-family:Arial;color:#323232">Sendo Considerado</span><span style="font-style:normal;font-weight:bold;font-size:10pt;font-family:Arial;color:#323232"> </span><br/></SPAN></div>
 <div style="position:absolute;top:8.01in;left:0.55in;width:0.42in;line-height:0.14in;"><span style="font-style:normal;font-weight:bold;font-size:10pt;font-family:Arial;color:#000000">Data:</span><span style="font-style:normal;font-weight:bold;font-size:10pt;font-family:Arial;color:#000000"> </span><br/></SPAN></div>
@@ -115,9 +107,9 @@
 <img style="position:absolute;top:2.65in;left:7.29in;width:0.01in;height:0.19in" src="{{asset('images/atestado/vi_76.png')}}" />
 <div style="position:absolute;top:2.65in;left:7.29in;width:0.01in;height:0.19in;font-style:normal;font-weight:normal;font-size:9pt;font-family:Arial;color:#373737">{{$value->user_cpf}}</div>
 <img style="position:absolute;top:2.65in;left:8.99in;width:0.01in;height:0.19in" src="{{asset('images/atestado/vi_77.png')}}" />
-<div style="position:absolute;top:2.84in;left:0.56in;width:0.24in;line-height:0.13in;"><span style="font-style:normal;font-weight:bold;font-size:9pt;font-family:Arial;color:#181818">RG</span><span style="font-style:normal;font-weight:bold;font-size:9pt;font-family:Arial;color:#000000"> {{$value->user_rg}}</span><br/></SPAN></div>
-<div style="position:absolute;top:2.84in;left:1.79in;width:0.72in;line-height:0.11in;"><span style="font-style:normal;font-weight:bold;font-size:8pt;font-family:Arial;color:#272727">Nascimento</span><span style="font-style:normal;font-weight:bold;font-size:8pt;font-family:Arial;color:#000000"> {{$value->user_nasc}}</span><br/></SPAN></div>
-<div style="position:absolute;top:2.84in;left:3.38in;width:0.35in;line-height:0.11in;"><span style="font-style:normal;font-weight:bold;font-size:8pt;font-family:Arial;color:#181818">Idade</span><span style="font-style:normal;font-weight:bold;font-size:8pt;font-family:Arial;color:#000000"> {{$value->user_idade}} anos</span><br/></SPAN></div>
+<div style="position:absolute;top:2.84in;left:0.56in;width:0.24in;line-height:0.13in;"><span style="font-style:normal;font-weight:bold;font-size:9pt;font-family:Arial;color:#181818">RG</span><span style="font-style:normal;font-size:9pt;font-family:Arial;color:#000000;position: relative;top: 8px;left: 10px;"> {{$value->user_rg}}</span><br/></SPAN></div>
+<div style="position:absolute;top:2.84in;left:1.79in;width:0.72in;line-height:0.11in;"><span style="font-style:normal;font-weight:bold;font-size:8pt;font-family:Arial;color:#272727">Nascimento</span><span style="font-style:normal;font-size:8pt;font-family:Arial;color:#000000;position: relative;top: 10px;left: 10px;"> {{ date("d/m/Y", strtotime($value->user_nasc))}}</span><br/></SPAN></div>
+<div style="position:absolute;top:2.84in;left:3.38in;width:1.35in;line-height:0.11in;"><div style="font-style:normal;font-weight:bold;font-size:8pt;font-family:Arial;color:#181818">Idade</div><span style="font-style:normal;font-size:8pt;font-family:Arial;color:#000000;position: relative;top: 10px;left: 10px;"> {{$value->user_idade}} anos</span><br/></SPAN></div>
 <div style="position:absolute;top:2.84in;left:5.05in;width:0.32in;line-height:0.11in;"><span style="font-style:normal;font-weight:bold;font-size:8pt;font-family:Arial;color:#2d2d2d">Sexo</span><span style="font-style:normal;font-weight:bold;font-size:8pt;font-family:Arial;color:#000000"> </span><br/></SPAN></div>
 <div style="position:absolute;top:3.07in;left:5.13in;width:1.47in;line-height:0.18in;"><span style="font-style:normal;font-weight:normal;font-size:11pt;font-family:Segoe UI Symbol;color:#000000">@if($value->user_sexo == 'masculino')(x) @else {{'()'}} @endif</span><span style="font-style:normal;font-weight:normal;font-size:8pt;font-family:Arial;color:#000000">Masculino </span><span style="font-style:normal;font-weight:normal;font-size:12pt;font-family:Segoe UI Symbol;color:#545454">@if($value->user_sexo != 'masculino')(x) @else {{'()'}} @endif</span><span style="font-style:normal;font-weight:bold;font-size:12pt;font-family:Arial;color:#545454"> </span><span style="font-style:normal;font-weight:normal;font-size:8pt;font-family:Arial;color:#000000">Feminino</span><span style="font-style:normal;font-weight:normal;font-size:8pt;font-family:Arial;color:#000000"> </span><br/></SPAN></div>
 <div style="position:absolute;top:2.83in;left:6.83in;width:0.73in;line-height:0.11in;"><span style="font-style:normal;font-weight:bold;font-size:8pt;font-family:Arial;color:#292929">Estado Civil</span><span style="font-style:normal;font-weight:bold;font-size:8pt;font-family:Arial;color:#292929"> </span><br/></SPAN></div>
@@ -146,8 +138,8 @@
 <img style="position:absolute;top:2.85in;left:5.04in;width:0.01in;height:0.44in" src="{{asset('images/atestado/vi_96.png')}}" />
 <img style="position:absolute;top:2.85in;left:6.82in;width:0.01in;height:0.44in" src="{{asset('images/atestado/vi_97.png')}}" />
 <img style="position:absolute;top:2.85in;left:8.99in;width:0.01in;height:0.44in" src="{{asset('images/atestado/vi_98.png')}}" />
-<div style="position:absolute;top:3.29in;left:0.56in;width:1.31in;line-height:0.11in;"><span style="font-style:normal;font-weight:bold;font-size:8pt;font-family:Arial;color:#292929">Ambiente de Trabalho</span><span style="font-style:normal;font-weight:bold;font-size:8pt;font-family:Arial;color:#000000"> {{$value->ambiente}}</span><br/></SPAN></div>
-<div style="position:absolute;top:3.29in;left:5.05in;width:2.39in;line-height:0.11in;"><span style="font-style:normal;font-weight:bold;font-size:8pt;font-family:Arial;color:#2c2c2c">Cargo</span><span style="font-style:normal;font-weight:bold;font-size:8pt;font-family:Arial;color:#000000"> {{$value->ambiente}}</span><br/></SPAN></div>
+<div style="position:absolute;top:3.29in;left:0.56in;width:1.31in;line-height:0.11in;"><span style="font-style:normal;font-weight:bold;font-size:8pt;font-family:Arial;color:#292929">Ambiente de Trabalho</span><span style="font-style:normal;font-size:8pt;font-family:Arial;color:#000000;position: relative;top: 10px;left: 10px;"> {{$value->ambiente}}</span><br/></SPAN></div>
+<div style="position:absolute;top:3.29in;left:5.05in;width:2.39in;line-height:0.11in;"><div style="font-style:normal;font-weight:bold;font-size:8pt;font-family:Arial;color:#2c2c2c">Cargo</div><span style="font-style:normal;font-size:8pt;font-family:Arial;color:#000000;position: relative;top: 10px;left: 10px;"> {{$value->ambiente}}</span><br/></SPAN></div>
 <img style="position:absolute;top:3.29in;left:0.55in;width:0.01in;height:0.01in" src="{{asset('images/atestado/vi_99.png')}}" />
 <img style="position:absolute;top:3.29in;left:0.55in;width:1.23in;height:0.01in" src="{{asset('images/atestado/vi_100.png')}}" />
 <img style="position:absolute;top:3.29in;left:1.78in;width:0.01in;height:0.01in" src="{{asset('images/atestado/vi_101.png')}}" />
@@ -176,10 +168,12 @@
 <img style="position:absolute;top:3.89in;left:0.55in;width:8.44in;height:0.01in" src="{{asset('images/atestado/vi_123.png')}}" />
 <img style="position:absolute;top:3.89in;left:8.99in;width:0.01in;height:0.01in" src="{{asset('images/atestado/vi_124.png')}}" />
 <img style="position:absolute;top:3.90in;left:0.55in;width:0.01in;height:0.88in" src="{{asset('images/atestado/vi_125.png')}}" />
-<div style="position:absolute;top:3.90in;left:0.55in;width:2.01in;height:0.88in">
+<div style="position:absolute;top:3.90in;left:0.55in;width:8.01in;height:0.88in">
+    <ul style="list-style: none;font-style: normal;font-size: 9pt;font-family: Arial;color: #000000;">
     @foreach(\App\Anamnesi::get_risk($value->cargo_id) as $key2 => $cargo)
-        {{$cargo->name}} <br>
+        <li>{{$cargo->name}} - {{$cargo->description}} </li>
     @endforeach
+    </ul>
 </div>
 <img style="position:absolute;top:3.90in;left:8.99in;width:0.01in;height:0.88in" src="{{asset('images/atestado/vi_126.png')}}" />
 <img style="position:absolute;top:4.78in;left:0.55in;width:0.01in;height:0.01in" src="{{asset('images/atestado/vi_127.png')}}" />
@@ -217,7 +211,13 @@
 <img style="position:absolute;top:5.14in;left:8.99in;width:0.01in;height:0.20in" src="{{asset('images/atestado/vi_157.png')}}" />
 <img style="position:absolute;top:5.34in;left:0.55in;width:3.88in;height:2.60in" src="{{asset('images/atestado/vi_158.png')}}" />
 <img style="position:absolute;top:5.34in;left:0.55in;width:3.88in;height:0.19in" src="{{asset('images/atestado/vi_159.png')}}" />
-<div style="position:absolute;top:5.40in;left:0.55in;width:5.18in;line-height:0.16in;"> ola</div>
+<div style="position:absolute;top:5.40in;left:0.55in;width:5.18in;line-height:0.16in;">
+    <ul style="list-style: none;font-style: normal;font-size: 9pt;font-family: Arial;color: #000000;">
+        @foreach(\App\Anamnesi::get_procedures($value->anamnese_id) as $key3 => $procedure)
+            <li>{{$procedure->name}} - {{$procedure->description}} </li>
+        @endforeach
+    </ul>
+</div>
 <img style="position:absolute;top:5.34in;left:4.44in;width:0.61in;height:0.19in" src="{{asset('images/atestado/vi_160.png')}}" />
 <img style="position:absolute;top:5.34in;left:5.05in;width:3.20in;height:0.19in" src="{{asset('images/atestado/vi_161.png')}}" />
 <img style="position:absolute;top:5.34in;left:8.26in;width:0.73in;height:2.60in" src="{{asset('images/atestado/vi_162.png')}}" />
@@ -250,30 +250,31 @@
 <img style="position:absolute;top:11.67in;left:0.52in;width:8.50in;height:0.01in" src="{{asset('images/atestado/vi_187.png')}}" />
 <div style="position:absolute;top:11.12in;left:1.32in;width:6.94in;line-height:0.11in;"><span style="font-style:normal;font-weight:bold;font-size:8pt;font-family:Arial;color:#373737">Responsável Técnico - Médico(a) do Trabalho: Dr(a). ROSANE REIS PONTES E SILVA - CRM: 33643/SP - RQE: 69375/SP</span><span style="font-style:normal;font-weight:bold;font-size:8pt;font-family:Arial;color:#373737"> </span><br/></SPAN></div>
 <div style="position:absolute;top:11.26in;left:1.17in;width:7.23in;line-height:0.11in;"><span style="font-style:normal;font-weight:bold;font-size:8pt;font-family:Arial;color:#373737">Este documento deve ser arquivado no Departamento Médico da Empresa ou do serviço contratado, na ficha do funcionário.</span><span style="font-style:normal;font-weight:bold;font-size:8pt;font-family:Arial;color:#373737"> </span><br/></SPAN></div>
-<div style="position:absolute;top:7.97in;left:2.35in;width:0.24in;line-height:0.12in;"><span style="font-style:normal;font-weight:normal;font-size:8pt;font-family:MS Gothic;color:#1b1b1a">☐</span><span style="font-style:normal;font-weight:normal;font-size:8pt;font-family:MS Gothic;color:#1b1b1a"></span><br/></SPAN></div>
+<div style="position:absolute;top:7.97in;left:2.35in;width:0.24in;line-height:0.12in;"><span style="font-style:normal;font-weight:normal;font-size:8pt;font-family:MS Gothic;color:#1b1b1a">@if($value->apt == 0)(x) @else {{'( )'}} @endif</span><span style="font-style:normal;font-weight:normal;font-size:8pt;font-family:MS Gothic;color:#1b1b1a"></span><br/></SPAN></div>
 <div style="position:absolute;top:7.98in;left:2.53in;width:0.35in;line-height:0.10in;"><span style="font-style:normal;font-weight:bold;font-size:7pt;font-family:Arial;color:#1b1b1a">Inapto</span><span style="font-style:normal;font-weight:bold;font-size:7pt;font-family:Arial;color:#1b1b1a"> </span><br/></SPAN></div>
-<div style="position:absolute;top:7.98in;left:2.96in;width:0.24in;line-height:0.12in;"><span style="font-style:normal;font-weight:normal;font-size:8pt;font-family:MS Gothic;color:#1b1b1a">☐</span><span style="font-style:normal;font-weight:normal;font-size:8pt;font-family:MS Gothic;color:#1b1b1a"></span><br/></SPAN></div>
+<div style="position:absolute;top:7.98in;left:2.96in;width:0.24in;line-height:0.12in;"><span style="font-style:normal;font-weight:normal;font-size:8pt;font-family:MS Gothic;color:#1b1b1a">@if($value->apt == '-1')(x) @else {{'( )'}} @endif</span><span style="font-style:normal;font-weight:normal;font-size:8pt;font-family:MS Gothic;color:#1b1b1a"></span><br/></SPAN></div>
 <div style="position:absolute;top:7.99in;left:3.11in;width:1.24in;line-height:0.10in;"><span style="font-style:normal;font-weight:bold;font-size:7pt;font-family:Arial;color:#1b1b1a">Inapto temporariamente</span><span style="font-style:normal;font-weight:bold;font-size:7pt;font-family:Arial;color:#1b1b1a"> </span><br/></SPAN></div>
-<div style="position:absolute;top:7.98in;left:4.45in;width:0.65in;line-height:0.12in;"><span style="font-style:normal;font-weight:normal;font-size:8pt;font-family:MS Gothic;color:#1b1b1a">☐ </span></SPAN><br/></div>
+<div style="position:absolute;top:7.98in;left:4.45in;width:0.65in;line-height:0.12in;"><span style="font-style:normal;font-weight:normal;font-size:8pt;font-family:MS Gothic;color:#1b1b1a">@if($value->apt == '-2')(x) @else {{'( )'}} @endif </span></SPAN><br/></div>
 <div style="position:absolute;top:7.99in;left:4.45in;width:0.65in;line-height:0.10in;"><DIV style="position:relative; left:0.18in;"><span style="font-style:normal;font-weight:bold;font-size:7pt;font-family:Arial;color:#1b1b1a">Inapto p/</span><span style="font-style:normal;font-weight:bold;font-size:7pt;font-family:Arial;color:#1b1b1a"> </span><br/></SPAN></DIV></div>
 <div style="position:absolute;top:7.97in;left:5.10in;width:0.95in;line-height:0.12in;"><span style="font-style:normal;font-weight:bold;font-size:7pt;font-family:Arial;color:#1b1b1a">trabalho</span><span style="font-style:normal;font-weight:bold;font-size:7pt;font-family:Arial;color:#1b1b1a"> </span><span style="font-style:normal;font-weight:bold;font-size:7pt;font-family:Arial;color:#1b1b1a">em </span><span style="font-style:normal;font-weight:bold;font-size:7pt;font-family:Arial;color:#1b1b1a">altura</span><span style="font-style:normal;font-weight:bold;font-size:7pt;font-family:Arial;color:#1b1b1a"> </span><br/></SPAN></div>
 <div style="position:absolute;top:8.24in;left:0.54in;width:1.65in;line-height:0.18in;"><span style="font-style:normal;font-weight:bold;font-size:13pt;font-family:Arial;color:#000000">Parecer Médico:</span><span style="font-style:normal;font-weight:bold;font-size:13pt;font-family:Arial;color:#000000"> </span><br/></SPAN></div>
 <div style="position:absolute;top:8.28in;left:5.23in;width:1.99in;line-height:0.15in;"><span style="font-style:normal;font-weight:bold;font-size:10pt;font-family:Arial;color:#1b1b1a">OBSERVAÇÕES GERAIS:</span><span style="font-style:normal;font-weight:bold;font-size:10pt;font-family:Arial;color:#1b1b1a"> </span><br/></SPAN></div>
 <img style="position:absolute;top:7.50in;left:0.54in;width:0.01in;height:2.20in" src="{{asset('images/atestado/vi_188.png')}}" />
 <img style="position:absolute;top:8.24in;left:0.56in;width:8.41in;height:0.01in" src="{{asset('images/atestado/vi_189.png')}}" />
+<div style="position:absolute;top:8.6in;left:5.23in;width:3.6in;line-height:0.15in;font-style:normal;font-size:10pt;font-family:Arial;color:#1b1b1a">
+    {{$value->message}}
+</div>
 <img style="position:absolute;top:8.25in;left:5.16in;width:0.01in;height:1.45in" src="{{asset('images/atestado/vi_190.png')}}" />
 <div style="position:absolute;top:3.10in;left:6.89in;width:0.57in;line-height:0.16in;"><span style="font-style:normal;font-weight:normal;font-size:7pt;font-family:Segoe UI Symbol;color:#000000">@if($value->user_estado_civil == 'viuvo')(x) @else {{'()'}} @endif </span><span style="font-style:normal;font-weight:normal;font-size:7pt;font-family:Arial;color:#000000">Viúvo(a)</span><span style="font-style:normal;font-weight:normal;font-size:7pt;font-family:Arial;color:#000000"> </span><br/></SPAN></div>
 <div style="position:absolute;top:3.14in;left:7.60in;width:0.74in;line-height:0.11in;"><span style="font-style:normal;font-weight:normal;font-size:7pt;font-family:Segoe UI Symbol;color:#545454">@if($value->user_estado_civil == 'separado')(x) @else {{'()'}} @endif </span><span style="font-style:normal;font-weight:normal;font-size:7pt;font-family:Arial;color:#000000">Separado(a)</span><span style="font-style:normal;font-weight:normal;font-size:7pt;font-family:Arial;color:#000000"> </span><br/></SPAN></div>
-<div style="position:absolute;top:7.76in;left:2.39in;width:1.55in;line-height:0.12in;"><span style="font-style:normal;font-weight:normal;font-size:8pt;font-family:MS Gothic;color:#1b1b1a">(x)</span></SPAN><br/></div>
+<div style="position:absolute;top:7.76in;left:2.39in;width:1.55in;line-height:0.12in;"><span style="font-style:normal;font-weight:normal;font-size:8pt;font-family:MS Gothic;color:#1b1b1a">@if($value->apt == 1)(x) @else {{'( )'}} @endif</span></SPAN><br/></div>
 <div style="position:absolute;top:7.75in;left:2.39in;width:1.55in;line-height:0.12in;"><DIV style="position:relative; left:0.18in;"><span style="font-style:normal;font-weight:bold;font-size:7pt;font-family:Arial;color:#1b1b1a">Apto sem restrições </span></SPAN></DIV><br/></div>
-<div style="position:absolute;top:7.78in;left:2.39in;width:1.55in;line-height:0.12in;"><DIV style="position:relative; left:1.31in;"><span style="font-style:normal;font-weight:normal;font-size:8pt;font-family:MS Gothic;color:#1b1b1a">☐</span><span style="font-style:normal;font-weight:normal;font-size:8pt;font-family:MS Gothic;color:#1b1b1a"></span><br/></SPAN></DIV></div>
+<div style="position:absolute;top:7.78in;left:2.39in;width:1.55in;line-height:0.12in;"><DIV style="position:relative; left:1.31in;"><span style="font-style:normal;font-weight:normal;font-size:8pt;font-family:MS Gothic;color:#1b1b1a">@if($value->apt == 2)(x) @else {{'( )'}} @endif</span><span style="font-style:normal;font-weight:normal;font-size:8pt;font-family:MS Gothic;color:#1b1b1a"></span><br/></SPAN></DIV></div>
 <div style="position:absolute;top:7.77in;left:3.87in;width:1.66in;line-height:0.12in;"><span style="font-style:normal;font-weight:bold;font-size:7pt;font-family:Arial;color:#1b1b1a">Apto p/ trabalho em altura</span><span style="font-style:normal;font-weight:bold;font-size:7pt;font-family:Arial;color:#1b1b1a">  </span></SPAN><br/></div>
-<div style="position:absolute;top:7.78in;left:3.87in;width:1.66in;line-height:0.12in;"><DIV style="position:relative; left:1.42in;"><span style="font-style:normal;font-weight:normal;font-size:8pt;font-family:MS Gothic;color:#1b1b1a">☐</span><span style="font-style:normal;font-weight:normal;font-size:8pt;font-family:MS Gothic;color:#1b1b1a"></span><br/></SPAN></DIV></div>
+<div style="position:absolute;top:7.78in;left:3.87in;width:1.66in;line-height:0.12in;"><DIV style="position:relative; left:1.42in;"><span style="font-style:normal;font-weight:normal;font-size:8pt;font-family:MS Gothic;color:#1b1b1a">@if($value->apt == 3)(x) @else {{'( )'}} @endif</span><span style="font-style:normal;font-weight:normal;font-size:8pt;font-family:MS Gothic;color:#1b1b1a"></span><br/></SPAN></DIV></div>
 <div style="position:absolute;top:7.77in;left:5.47in;width:3.11in;line-height:0.12in;"><span style="font-style:normal;font-weight:bold;font-size:7pt;font-family:Arial;color:#1b1b1a">Apto p/ trabalho espaço confinado</span><span style="font-style:normal;font-weight:bold;font-size:7pt;font-family:Arial;color:#1b1b1a"> </span></SPAN><br/></div>
-<div style="position:absolute;top:7.99in;left:6.15in;width:1.58in;line-height:0.12in;"><span style="font-style:normal;font-weight:normal;font-size:8pt;font-family:MS Gothic;color:#1b1b1a">☐ </span></SPAN><br/></div>
+<div style="position:absolute;top:7.99in;left:6.15in;width:1.58in;line-height:0.12in;"><span style="font-style:normal;font-weight:normal;font-size:8pt;font-family:MS Gothic;color:#1b1b1a">@if($value->apt == '-3')(x) @else {{'( )'}} @endif </span></SPAN><br/></div>
 <div style="position:absolute;top:8.00in;left:6.15in;width:1.58in;line-height:0.10in;"><DIV style="position:relative; left:0.18in;"><span style="font-style:normal;font-weight:bold;font-size:7pt;font-family:Arial;color:#1b1b1a">Inapto p/</span><span style="font-style:normal;font-weight:bold;font-size:7pt;font-family:Arial;color:#1b1b1a"> </span><span style="font-style:normal;font-weight:bold;font-size:7pt;font-family:Arial;color:#1b1b1a">espaço confinado</span><span style="font-style:normal;font-weight:bold;font-size:7pt;font-family:Arial;color:#1b1b1a"> </span><br/></SPAN></DIV></div>
-<div style="position:absolute;top:7.78in;left:5.47in;width:3.11in;line-height:0.12in;"><DIV style="position:relative; left:1.85in;"><span style="font-style:normal;font-weight:normal;font-size:8pt;font-family:MS Gothic;color:#1b1b1a">☐ </span></SPAN></DIV><br/></div>
+<div style="position:absolute;top:7.78in;left:5.47in;width:3.11in;line-height:0.12in;"><DIV style="position:relative; left:1.85in;"><span style="font-style:normal;font-weight:normal;font-size:8pt;font-family:MS Gothic;color:#1b1b1a">@if($value->apt == 4)(x) @else {{'( )'}} @endif </span></SPAN></DIV><br/></div>
 <div style="position:absolute;top:7.77in;left:5.47in;width:3.11in;line-height:0.12in;"><DIV style="position:relative; left:2.03in;"><span style="font-style:normal;font-weight:bold;font-size:7pt;font-family:Arial;color:#1b1b1a">Apto com restrições</span><span style="font-style:normal;font-weight:bold;font-size:7pt;font-family:Arial;color:#1b1b1a"> </span><span style="font-style:normal;font-weight:bold;font-size:7pt;font-family:Arial;color:#1b1b1a"> </span><br/></SPAN></DIV></div>
 @endforeach
-</body>
-</html>

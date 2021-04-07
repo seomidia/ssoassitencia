@@ -12,10 +12,22 @@ class Anamnesi extends Model
 {
     use Notifiable;
 
+    static function get_procedures($anamnese_id){
+        return DB::table('procedure_relationship as pr')
+            ->join('procedures as p','pr.procedures_id','=','p.id')
+            ->select('p.name','p.description')
+            ->where('pr.anamnesis_id',$anamnese_id)
+            ->get();
+
+    }
+
     static function get_risk($office_id){
         return DB::table('office_risk_relationship as orr')
             ->join('risk_factors as rf','orr.risk_factors_id','=','rf.id')
-            ->select('rf.name')
+            ->select(
+                'rf.name',
+                'rf.description'
+            )
             ->where('orr.office_id',$office_id)
             ->get();
 
@@ -97,8 +109,10 @@ class Anamnesi extends Model
                     ];
                 }
             }
+            if(isset($question['medico']) && !isset($question['medico']['parecer_medico'])) {
+                $status = $question['medico']['status'];
+            }
             unset($question['medico']['procedure']);
-            unset($question['medico']['status']);
             foreach ($question as $key => $item) {
                 $data['section'] = $key;
 
@@ -109,11 +123,20 @@ class Anamnesi extends Model
                         $data['response2'] = (is_array($per) && isset($per[1])) ? $per[1] : '';
                         $data['response3'] = (is_array($per) && isset($per[2])) ? $per[2] : '';
                         $data['created_at'] = date('Y-m-d H:i:s');
-                        if (!DB::table('meta_resposes')->insert($data)) {
-                            return [
-                                'success' => false,
-                                'message' => 'Não foi possivel cadastrar ' . $key2
+
+                       DB::table('meta_resposes')->insert($data);
+                        if(isset($question['medico']) && !isset($question['medico']['parecer_medico'])) {
+                            $dataA = [
+                                'realization_date' => date('Y-m-d'),
+                                'apt' => $status,
+                                'user_id_examining_doctor' => Auth::user()->id,
+                                'message' => $question['medico']['obs'],
                             ];
+
+
+                            $updade = DB::table('anamnesis')
+                                ->where('id', $data['anamnesis_id'])
+                                ->update($dataA);
                         }
                     }
                 }
@@ -140,6 +163,17 @@ class Anamnesi extends Model
                                     'message' => 'Não foi possivel cadastrar '
                                 ];
                             }
+                            $dataA = [
+                                'realization_date' => date('Y-m-d'),
+                                'apt' => $question['medico']['status'],
+                                'user_id_examining_doctor' => Auth::user()->id,
+                                'message' => $question['medico']['obs'],
+                            ];
+
+
+                            $updade = DB::table('anamnesis')
+                                ->where('id',$data['anamnesis_id'])
+                                ->update($dataA);
                         }else{
                             if (!DB::table('meta_resposes')->where(['anamnesis_id'=>$data['anamnesis_id'],'section' => $key,'question' => $key2])->update($data)) {
                                 return [
@@ -162,6 +196,10 @@ class Anamnesi extends Model
                 }
             }
         }
+        return [
+            'success'=>true,
+            'message'=>''
+        ];
     }
 
 }
