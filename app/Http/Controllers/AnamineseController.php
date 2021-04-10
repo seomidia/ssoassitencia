@@ -179,11 +179,66 @@ class AnamineseController extends Controller
     }
     public function updade(Request $request,$id){
 
-        $companie_id = Company::Cheking($request->input('empresa'));
+        $cnpj = $request->input('empresa');
+
+        if($cnpj == '') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Informar o CNPJ é obrigatório!'
+            ], 500);
+        }
+
+
+            $companie_id = Company::Cheking($cnpj);
 
         if($companie_id['success']){
 
             $func = $request->input('user_funcionario');
+            if($func == ''){
+                return response()->json([
+                    'success'=> false,
+                    'message'=> 'Informar o funcionario é obrigatório!'
+                ],500);
+            }
+
+            $user = [
+                'name' => $request->input('pessoa')
+            ];
+
+            $update_user = DB::table('users')
+                ->where('id',$func)
+                ->update($user);
+
+            $pessoa = [
+                'cpf' => str_replace(['.','-'],['',''],$request->input('pessoa_cpf')),
+                'rg' => $request->input('pessoa_rg'),
+                'nasc' => $request->input('pessoa_nascimento'),
+                'idade' => $request->input('pessoa_idade'),
+                'sexo' => $request->input('pessoa_sexo')
+            ];
+
+
+            $update_pessoa = DB::table('user_data')
+                ->where('user_id',$func)
+                ->update($pessoa);
+
+
+            // atualiza empresa  --------------------------------------------------------
+            $empresa = [
+                'cnpj' => $request->input('empresa'),
+                'endereco' => $request->input('empresa_endereco'),
+                'bairro' => $request->input('empresa_bairro'),
+                'numero' => $request->input('empresa_numero'),
+                'cidade' => $request->input('empresa_cidade'),
+                'uf' => $request->input('empresa_uf')
+            ];
+
+            $updade = DB::table('companies')
+                ->where('id',$companie_id['companie_id'])
+                ->update($empresa);
+
+
+            // atualiza anamnese --------------------------------------------------------
 
             $data = [
                 'user_id_employee' => $func,
@@ -212,6 +267,7 @@ class AnamineseController extends Controller
 
         }
     }
+
     public function destroy($id){
         $delete = DB::table('anamnesis')
             ->where('id',$id)

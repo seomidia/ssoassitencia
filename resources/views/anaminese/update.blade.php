@@ -152,19 +152,25 @@
                                         <h3 class="border-left mb-5">Empresa</h3>
                                         <div class="form-group  col-md-4 pessoa_cpf">
                                             <label for="pessoa_cpf">CNPJ</label>
-                                            <input type="text" class="form-control"  name="empresa" id="empresa_cnpj" placeholder="CNPJ" value="{{ $item->cnpj ?? '' }}">
+                                            <input type="text"  class="form-control"  name="empresa" id="empresa_cnpj" placeholder="CNPJ" value="{{ $item->cnpj ?? '' }}">
                                             <small id="aviso" class="form-text text-muted"></small>
                                         </div>
                                         <div class="form-group col-md-8">
                                             <label for="pessoa_nome">Nome da empresa</label>
-                                            <input type="text" class="form-control" id="empresa_nome" name="empresa_nome" placeholder="Empresa" value="{{ $item->nome ?? '' }}">
+                                            <input type="text" disabled class="form-control" id="empresa_nome" name="empresa_nome" placeholder="Empresa" value="{{ $item->nome ?? '' }}">
                                             <small id="aviso" class="form-text text-muted"></small>
                                         </div>
-                                        <div class="form-group col-md-5">
+                                        <div class="form-group col-md-3">
                                             <label for="pessoa_nome">Endereço</label>
                                             <input type="text" class="form-control" id="empresa_endereco" name="empresa_endereco" placeholder="Endereço" value="{{ $item->endereco ?? '' }}">
                                             <small id="aviso" class="form-text text-muted"></small>
                                         </div>
+                                        <div class="form-group col-md-2">
+                                            <label for="pessoa_nome">Bairro</label>
+                                            <input type="text" class="form-control" id="empresa_bairro" name="empresa_bairro" placeholder="Bairro" value="{{ $item->bairro ?? '' }}">
+                                            <small id="aviso" class="form-text text-muted"></small>
+                                        </div>
+
                                         <div class="form-group col-md-2">
                                             <label for="pessoa_nome">Numero</label>
                                             <input type="text" class="form-control" id="empresa_numero" name="empresa_numero" placeholder="numero" value="{{ $item->numero ?? '' }}">
@@ -311,40 +317,43 @@
             });
             $('#empresa_cnpj').on('blur', function(){
                 var cnpj = $(this).val();
-                cnpj = cnpj.replace('.','');
-                cnpj = cnpj.replace('/','');
 
-                $('input[name="empresa_nome"]').val('...');
-                $('input[name="empresa_endereco"]').val('...');
-                $('input[name="empresa_numero"]').val('...');
-                $('input[name="empresa_cidade"]').val('...');
-                $('input[name="empresa_uf"]').val('...');
+                if(cnpj != ''){
+                    cnpj = cnpj.replace('.','');
+                    cnpj = cnpj.replace('/','');
+
+                    $('input[name="empresa_nome"]').val('...');
+                    $('input[name="empresa_endereco"]').val('...');
+                    $('input[name="empresa_bairro"]').val('...');
+                    $('input[name="empresa_numero"]').val('...');
+                    $('input[name="empresa_cidade"]').val('...');
+                    $('input[name="empresa_uf"]').val('...');
 
 
-                $.ajax({
-                    url: "/json/getcompany/" + cnpj,
-                    type: 'get',
-                    dataType: 'json',
-                    success: function(response){
+                    $.ajax({
+                        url: "/json/getcompany/" + cnpj,
+                        type: 'get',
+                        dataType: 'json',
+                        success: function(response){
+                            if(response.success){
+                                $('input[name="empresa_nome"]').val(response.data.nome);
+                                $('input[name="empresa_endereco"]').val(response.data.logradouro);
+                                $('input[name="empresa_bairro"]').val(response.data.bairro );
+                                $('input[name="empresa_numero"]').val(response.data.numero);
+                                $('input[name="empresa_cidade"]').val(response.data.municipio);
+                                $('input[name="empresa_uf"]').val(response.data.uf);
 
-                        if(response.status == 'ERROR'){
-                            toastr.error(response.message);
-                        }else{
-                            console.log(response.data);
-
-                            $('input[name="empresa_nome"]').val(response.data.nome);
-                            $('input[name="empresa_endereco"]').val(response.data.logradouro + ' - ' + response.data.bairro );
-                            $('input[name="empresa_numero"]').val(response.data.numero);
-                            $('input[name="empresa_cidade"]').val(response.data.municipio);
-                            $('input[name="empresa_uf"]').val(response.data.uf);
+                            }else{
+                                toastr.error(response.message);
+                            }
 
                         }
-
-                    }
-                }).fail(function (jqXHR, textStatus) {
-                    toastr.error('Houve um problema ao consulta o CNPJ, favor contactar o desenvolvedor.');
-                })
-
+                    }).fail(function (jqXHR, textStatus) {
+                        toastr.error('Houve um problema ao consulta o CNPJ, favor contactar o desenvolvedor.');
+                    })
+                }else{
+                    toastr.error('O CNPJ é obrigatório.');
+                }
             });
             $('#pessoa_cpf').on('blur', function() {
                 var cpf = $(this).val();

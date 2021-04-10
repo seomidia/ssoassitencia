@@ -7,7 +7,6 @@ use DB;
 class Company extends Model
 {
     protected function Cheking($cnpj){
-
         $cnpj = str_replace(['.','/','-'],['','',''],$cnpj);
 
         $curl = curl_init();
