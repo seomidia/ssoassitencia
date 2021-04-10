@@ -109,7 +109,6 @@ class AnamineseController extends Controller
 
             if($count == 0){
                 Anamnesi::add_meta_question(['user_id_employee'=> $user,'anamnesis_id'=>$anamnese_id],$request->all());
-                Anamnesi::add_procedure($anamnese_id,$request->medico['procedure']);
                 return response()->json([
                     'success' => true,
                     'anamnese_id' => $anamnese_id,
@@ -117,7 +116,6 @@ class AnamineseController extends Controller
                 ],200);
             }else{
                 Anamnesi::add_meta_question(['user_id_employee'=> $user,'anamnesis_id'=>$anamnese_id],$request->all(),false);
-                Anamnesi::add_procedure($anamnese_id,$request->medico['procedure'],true);
                 return response()->json([
                     'success' => true,
                     'anamnese_id' => $anamnese_id,
@@ -165,7 +163,19 @@ class AnamineseController extends Controller
             )
             ->where('a.id',$id)
             ->get();
-        return view('anaminese.update',['anamnese_id' => $id, 'user_logged' => $user_logged, 'dados'=> $dados]);
+
+        $procedures = DB::table('procedures')->get();
+        $tipo = DB::table('anamnese_type')->get();
+        $locais = DB::table('location')->where('status',1)->get();
+
+        return view('anaminese.update',[
+            'anamnese_id' => $id,
+            'user_logged' => $user_logged,
+            'dados'=> $dados,
+            'procedures' => $procedures,
+            'tipo' => $tipo,
+            'locais' => $locais
+        ]);
     }
     public function create(Request $request){
 
@@ -237,6 +247,16 @@ class AnamineseController extends Controller
                 ->where('id',$companie_id['companie_id'])
                 ->update($empresa);
 
+            // registra procedimentos -------------------------------------
+            // checar ----
+             $ehcreate = DB::table('anamnesis')->where(['id'=>$id,'step'=>'step_rh'])->count();
+             if($ehcreate == 1){
+                 Anamnesi::add_procedure($id,$request->medico['procedure']);
+             }else{
+                 Anamnesi::add_procedure($id,$request->medico['procedure'],true);
+             }
+
+
 
             // atualiza anamnese --------------------------------------------------------
 
@@ -246,7 +266,9 @@ class AnamineseController extends Controller
                 'companies_id' => $companie_id['companie_id'],
                 'office_id' => $request->input('cargo'),
                 'ambiente_trabalho' => $request->input('ambiente_Trabalho'),
-                'step' => 'step_funci'
+                'step' => 'step_funci',
+                'type' => $request->input('anamnese_type'),
+                'location_id' => $request->input('location_id')
             ];
 
 
@@ -254,7 +276,9 @@ class AnamineseController extends Controller
                 ->where('id',$id)
                 ->update($data);
 
-                Anamnesi::notification($func);
+
+
+            Anamnesi::notification($func,$id);
                 return response()->json([
                     'success'=> true,
                     'message'=> 'Primeira etapa foi concluida e encaminhada para o funcionario!'
@@ -348,11 +372,22 @@ class AnamineseController extends Controller
     {
         $dados = DB::table('anamnesis as a')
             ->leftjoin('users as u','a.user_id_employee','=','u.id')
+            ->leftjoin('companies as c','a.companies_id','=','c.id')
+            ->leftjoin('location as l','a.location_id','=','l.id')
             ->leftjoin('user_data as ud','a.user_id_employee','=','ud.user_id')
             ->select(
                 'ud.cpf',
                 'ud.nasc',
-                'u.name as funcionario'
+                'u.name as funcionario',
+                'c.nome',
+                'a.type',
+                'l.name as clinica',
+                'l.cep',
+                'l.endereco',
+                'l.numero',
+                'l.bairro',
+                'l.cidade',
+                'l.estado'
             )
             ->where('a.id',$id)
             ->get();
@@ -411,9 +446,8 @@ class AnamineseController extends Controller
             $value  = $result;
         }
 
-        $procedures = DB::table('procedures')->get();
 
-        return view('vendor/voyager/index',['paciente' => $value,'filtro' => $filter, 'procedures' => $procedures]);
+        return view('vendor/voyager/index',['paciente' => $value,'filtro' => $filter]);
     }
 
     static function get_anamnese($filtro,$id){
@@ -454,6 +488,8 @@ class AnamineseController extends Controller
                 'a.id as anamnese_id',
                 'a.user_id_examining_doctor',
                 'a.message',
+                'a.realization_date',
+                'a.type',
                 'c.nome_fantasia',
                 'c.cnpj',
                 'c.endereco',

@@ -242,11 +242,11 @@
                     <tr>
                         <td>Procedimentos diagnóstico</td>
                         <td colspan="3">
-                            <select class="form-control select2" name="medico[procedure][]" multiple="">
-                                @foreach($procedures as $key => $procedure)
-                                    <option @if(\App\Anamnesi::count_procedure($amnesis->id,$procedure->id) > 0) selected @endif value="{{$procedure->id}}">{{$procedure->name}}</option>
-                                @endforeach
-                            </select>
+                            <ul>
+                            @foreach(\App\Anamnesi::get_procedures($amnesis->id) as $key => $procedure)
+                                <li class="alert-primary" style="list-style:none;font-size: 18px;font-weight: bold;padding: 5px;border-bottom: 1px solid;margin-bottom: 5px;">{{$procedure->name}}</li>
+                            @endforeach
+                            </ul>
                         </td>
                     </tr>
                     <tr>

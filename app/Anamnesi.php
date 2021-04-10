@@ -7,6 +7,7 @@ use Illuminate\Notifications\Notifiable;
 use \App\User;
 use DB;
 use Illuminate\Support\Facades\Auth;
+use Notification;
 
 class Anamnesi extends Model
 {
@@ -14,8 +15,8 @@ class Anamnesi extends Model
 
     static function get_procedures($anamnese_id){
         return DB::table('procedure_relationship as pr')
-            ->join('procedures as p','pr.procedures_id','=','p.id')
-            ->select('p.name','p.description')
+            ->leftjoin('procedures as p','pr.procedures_id','=','p.id')
+            ->select('p.*')
             ->where('pr.anamnesis_id',$anamnese_id)
             ->get();
 
@@ -34,9 +35,41 @@ class Anamnesi extends Model
     }
 
 
-    protected function notification($id){
-        $user = User::find($id);
-        $user->notify(new \App\Notifications\encaminhamento());
+    protected function notification($user_id,$anamnese_id){
+        $result = DB::table('anamnesis as a')
+            ->join('users as u','a.user_id_employee','=','u.id')
+            ->join('user_data as ud','a.user_id_employee','=','ud.user_id')
+            ->join('companies as c','a.companies_id','=','c.id')
+            ->join('location as l','a.location_id','=','l.id')
+            ->select(
+                'u.name as paciente',
+                'ud.cpf',
+                'ud.nasc',
+                'c.nome as empresa',
+                'l.name as clinica',
+                'l.cep',
+                'l.endereco',
+                'l.numero',
+                'l.bairro',
+                'l.cidade',
+                'l.estado',
+                'l.obs'
+            )
+            ->where('a.id',$anamnese_id)
+            ->get();
+
+        $job = [
+            'paciente' => $result[0]->paciente,
+            'cpf' => $result[0]->cpf,
+            'nasc' => $result[0]->nasc,
+            'empresa' => $result[0]->empresa,
+            'clinica' => $result[0]->clinica,
+            'endereco' => $result[0]->endereco .' '. $result[0]->numero .', '.$result[0]->bairro .', '. $result[0]->cidade .' - '. $result[0]->estado . ' ' .$result[0]->obs,
+        ];
+
+        $user = User::find($user_id);
+//        $user->notify(new \App\Notifications\encaminhamento());
+        Notification::send($user, new \App\Notifications\encaminhamento($job));
     }
 
     public function updateAnamnese($data){
@@ -63,19 +96,21 @@ class Anamnesi extends Model
             ->where(['anamnesis_id' => $anamnese_id,'procedures_id'=>$procedure_id])
             ->count();
     }
-        protected function add_procedure($anamnese_id,$procedures,$updata = false){
-        if(!$updata){
-            foreach ($procedures as $key => $procedure) {
-               DB::table('procedure_relationship')->insert([
-                   'anamnesis_id' => $anamnese_id,
-                   'procedures_id' => $procedure,
-                   'created_at' => date('Y-m-d H:i:s')
-               ]);
-            }
-        }else{
+    protected function add_procedure($anamnese_id,$procedures,$updata = false){
+    if(!$updata){
+        foreach ($procedures as $key => $procedure) {
+           DB::table('procedure_relationship')->insert([
+               'anamnesis_id' => $anamnese_id,
+               'procedures_id' => $procedure,
+               'created_at' => date('Y-m-d H:i:s')
+           ]);
+        }
+    }else{
+
+        if(!empty($procedures)) {
 
             DB::table('procedure_relationship')
-                ->where('anamnesis_id',$anamnese_id)
+                ->where('anamnesis_id', $anamnese_id)
                 ->delete();
 
             foreach ($procedures as $key => $procedure) {
@@ -86,10 +121,17 @@ class Anamnesi extends Model
                     'updated_at' => date('Y-m-d H:i:s')
                 ]);
             }
+        }else{
+            return [
+                'success' => false,
+                'message' => 'Informe o procedimento!'
+            ];
 
         }
 
     }
+
+}
     protected function add_meta_question(array $data,$question,$updata = true)
     {
         $data = [

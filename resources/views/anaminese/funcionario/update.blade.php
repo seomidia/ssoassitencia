@@ -3,12 +3,12 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 @stop
 
-@section('page_title', __('Anaminese'))
+@section('page_title', __('Anamnese'))
 
 @section('page_header')
     <h1 class="page-title">
         <i class="icon voyager-documentation"></i>
-        {{ __('Anaminese')}}
+        {{ __('Anamnese')}}
     </h1>
     <a href="/admin/funcionario/anaminese" class="btn btn-warning btn-add-new">
         <i class="voyager-double-left"></i> <span>{{ __('Voltar') }}</span>
@@ -31,9 +31,13 @@
                         <div class="row justify-content-start">
                             <div class="col-md-12 dados-funcionario">
                                 @foreach($dados as $key => $value)
-                                    <span class="label">NOME: {{$value->funcionario}}</span>
-                                    <span class="label">CPF: {{App\Http\Controllers\AnamineseController::formatar_cpf_cnpj($value->cpf)}}</span>
-                                    <span class="label">Nasc: {{App\Http\Controllers\AnamineseController::data($value->nasc)}}</span>
+                                    <span class="label" style="font-size: 13px;"><strong style="font-size: 12px;font-weight: bold;"> NOME:</strong> {{$value->funcionario}}</span>
+                                    <span class="label" style="font-size: 13px;"><strong style="font-size: 12px;font-weight: bold;"> CPF:</strong> {{App\Http\Controllers\AnamineseController::formatar_cpf_cnpj($value->cpf)}}</span>
+                                    <span class="label" style="font-size: 13px;"><strong style="font-size: 12px;font-weight: bold;"> NASC:</strong> {{App\Http\Controllers\AnamineseController::data($value->nasc)}}</span>
+                                    <span class="label" style="font-size: 13px;"><strong style="font-size: 12px;font-weight: bold;"> EMPRESA:</strong> {{$value->nome}}</span>
+                                    <span class="label" style="font-size: 13px;"><strong style="font-size: 12px;font-weight: bold;"> CLINICA:</strong> {{$value->clinica}} - {{$value->endereco}} {{$value->numero}}, {{$value->bairro}}, {{$value->cidade}}-{{$value->estado}}</span>
+
+
                                 @endforeach
                             </div>
                             <form name="questionario" action="">

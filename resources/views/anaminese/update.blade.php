@@ -147,8 +147,9 @@
                             @foreach($dados as $key => $item)
                             <div class="col-md-12">
                                 <button type="submit" class="btn btn-primary mt-5">Salvar</button>
-                                    <div style="clear: both">&nbsp;</div>
                                     <div class="row">
+                                        <div style="clear: both">&nbsp;</div>
+
                                         <h3 class="border-left mb-5">Empresa</h3>
                                         <div class="form-group  col-md-4 pessoa_cpf">
                                             <label for="pessoa_cpf">CNPJ</label>
@@ -230,19 +231,56 @@
                                         </div>
 
                                     </div>
-                                    <div class="row">
-                                        <h3 class="border-left mb-5">Profissional</h3>
-                                        <div class="form-group  col-md-3">
-                                            <label for="pessoa_cpf">Cargo</label>
-                                            <select class="form-control select2" name="cargo">
-                                                <option value="">Selecione</option>
-                                                @if(isset($item->office_id))
-                                                    <option selected value="{{$item->office_id}}">{{$item->cargo}}</option>
-                                                @endif
-                                            </select>
-                                            <small id="aviso" class="form-text text-muted"></small>
-                                        </div>
+                                <div class="row">
+                                    <h3 class="border-left mb-5">Exames</h3>
+                                    <div class="form-group  col-md-12">
+                                        <label for="pessoa_cpf">Procedimentos diagnóstico</label>
+                                        <select class="form-control select2" name="medico[procedure][]" multiple="">
+                                            @foreach($procedures as $key => $procedure)
+                                                <option @if(\App\Anamnesi::count_procedure($anamnese_id,$procedure->id) > 0) selected @endif value="{{$procedure->id}}">{{$procedure->name}}</option>
+                                            @endforeach
+                                        </select>
+
+                                        <small id="aviso" class="form-text text-muted"></small>
                                     </div>
+                                </div>
+                                <div class="row">
+                                    <h3 class="border-left mb-5">Profissional</h3>
+                                    <div class="form-group  col-md-5">
+                                        <label for="pessoa_cpf">Cargo</label>
+                                        <select class="form-control select2" name="cargo">
+                                            <option value="">Selecione</option>
+                                            @if(isset($item->office_id))
+                                                <option selected value="{{$item->office_id}}">{{$item->cargo}}</option>
+                                            @endif
+                                        </select>
+                                        <small id="aviso" class="form-text text-muted"></small>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <h3 class="border-left mb-5">Tipo</h3>
+                                    <div class="form-group  col-md-5 pessoa_cpf">
+                                        <select class="form-control select2" name="anamnese_type">
+                                            <option value="">Selecione</option>
+                                            @foreach($tipo as $key => $tipos)
+                                                <option value="{{$tipos->name}}" @if($item->type == $tipos->name) selected @endif>{{$tipos->name}}</option>
+                                            @endforeach
+                                        </select>
+                                        <small id="aviso" class="form-text text-muted"></small>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <h3 class="border-left mb-5">Local de Consulta</h3>
+                                    <div class="form-group  col-md-5">
+                                        <select class="form-control select2" name="location_id">
+                                            <option value="">Selecione</option>
+                                            @foreach($locais as $key => $location)
+                                                <option value="{{$location->id}}" @if($item->location_id == $location->id) selected @endif>{{$location->name}} - {{$location->endereco}} {{$location->numero}}, {{$location->bairro}}, {{$location->cidade}} - {{$location->estado}} </option>
+                                            @endforeach
+                                        </select>
+                                        <small id="aviso" class="form-text text-muted"></small>
+                                    </div>
+                                </div>
                                 <input type="hidden" name="anamnese_id" value="{{$anamnese_id}}">
                                 <input type="hidden" name="user_logged" value="{{$user_logged}}">
                                 <input type="hidden" name="step" value="{{$item->step}}">
@@ -307,6 +345,7 @@
 
         }
         $(document).ready(function(){
+            $('.select2-selection--multiple').css('height','100px');
             document.getElementById('empresa_cnpj').addEventListener('input', function (e) {
                 var x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,3})(\d{0,3})(\d{0,4})(\d{0,2})/);
                 e.target.value = !x[2] ? x[1] : x[1] + '.' + x[2] + '.' + x[3] + '/' + x[4] + (x[5] ? '-' + x[5] : '');
@@ -461,9 +500,9 @@
 
                 $.post('/admin/encaminhamento/' + anamnese_id, $(this).serializeArray(), function (response) {
                     toastr.success('Encaminhamento criado com susesso!');
-                    setTimeout(function (){
-                        window.location.href = '/admin/encaminhamento';
-                    },2000);
+                    // setTimeout(function (){
+                    //     window.location.href = '/admin/encaminhamento';
+                    // },2000);
                 }).fail(function (jqXHR, textStatus) {
                     toastr.error(jqXHR.responseJSON.message);
                 })

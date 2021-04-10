@@ -11,14 +11,16 @@ class encaminhamento extends Notification
 {
     use Queueable;
 
+    protected $Data = [];
+
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($Data)
     {
-        //
+        $this->Data =$Data;
     }
 
     /**
@@ -44,12 +46,25 @@ class encaminhamento extends Notification
         $url     = url('/admin/funcionario/anaminese');
         $nome    = $notifiable->name;
         $email    = $notifiable->email;
+        $paciente = $this->Data['paciente'];
+        $cpf = $this->Data['cpf'];
+        $nasc = $this->Data['nasc'];
+        $empresa = $this->Data['empresa'];
+        $clinica = $this->Data['clinica'];
+        $endereco = $this->Data['endereco'];
 
 
         return (new MailMessage)
                     ->subject('SSO Assessoria - Questionário anamnese')
                     ->greeting('Ola ' . $nome)
                     ->line('Foi encaminhada uma anamnese para você responder.')
+                    ->line('Dados do paciente:')
+                    ->line('Nome:'. $paciente)
+                    ->line('CPF:'. $cpf)
+                    ->line('Nasc:'. $nasc)
+                    ->line('Empresa:'. $empresa)
+                    ->line('Clinica:'. $clinica)
+                    ->line('Endereço:'. $endereco)
                     ->line('Dados de sua conta:')
                     ->line('Usuario: ' .$email)
                     ->line('Senha: (Seu cpf)')

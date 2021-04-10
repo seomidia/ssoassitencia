@@ -192,7 +192,8 @@ return [
     ],
 
     'additional_js' => [
-        'js/products.js'
+        'js/products.js',
+        'js/location.js',
     ],
 
     'googlemaps' => [
