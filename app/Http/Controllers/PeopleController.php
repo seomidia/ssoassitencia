@@ -18,6 +18,7 @@ class PeopleController extends Controller
         $data = [
             'nome'           => $request->input('nome'),
             'email'          => $request->input('email'),
+            'cpf'          => $cpf,
             'password'       => bcrypt($cpf)
         ];
 

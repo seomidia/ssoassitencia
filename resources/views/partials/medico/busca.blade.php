@@ -157,16 +157,17 @@
         </div><!-- /.modal -->
 
     @endif
-
     @section('javascript')
+        <!-- Webcam.min.js -->
+            <script type="text/javascript" src="{{asset('js/camera/webcamjs/webcam.js')}}"></script>
         <script>
+
             $(document).ready(function($){
                 $('a#detalhe').click(function(event){
                     event.preventDefault();
                     var href = $(this).attr('href');
                     $('#ficha-' + href).modal('show')
                 });
-
                 $('td.anamnese a').on('click',function(event){
                     event.preventDefault();
                     var href = $(this).attr('href');
@@ -205,7 +206,6 @@
                     })
 
                 });
-
                 $('form[name="complementares"]').submit(function(event){
                     event.preventDefault();
 
@@ -219,7 +219,33 @@
                         }, 2000);
                     });
                 });
+                $('.start').click(function(event){
+                    event.preventDefault();
+                    var href = $(this).attr('href');
 
-            })
+                    Webcam.set({
+                        width: 320,
+                        height: 240,
+                        image_format: 'jpeg',
+                        jpeg_quality: 90
+                    });
+
+                    Webcam.attach( '.camera-' + href );
+
+                    $('.fotografar-' + href).show();
+                    $('.fechar-' + href).hide();
+                })
+            });
+            function take_snapshot(id) {
+
+                // take snapshot and get image data
+                Webcam.snap( function(data_uri) {
+                    $('#photo_employee-'+ id).val(data_uri);
+                    // display results in page
+                    document.getElementById('results-' + id).innerHTML =
+                        '<img src="'+data_uri+'" style="width: 272px;margin-left: 10px;"/>';
+                } );
+            }
         </script>
+
 @stop

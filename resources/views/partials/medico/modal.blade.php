@@ -206,8 +206,27 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>ASSINATURA DO FUNCINÁRIO</td>
-                        <td colspan="3"></td>
+                        <td>FOTO DO FUNCINÁRIO</td>
+                        <td colspan="3">
+                            <div class="fotografar-{{$amnesis->id}}" style="display: none">
+                                <div  class="camera camera-{{$amnesis->id}}"></div>
+                                <div id="results-{{$amnesis->id}}" class="results" >
+                                </div>
+                                <div style="clear: both"></div>
+                                <input type=button value="Gravar" style="margin-top: 16px;border: 0;padding: 10px;background: #333;color: #fff;font-weight: bold;float: ;" onClick="take_snapshot({{$amnesis->id}})">
+                            </div>
+                            @php
+                                $photo = \App\Anamnesi::get_meta_question($amnesis->id,'photo_employee');
+                            @endphp
+
+                            @if($photo != '')
+                                <img class="fechar-{{$amnesis->id}}" src="{{$photo}}" style="width: 272px;margin-left: 10px;"/>
+                            @endif
+
+
+                            <div><a href="{{$amnesis->id}}" class="start fechar-{{$amnesis->id}}" style="margin: 10px;display: block;width: 100px;background: #22a7f0;padding: 10px;text-align: center;color: #fff;text-decoration: none;font-weight: bold;"><span style="color: #fff;font-weight: bold;margin-right: 5px;" class="voyager-photo"></span>Imagem</a></div>
+
+                        </td>
                     </tr>
                     <tr>
                         <td>Parecer Médico</td>
@@ -274,6 +293,7 @@
                         <td colspan="3" style="text-align: right">
                             <input type="hidden" name="employee" value="{{$item->id}}">
                             <input type="hidden" name="anamnese" value="{{$amnesis->id}}">
+                            <input type="hidden" id="photo_employee-{{$amnesis->id}}" name="photo_employee">
                             <button name="salvar" type="submit" class="btn btn-success">Salvar</button>
                         </td>
                     </tr>

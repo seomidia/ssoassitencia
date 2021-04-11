@@ -93,3 +93,5 @@ Route::post('/admin/assistente/{assistente}/edit', 'UserController@AssistenteUpd
 Route::post('/admin/assistente', 'UserController@AssistenteStore')->name('voyager.store.assistente');
 Route::post('/admin/assistente/{assistente}/delete', 'UserController@AssistenteDelete')->name('voyager.delete.assistente');
 
+// camera ------------------------------------ camera/save-photo
+Route::post('camera/save-photo', 'CameraController@store')->name('voyager.save.photo');

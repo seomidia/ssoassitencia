@@ -45,8 +45,11 @@
                                     @include('anaminese.questoes.antecedentes-familiares')
                                     @include('anaminese.questoes.habitos-de-vida')
                                     @include('anaminese.questoes.antecedentes-pessoais')
-                                    @include('anaminese.questoes.mulheres-questionarios')
-                                    @include('anaminese.questoes.homem-questionario')
+                                    @if( $dados[0]->sexo =='feminino')
+                                        @include('anaminese.questoes.mulheres-questionarios')
+                                    @else
+                                        @include('anaminese.questoes.homem-questionario')
+                                        @endif
                                     @include('anaminese.questoes.avaliacao-nutricional')
                                     @include('anaminese.questoes.avaliacao-ocupacional')
                                     @include('anaminese.questoes.sinais-vitais')

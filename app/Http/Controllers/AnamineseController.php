@@ -25,8 +25,24 @@ class AnamineseController extends Controller
 
         $user        = $request->input('employee');
         $anamnese_id = $request->input('anamnese');
+        $photo = $request->input('photo_employee');
 
-        if(!isset($request->medico['aparelho-auditivo-e-visual'])){
+        if($user == ''){
+            return response()->json([
+                'success' => false,
+                'message' => 'Funcionario é obrigatório!'
+            ],500);
+        }elseif($anamnese_id == ''){
+            return response()->json([
+                'success' => false,
+                'message' => 'Anamnese é inixistente!'
+            ],500);
+        }elseif($photo == ''){
+            return response()->json([
+                'success' => false,
+                'message' => 'Foto do Funcionário é obrigatório!'
+            ],500);
+        }elseif(!isset($request->medico['aparelho-auditivo-e-visual'])){
             return response()->json([
                 'success' => false,
                 'message' => 'Informar Aparelho auditivo e visual é necessario!'
@@ -86,15 +102,15 @@ class AnamineseController extends Controller
                 'success' => false,
                 'message' => 'Informar a data do exame é necessario!'
             ],500);
+        }elseif(!isset($request->medico['dataExame'])){
+            return response()->json([
+                'success' => false,
+                'message' => 'Informar a data do exame é necessario!'
+            ],500);
         }elseif(!isset($request->medico['obs'])){
             return response()->json([
                 'success' => false,
                 'message' => 'Informar Observações gerais é necessario!'
-            ],500);
-        }elseif(!isset($request->medico['procedure'])){
-            return response()->json([
-                'success' => false,
-                'message' => 'Informe o procedimento diagnostico!'
             ],500);
         }elseif(!isset($request->medico['termo'])){
             return response()->json([
@@ -105,17 +121,20 @@ class AnamineseController extends Controller
             $count = DB::table('meta_resposes')
                 ->where(['anamnesis_id'=>$anamnese_id,'section'=>'medico'])
                 ->count();
+            $data = $request->all();
+            $data['medico']['photo_employee'] = $photo;
+            unset($data['photo_employee']);
 
 
             if($count == 0){
-                Anamnesi::add_meta_question(['user_id_employee'=> $user,'anamnesis_id'=>$anamnese_id],$request->all());
+                Anamnesi::add_meta_question(['user_id_employee'=> $user,'anamnesis_id'=>$anamnese_id],$data);
                 return response()->json([
                     'success' => true,
                     'anamnese_id' => $anamnese_id,
                     'message' => 'Avaliação cadastrada com sucesso!'
                 ],200);
             }else{
-                Anamnesi::add_meta_question(['user_id_employee'=> $user,'anamnesis_id'=>$anamnese_id],$request->all(),false);
+                Anamnesi::add_meta_question(['user_id_employee'=> $user,'anamnesis_id'=>$anamnese_id],$data,false);
                 return response()->json([
                     'success' => true,
                     'anamnese_id' => $anamnese_id,
@@ -378,6 +397,7 @@ class AnamineseController extends Controller
             ->select(
                 'ud.cpf',
                 'ud.nasc',
+                'ud.sexo',
                 'u.name as funcionario',
                 'c.nome',
                 'a.type',

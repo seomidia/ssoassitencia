@@ -49,8 +49,8 @@ class User extends \TCG\Voyager\Models\User
     {
         $role = Role::where('name', $role_name)->firstOrFail();
         $total = DB::table('users')->where('email',$data['email'])->count();
-//        $totalcpf = DB::table('user_data')->where('cpf',$data['cpf'])->count();  && $totalcpf == 0
-        if($total == 0){
+        $totalcpf = DB::table('user_data')->where('cpf',$data['cpf'])->count();
+        if($total == 0 && $totalcpf == 0){
                 $user = \TCG\Voyager\Models\User::create([
                     'name'           => $data['nome'],
                     'email'          => $data['email'],

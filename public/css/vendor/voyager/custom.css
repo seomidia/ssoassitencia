@@ -1,3 +1,22 @@
+/*camera*/
+/* CSS comes here */
+.camera video{
+    width: 272px!important;
+    height: auto!important;
+}
+.camera{
+    width: 272px!important;
+    float: left;
+}
+.results{
+    width: 272px!important;
+    float: left;
+    margin-left: 10px;
+}
+.results img {
+    width: 272px!important;
+}
+/*camera*/
 #voyager-loader img {
     width: 200px!important;
     height: 200px!important;
