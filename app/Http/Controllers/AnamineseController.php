@@ -107,11 +107,6 @@ class AnamineseController extends Controller
                 'success' => false,
                 'message' => 'Informar a data do exame é necessario!'
             ],500);
-        }elseif(!isset($request->medico['obs'])){
-            return response()->json([
-                'success' => false,
-                'message' => 'Informar Observações gerais é necessario!'
-            ],500);
         }elseif(!isset($request->medico['termo'])){
             return response()->json([
                 'success' => false,
@@ -124,8 +119,6 @@ class AnamineseController extends Controller
             $data = $request->all();
             $data['medico']['photo_employee'] = $photo;
             unset($data['photo_employee']);
-
-
             if($count == 0){
                 Anamnesi::add_meta_question(['user_id_employee'=> $user,'anamnesis_id'=>$anamnese_id],$data);
                 return response()->json([
@@ -134,7 +127,7 @@ class AnamineseController extends Controller
                     'message' => 'Avaliação cadastrada com sucesso!'
                 ],200);
             }else{
-                Anamnesi::add_meta_question(['user_id_employee'=> $user,'anamnesis_id'=>$anamnese_id],$data,false);
+                Anamnesi::add_meta_question(['user_id_employee'=> $user,'anamnesis_id'=>$anamnese_id],$data);
                 return response()->json([
                     'success' => true,
                     'anamnese_id' => $anamnese_id,
@@ -287,7 +280,8 @@ class AnamineseController extends Controller
                 'ambiente_trabalho' => $request->input('ambiente_Trabalho'),
                 'step' => 'step_funci',
                 'type' => $request->input('anamnese_type'),
-                'location_id' => $request->input('location_id')
+                'location_id' => $request->input('location_id'),
+                'parecer' => $request->input('parecer')
             ];
 
 
@@ -471,14 +465,16 @@ class AnamineseController extends Controller
     }
 
     static function get_anamnese($filtro,$id){
-        return DB::table('anamnesis as a')
+        return  DB::table('anamnesis as a')
             ->leftjoin('companies as c','a.companies_id','=','c.id')
             ->select(
                 'a.*',
                 'c.nome',
                 'c.cnpj'
             )
-            ->where($filtro,$id)->get();
+            ->where($filtro,$id)
+            ->get();
+
     }
 
     static function questions($user_id,$anamnese_id){
@@ -574,22 +570,14 @@ class AnamineseController extends Controller
 
     public function ComplementarStatus(Request $request,$id)
     {
+        $a = $request->all();
+
         $update = DB::table('anamnesis')
             ->where('id',$id)
             ->update([
-                'step' => 'step_med',
+                'message' => $a['obs_geral'],
+                'step' => 'step_med_p'
             ]);
-
-        $a = $request->all();
-
-        $data = [
-            'medico' =>[
-                'parecer_medico' => $a['obs_geral']
-            ]
-        ];
-
-        Anamnesi::add_meta_question(['user_id_employee'=> $a['user_id'],'anamnesis_id'=>$id],$data);
-
 
         return response()->json([
             'success'=> true,

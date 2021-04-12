@@ -13,34 +13,37 @@ class Anamnesi extends Model
 {
     use Notifiable;
 
-    static function get_procedures($anamnese_id){
+    static function get_procedures($anamnese_id)
+    {
         return DB::table('procedure_relationship as pr')
-            ->leftjoin('procedures as p','pr.procedures_id','=','p.id')
+            ->leftjoin('procedures as p', 'pr.procedures_id', '=', 'p.id')
             ->select('p.*')
-            ->where('pr.anamnesis_id',$anamnese_id)
+            ->where('pr.anamnesis_id', $anamnese_id)
             ->get();
 
     }
 
-    static function get_risk($office_id){
+    static function get_risk($office_id)
+    {
         return DB::table('office_risk_relationship as orr')
-            ->join('risk_factors as rf','orr.risk_factors_id','=','rf.id')
+            ->join('risk_factors as rf', 'orr.risk_factors_id', '=', 'rf.id')
             ->select(
                 'rf.name',
                 'rf.description'
             )
-            ->where('orr.office_id',$office_id)
+            ->where('orr.office_id', $office_id)
             ->get();
 
     }
 
 
-    protected function notification($user_id,$anamnese_id){
+    protected function notification($user_id, $anamnese_id)
+    {
         $result = DB::table('anamnesis as a')
-            ->join('users as u','a.user_id_employee','=','u.id')
-            ->join('user_data as ud','a.user_id_employee','=','ud.user_id')
-            ->join('companies as c','a.companies_id','=','c.id')
-            ->join('location as l','a.location_id','=','l.id')
+            ->join('users as u', 'a.user_id_employee', '=', 'u.id')
+            ->join('user_data as ud', 'a.user_id_employee', '=', 'ud.user_id')
+            ->join('companies as c', 'a.companies_id', '=', 'c.id')
+            ->join('location as l', 'a.location_id', '=', 'l.id')
             ->select(
                 'u.name as paciente',
                 'ud.cpf',
@@ -55,7 +58,7 @@ class Anamnesi extends Model
                 'l.estado',
                 'l.obs'
             )
-            ->where('a.id',$anamnese_id)
+            ->where('a.id', $anamnese_id)
             ->get();
 
         $job = [
@@ -64,7 +67,7 @@ class Anamnesi extends Model
             'nasc' => $result[0]->nasc,
             'empresa' => $result[0]->empresa,
             'clinica' => $result[0]->clinica,
-            'endereco' => $result[0]->endereco .' '. $result[0]->numero .', '.$result[0]->bairro .', '. $result[0]->cidade .' - '. $result[0]->estado . ' ' .$result[0]->obs,
+            'endereco' => $result[0]->endereco . ' ' . $result[0]->numero . ', ' . $result[0]->bairro . ', ' . $result[0]->cidade . ' - ' . $result[0]->estado . ' ' . $result[0]->obs,
         ];
 
         $user = User::find($user_id);
@@ -72,7 +75,8 @@ class Anamnesi extends Model
         Notification::send($user, new \App\Notifications\encaminhamento($job));
     }
 
-    public function updateAnamnese($data){
+    public function updateAnamnese($data)
+    {
         $data = [
             'realization_date' => $data['realization_date'],
             'apt' => $data['apt'],
@@ -81,167 +85,203 @@ class Anamnesi extends Model
         ];
     }
 
-    protected function get_meta_question($anamnese_id,$question){
+    protected function get_meta_question($anamnese_id, $question)
+    {
         $meta = DB::table('meta_resposes')
-            ->where(['anamnesis_id'=>$anamnese_id,'question'=>$question])
+            ->where(['anamnesis_id' => $anamnese_id, 'question' => $question])
             ->get();
 
         $data = (count($meta) > 0) ? $meta[0]->response : '';
 
         return $data;
     }
-    protected function count_procedure($anamnese_id,$procedure_id)
+
+    protected function count_procedure($anamnese_id, $procedure_id)
     {
         return DB::table('procedure_relationship')
-            ->where(['anamnesis_id' => $anamnese_id,'procedures_id'=>$procedure_id])
+            ->where(['anamnesis_id' => $anamnese_id, 'procedures_id' => $procedure_id])
             ->count();
     }
-    protected function add_procedure($anamnese_id,$procedures,$updata = false){
-    if(!$updata){
-        foreach ($procedures as $key => $procedure) {
-           DB::table('procedure_relationship')->insert([
-               'anamnesis_id' => $anamnese_id,
-               'procedures_id' => $procedure,
-               'created_at' => date('Y-m-d H:i:s')
-           ]);
-        }
-    }else{
 
-        if(!empty($procedures)) {
-
-            DB::table('procedure_relationship')
-                ->where('anamnesis_id', $anamnese_id)
-                ->delete();
-
+    protected function add_procedure($anamnese_id, $procedures, $updata = false)
+    {
+        if (!$updata) {
             foreach ($procedures as $key => $procedure) {
                 DB::table('procedure_relationship')->insert([
                     'anamnesis_id' => $anamnese_id,
                     'procedures_id' => $procedure,
-                    'created_at' => date('Y-m-d H:i:s'),
-                    'updated_at' => date('Y-m-d H:i:s')
+                    'created_at' => date('Y-m-d H:i:s')
                 ]);
             }
-        }else{
-            return [
-                'success' => false,
-                'message' => 'Informe o procedimento!'
-            ];
+        } else {
+
+            if (!empty($procedures)) {
+
+                DB::table('procedure_relationship')
+                    ->where('anamnesis_id', $anamnese_id)
+                    ->delete();
+
+                foreach ($procedures as $key => $procedure) {
+                    DB::table('procedure_relationship')->insert([
+                        'anamnesis_id' => $anamnese_id,
+                        'procedures_id' => $procedure,
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'updated_at' => date('Y-m-d H:i:s')
+                    ]);
+                }
+            } else {
+                return [
+                    'success' => false,
+                    'message' => 'Informe o procedimento!'
+                ];
+
+            }
 
         }
 
     }
 
-}
-    protected function add_meta_question(array $data,$question,$updata = true)
+    protected function add_meta_question(array $data, $question)
     {
-        $data = [
-             'user_id_employee' => $data['user_id_employee'],
-             'anamnesis_id' => $data['anamnesis_id']
-         ];
+        $from = [
+            'user_id_employee' => $data['user_id_employee'],
+            'anamnesis_id' => $data['anamnesis_id']
+        ];
 
-        if($updata){
-            if(!isset($question['medico'])){
-            $data['section'] = 'biotipo';
-            $data['question'] = 'biotipo';
-            $data['response'] = $question['biotipo'];
-                if(!DB::table('meta_resposes')->insert($data)){
-                    return [
-                        'success'=> false,
-                        'message'=> 'Não foi possivel cadastrar biotipo'
-                    ];
-                }
-            }
-            if(isset($question['medico']) && !isset($question['medico']['parecer_medico'])) {
-                $status = $question['medico']['status'];
-            }
-            unset($question['medico']['procedure']);
-            foreach ($question as $key => $item) {
-                $data['section'] = $key;
+        if (isset($question['medico'])) {
+            $from['section'] = 'medico';
+        }
 
+        $total = DB::table('meta_resposes')
+            ->where($from)
+            ->count();
+        if ($total == 0 && !in_array('medico', $from)) {
+            return $this->create_meta_respose($question, $from);
+        }
+
+        if ($total == 0 && in_array('medico', $from)) {
+            $this->create_meta_respose($question, $from);
+        } else {
+            $this->update_meta_respose($question, $from);
+        }
+
+    }
+
+    protected function update_meta_respose($data, $from)
+    {
+        if (!in_array('medico', $from)) {
+            foreach ($data as $key => $item) {
                 if (is_array($item)) {
                     foreach ($item as $key2 => $per) {
-                        $data['question'] = $key2;
-                        $data['response'] = (is_array($per)) ? $per[0] : $per;
-                        $data['response2'] = (is_array($per) && isset($per[1])) ? $per[1] : '';
-                        $data['response3'] = (is_array($per) && isset($per[2])) ? $per[2] : '';
-                        $data['created_at'] = date('Y-m-d H:i:s');
-
-                       DB::table('meta_resposes')->insert($data);
-                        if(isset($question['medico']) && !isset($question['medico']['parecer_medico'])) {
-                            $dataA = [
-                                'realization_date' => date('Y-m-d'),
-                                'apt' => $status,
-                                'user_id_examining_doctor' => Auth::user()->id,
-                                'message' => $question['medico']['obs'],
-                            ];
-
-
-                            $updade = DB::table('anamnesis')
-                                ->where('id', $data['anamnesis_id'])
-                                ->update($dataA);
-                        }
+                        $a['response'] = (is_array($per)) ? $per[0] : $per;
+                        $a['response2'] = (is_array($per) && isset($per[1])) ? $per[1] : '';
+                        $a['response3'] = (is_array($per) && isset($per[2])) ? $per[2] : '';
+                        $a['updated_at'] = date('Y-m-d H:i:s');
+                        DB::table('meta_resposes')
+                            ->where(
+                                [
+                                    'user_id_employee' => $from['user_id_employee'],
+                                    'anamnesis_id' => $from['anamnesis_id'],
+                                    'section' => $key,
+                                    'question' => $key2
+                                ])
+                            ->update($a);
                     }
+                } else {
+                    $d['response'] = $item;
+                    $d['updated_at'] = date('Y-m-d H:i:s');
+
+                    DB::table('meta_resposes')
+                        ->where(
+                            [
+                                'user_id_employee' => $from['user_id_employee'],
+                                'anamnesis_id' => $from['anamnesis_id'],
+                                'section' => $key,
+                                'question' => $key
+                            ])
+                        ->update($d);
                 }
             }
-
-        }else{
-            foreach ($question as $key => $item) {
-
+        } else {
+            foreach ($data as $key => $item) {
                 $data['section'] = $key;
 
-                if (is_array($item)) {
+                if(is_Array($item)){
                     foreach ($item as $key2 => $per) {
-                        $data['question'] = $key2;
-                        $data['response'] =  $per;
-                        $data['created_at'] = date('Y-m-d H:i:s');
-
-                        $Count = DB::table('meta_resposes')
-                            ->where('anamnesis_id',$data['anamnesis_id'])
-                            ->count();
-                        if($Count <= 70){
-                            if (!DB::table('meta_resposes')->insert($data)) {
-                                return [
-                                    'success' => false,
-                                    'message' => 'Não foi possivel cadastrar '
-                                ];
-                            }
-                            $dataA = [
-                                'realization_date' => date('Y-m-d'),
-                                'apt' => $question['medico']['status'],
-                                'user_id_examining_doctor' => Auth::user()->id,
-                                'message' => $question['medico']['obs'],
-                            ];
+                        $c['response'] = $per;
+                        $c['updated_at'] = date('Y-m-d H:i:s');
+                        DB::table('meta_resposes')
+                            ->where(
+                                [
+                                    'user_id_employee' => $from['user_id_employee'],
+                                    'anamnesis_id' => $from['anamnesis_id'],
+                                    'section' => 'medico',
+                                    'question' => $key2
+                                ])
+                            ->update($c);
+                        $dataA = [
+                            'realization_date' => date('Y-m-d'),
+                            'apt' => $item['status'],
+                            'user_id_examining_doctor' => Auth::user()->id,
+                            'parecer' => $item['parecer'],
+                            'step' => 'step_med'
+                        ];
 
 
-                            $updade = DB::table('anamnesis')
-                                ->where('id',$data['anamnesis_id'])
-                                ->update($dataA);
-                        }else{
-                            if (!DB::table('meta_resposes')->where(['anamnesis_id'=>$data['anamnesis_id'],'section' => $key,'question' => $key2])->update($data)) {
-                                return [
-                                    'success' => false,
-                                    'message' => 'Não foi possivel cadastrar '
-                                ];
-                            }
-                            $dataA = [
-                                'realization_date' => date('Y-m-d'),
-                                'apt' => $question['medico']['status'],
-                                'user_id_examining_doctor' => Auth::user()->id,
-                                'message' => $question['medico']['obs'],
-                            ];
+                        $updade = DB::table('anamnesis')
+                            ->where('id',$from['anamnesis_id'])
+                            ->update($dataA);
 
-
-                            $updade = DB::table('anamnesis')
-                                ->where('id',$data['anamnesis_id'])
-                                ->update($dataA);                        }
                     }
                 }
             }
         }
-        return [
-            'success'=>true,
-            'message'=>''
-        ];
     }
 
+
+    protected function create_meta_respose($data, $from)
+    {
+        if (!in_array('medico', $from)) {
+            foreach ($data as $key => $item) {
+                $a['user_id_employee'] = $from['user_id_employee'];
+                $a['anamnesis_id'] = $from['anamnesis_id'];
+                $a['section'] = $key;
+                if (is_array($item)) {
+                    foreach ($item as $key2 => $per) {
+                        $a['question'] = $key2;
+                        $a['response'] = (is_array($per)) ? $per[0] : $per;
+                        $a['response2'] = (is_array($per) && isset($per[1])) ? $per[1] : '';
+                        $a['response3'] = (is_array($per) && isset($per[2])) ? $per[2] : '';
+                        $a['created_at'] = date('Y-m-d H:i:s');
+                        DB::table('meta_resposes')->insert($a);
+                    }
+                } else {
+                    $d['user_id_employee'] = $from['user_id_employee'];
+                    $d['anamnesis_id'] = $from['anamnesis_id'];
+                    $d['section'] = $key;
+                    $d['question'] = $key;
+                    $d['response'] = $item;
+                    $d['created_at'] = date('Y-m-d H:i:s');
+                    DB::table('meta_resposes')->insert($d);
+                }
+            }
+        } else {
+            foreach ($data as $key => $item) {
+                $data['section'] = $key;
+
+                if(is_Array($item)){
+                    foreach ($item as $key2 => $per) {
+                        $c['user_id_employee'] = $from['user_id_employee'];
+                        $c['anamnesis_id'] = $from['anamnesis_id'];
+                        $c['section'] = 'medico';
+                        $c['question'] = $key2;
+                        $c['response'] = $per;
+                        $c['created_at'] = date('Y-m-d H:i:s');
+                        DB::table('meta_resposes')->insert($c);
+
+                    }
+                }
+            }
+        }
+    }
 }

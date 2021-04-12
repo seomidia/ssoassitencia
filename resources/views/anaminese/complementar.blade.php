@@ -137,7 +137,7 @@
                         $('.modal').modal('hide');
                     },2000);
                     setTimeout(function (){
-                        window.location.href = '/admin/complementar';
+                        window.location.href = '/admin';
                     },3000);
                 }).fail(function (jqXHR, textStatus) {
                     toastr.error(jqXHR.responseJSON.message);

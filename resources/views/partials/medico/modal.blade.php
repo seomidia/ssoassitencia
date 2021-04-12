@@ -235,19 +235,21 @@
                         @endphp
 
                         <td colspan="3">
-                            {{$parecer}}
+                            <textarea  name="medico[parecer]" class="form-control">{{$parecer}}</textarea>
                         </td>
                     </tr>
+                    @php
+                        $obs = \App\Anamnesi::get_meta_question($amnesis->id,'obs');
+                    @endphp
+                    @if($obs != '')
                     <tr>
                         <td>Observações gerais</td>
-                        @php
-                            $obs = \App\Anamnesi::get_meta_question($amnesis->id,'obs');
-                        @endphp
 
                         <td colspan="3">
-                            <textarea  name="medico[obs]" class="form-control">{{$obs}}</textarea>
+                            {{$obs}}
                         </td>
                     </tr>
+                    @endif
                     <tr>
                         <td>Data do Exame</td>
                         @php
@@ -293,7 +295,7 @@
                         <td colspan="3" style="text-align: right">
                             <input type="hidden" name="employee" value="{{$item->id}}">
                             <input type="hidden" name="anamnese" value="{{$amnesis->id}}">
-                            <input type="hidden" id="photo_employee-{{$amnesis->id}}" name="photo_employee">
+                            <input type="hidden" id="photo_employee-{{$amnesis->id}}" name="photo_employee" value="{{$photo}}">
                             <button name="salvar" type="submit" class="btn btn-success">Salvar</button>
                         </td>
                     </tr>

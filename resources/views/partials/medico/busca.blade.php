@@ -73,6 +73,9 @@
                                                         @if($amnesis->step == 'step_complementar')
                                                             alert-primary
                                                         @endif
+                                                        @if($amnesis->step == 'step_med_p')
+                                                            alert-primary
+                                                        @endif
                                                             " style="padding: 3px;font-weight: bold;font-size: 13px;margin-top: 6px;">
                                                             @if($amnesis->step == 'step_rh')
                                                                 Não iniciado
@@ -85,6 +88,9 @@
                                                             @endif
                                                             @if($amnesis->step == 'step_complementar')
                                                                 Exames Complementares
+                                                            @endif
+                                                            @if($amnesis->step == 'step_med_p')
+                                                                Em Liberaçao Medica
                                                             @endif
                                                         </div>
                                                     </td>
@@ -115,7 +121,7 @@
 
                                                     </td>
                                                     <td>{{date('d/m/Y', strtotime($amnesis->created_at))}}</td>
-                                                    <td><a id="detalhe" href="{{$amnesis->id}}" style="text-decoration: none;"><div class="voyager-search"></div> </a> </td>
+                                                    <td><a class="detalhe" href="{{$amnesis->id}}" style="text-decoration: none;"><div class="voyager-search"></div> </a> </td>
                                                 </tr>
                                                 <tr>
                                                     <td>
@@ -163,7 +169,7 @@
         <script>
 
             $(document).ready(function($){
-                $('a#detalhe').click(function(event){
+                $('a.detalhe').click(function(event){
                     event.preventDefault();
                     var href = $(this).attr('href');
                     $('#ficha-' + href).modal('show')
@@ -191,7 +197,6 @@
                     var url = $(this).attr('action');
 
                     $.post(url,$(this).serializeArray(), function (response) {
-                        if(response.success){
                             var anamnese_id = window.location.origin + '/admin/complementar/' + response.anamnese_id;
 
                             // fecha ficha
@@ -200,7 +205,6 @@
                             $('form[name="complementares"]').attr('action',anamnese_id);
                             $('#complementares_modal').modal('show');
 
-                        }
                     }).fail(function (jqXHR, textStatus) {
                         toastr.error(jqXHR.responseJSON.message);
                     })
