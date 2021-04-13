@@ -415,7 +415,6 @@ class AnamineseController extends Controller
         $user = $request->input('user_id_employee');
         $anamnese_id = $request->input('anamnesis_id');
         $anamnese = Anamnesi::add_meta_question(['user_id_employee'=> $user,'anamnesis_id'=>$anamnese_id],$data);
-        if($anamnese['success']){
            DB::table('anamnesis')
                 ->where('id',$anamnese_id)
                 ->update([
@@ -427,7 +426,6 @@ class AnamineseController extends Controller
                 'success'=> true,
                 'message'=> 'Anamnese encaminhada para medico!'
             ],200);
-        }
     }
 
     public function Busca(){

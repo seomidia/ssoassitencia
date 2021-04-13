@@ -75,9 +75,9 @@
 
             $.post('/admin/anaminese/questionario', $(this).serializeArray(), function (response) {
                 toastr.success('Anamnese encaminhada para o Medico!');
-                // setTimeout(function (){
-                //     window.location.href = '/admin/funcionario/anaminese';
-                // },2000);
+                setTimeout(function (){
+                    window.location.href = '/admin/funcionario/anaminese';
+                },2000);
             }).fail(function (jqXHR, textStatus) {
                 toastr.error(jqXHR.responseJSON.message);
             })

@@ -156,7 +156,7 @@ class Anamnesi extends Model
             ->where($from)
             ->count();
         if ($total == 0 && !in_array('medico', $from)) {
-            return $this->create_meta_respose($question, $from);
+            $this->create_meta_respose($question, $from);
         }
 
         if ($total == 0 && in_array('medico', $from)) {

@@ -23,41 +23,65 @@
             <div class="pergunta">
                 <p>É vasectomizado?</p>
                 @component('components.forms.radio',[
-                        'name' => 'question[homem_questionario][vasectomizado]',
+                        'name' => 'question[homem_questionario][vasectomizado][]',
                         'valor'=>['sim','nao'],
                         'slug'=>'vasectomizado'
                         ])
                 @endcomponent
+                <div style="clear: both"></div>
+                <div class="form-check form-check-inline">
+                    <input type="text" class="form-control" placeholder="Descreva se for necessario" name="question[homem_questionario][vasectomizado][]">
+                </div>
+                <div style="clear: both"></div>
+
             </div>
             <div class="line" style="clear:both;">&nbsp;</div>
             <div class="pergunta">
                 <p>Passa por consulta urologica?</p>
                 @component('components.forms.radio',[
-                        'name' => 'question[homem_questionario][passa-por-consulta-urologica]',
+                        'name' => 'question[homem_questionario][passa-por-consulta-urologica][]',
                         'valor'=>['sim','nao'],
                         'slug'=>'passa-por-consulta-urologica'
                         ])
                 @endcomponent
+                <div style="clear: both"></div>
+                <div class="form-check form-check-inline">
+                    <input type="text" class="form-control" placeholder="Descreva se for necessario" name="question[homem_questionario][passa-por-consulta-urologica][]">
+                </div>
+                <div style="clear: both"></div>
+
             </div>
             <div class="line" style="clear:both;">&nbsp;</div>
             <div class="pergunta">
                 <p>Já fez exame de prostata? </p>
                 @component('components.forms.radio',[
-                        'name' => 'question[homem_questionario][ja-fez-exame-de-prostata]',
+                        'name' => 'question[homem_questionario][ja-fez-exame-de-prostata][]',
                         'valor'=>['sim','nao'],
                         'slug'=>'ja-fez-exame-de-prostata'
                         ])
                 @endcomponent
+                <div style="clear: both"></div>
+                <div class="form-check form-check-inline">
+                    <input type="text" class="form-control" placeholder="Descreva se for necessario" name="question[homem_questionario][ja-fez-exame-de-prostata][]">
+                </div>
+                <div style="clear: both"></div>
+
             </div>
             <div class="line" style="clear:both;">&nbsp;</div>
             <div class="pergunta">
                 <p>Câncer de próstata (pai, irmãos)</p>
                 @component('components.forms.radio',[
-                        'name' => 'question[homem_questionario][cancer-de-prostata]',
+                        'name' => 'question[homem_questionario][cancer-de-prostata][]',
                         'valor'=>['sim','nao'],
                         'slug'=>'cancer-de-prostata'
                         ])
                 @endcomponent
+                <div style="clear: both"></div>
+                <div class="form-check form-check-inline">
+                    <input type="text" class="form-control" placeholder="Descreva se for necessario" name="question[homem_questionario][cancer-de-prostata][]">
+                </div>
+                <div style="clear: both"></div>
+
             </div>
             <div style="clear:both;">&nbsp;</div>
         </div>
