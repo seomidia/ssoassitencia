@@ -33,7 +33,6 @@
     <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content" style="border: 1px solid #fff;height: 1135px;">
-{{--                <div id="popup-atestado"></div>--}}
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" id="print"><i class="fa fa-print" aria-hidden="true"></i>
@@ -41,6 +40,8 @@
                     </button>
                     <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times-circle" aria-hidden="true"></i>
                     Fechar</button>
+                    <div id="popup-atestado"></div>
+
                 </div>
             </div>
         </div>
@@ -120,7 +121,7 @@
                                     </td>
                                     <td style="vertical-align: middle">
                                             @if($item->step == 'step_med' && !is_null($item->apt))
-                                                <a data-toggle="modal" data-target=".bd-example-modal-lg" href="/admin/anamnese/atestado/{{$item->id}}" style="padding: 10px 22px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="atestado btn btn-sm @if(in_array($item->apt,[1,2,3])) btn-success @endif @if(in_array($item->apt,[0,'-1','-2','-3'])) btn-danger @endif pull-center btn2">Atestado</a>
+                                                <a target="_blank" href="/admin/anamnese/atestado/{{$item->id}}" style="padding: 10px 22px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="atestado btn btn-sm @if(in_array($item->apt,[1,2,3])) btn-success @endif @if(in_array($item->apt,[0,'-1','-2','-3'])) btn-danger @endif pull-center btn2">Atestado</a>
                                             @else
                                                 <a href="/admin/anaminese/cadastro/{{$item->id}}"  class="btn btn-sm btn-primary pull-center" style="padding: 2px 7px;"><i class="voyager-edit"></i></a>
                                                 <a href="/admin/encaminhamento/{{$item->id}}/delete" id="delete"  class="btn btn-sm btn-danger pull-center" style="padding: 2px 7px;"><i class="voyager-trash"></i></a>
@@ -192,9 +193,9 @@
 
             $('.atestado').click(function(){
                 var href = window.location.origin + $(this).attr('href');
-                console.log(href);
-                $('#popup-atestado').load(href)
+                var html = $('#popup-atestado').load(href);
             });
+
             document.getElementById('print').onclick = function() {
                     var conteudo = document.getElementById('popup-atestado').innerHTML,
                     tela_impressao = window.open('about:blank');

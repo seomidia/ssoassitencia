@@ -503,6 +503,7 @@ class AnamineseController extends Controller
                 'a.user_id_examining_doctor',
                 'a.message',
                 'a.realization_date',
+                'a.parecer',
                 'a.type',
                 'c.nome_fantasia',
                 'c.cnpj',
@@ -528,7 +529,14 @@ class AnamineseController extends Controller
             ->where('a.id',$id)
             ->get();
 
-        return view('atestado.atestado',['atestado' => $anaminese]);
+
+        return \PDF::loadView('atestado.atestado',['atestado' => $anaminese])
+            ->setPaper('a4', 'portrait')
+            ->save('storage/atestados/' . 'atestado-' . $anaminese[0]->user_name)
+            ->stream('atestado-' . $anaminese[0]->user_name . '-' . rand(0,999999),array('Attachment'=>0));
+
+
+//        return view('atestado.atestado',['atestado' => $anaminese]);
     }
 
     public function Complementar($id){
