@@ -2,11 +2,15 @@
 <head>
     <title></title>
     <style>
+        body{
+            background: #ffffff;
+        }
         #total{
             width: 700px;
             border:1px solid #000000;
             margin-bottom: 55px;
-            font-family:Lucida Grande, Lucida Sans, Arial, sans-serif
+            font-family:Lucida Grande, Lucida Sans, Arial, sans-serif;
+            background: #ffffff;
         }
         #topo{
         }

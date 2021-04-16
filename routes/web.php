@@ -76,7 +76,9 @@ Route::get('/admin/funcionario/anaminese', 'AnamineseController@indexfunc')->nam
 Route::get('/admin/anaminese/questionario/{anamnese}', 'AnamineseController@question')->name('voyager.funcionario.question');
 Route::post('/admin/anaminese/questionario/', 'AnamineseController@questionStore')->name('voyager.funcionario.question.response');
 Route::post('/admin/anaminese/devolver', 'AnamineseController@devolver')->name('voyager.funcionario.anaminese.devolver');
-Route::get('/admin/anamnese/atestado/{anamnese}', 'AnamineseController@atestado')->name('voyager.anaminese.atestado');
+Route::get('/admin/anamnese/atestado/{anamnese}', 'Controller@atestado')->name('voyager.anaminese.atestado');
+Route::get('/admin/anamnese/atestado/{anamnese}/image', 'Controller@exportImg');
+Route::post('/admin/anamnese/atestado/{anamnese}/send', 'Controller@sendmail');
 Route::get('/admin/anaminese/cadastro/{anaminese}', 'AnamineseController@cadastro')->name('voyager.anaminese.cadastro');
 
 

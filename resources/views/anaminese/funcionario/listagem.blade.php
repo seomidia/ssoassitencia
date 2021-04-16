@@ -50,7 +50,7 @@
                                     <th class="field" style="text-align: center">Ambiente</th>
                                     <th style="text-align: center">Status</th>
                                     <th style="text-align: center">Condição</th>
-                                    <th style="text-align: center">Ação</th>
+                                    <th style="text-align: center">Exportar</th>
                                 </tr>
                                 </thead>
                                 <tbody>

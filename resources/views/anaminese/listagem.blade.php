@@ -62,7 +62,7 @@
                                     <th style="text-align: center">Cargo</th>
                                     <th style="text-align: center">Status</th>
                                     <th style="text-align: center">Condição</th>
-                                    <th style="text-align: center">Ação</th>
+                                    <th style="text-align: center">Exportar</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -121,7 +121,9 @@
                                     </td>
                                     <td style="vertical-align: middle">
                                             @if($item->step == 'step_med' && !is_null($item->apt))
-                                                <a target="_blank" href="/admin/anamnese/atestado/{{$item->id}}" style="padding: 10px 22px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="atestado btn btn-sm @if(in_array($item->apt,[1,2,3])) btn-success @endif @if(in_array($item->apt,[0,'-1','-2','-3'])) btn-danger @endif pull-center btn2">Atestado</a>
+                                                <a target="_blank" href="/admin/anamnese/atestado/{{$item->id}}/" style="padding: 5px 12px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="atestado btn btn-sm @if(in_array($item->apt,[1,2,3])) btn-success @endif @if(in_array($item->apt,[0,'-1','-2','-3'])) btn-danger @endif pull-center">Atestado</a>
+                                                <a target="_blank" href="/admin/anamnese/atestado/{{$item->id}}/image" style="padding: 5px 12px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="atestado btn btn-sm @if(in_array($item->apt,[1,2,3])) btn-success @endif @if(in_array($item->apt,[0,'-1','-2','-3'])) btn-danger @endif pull-center"><i class="fa fa-image" aria-hidden="true"></i></a>
+                                                <a  href="/admin/anamnese/atestado/{{$item->id}}/send" style="padding: 5px 12px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="send btn btn-sm @if(in_array($item->apt,[1,2,3])) btn-success @endif @if(in_array($item->apt,[0,'-1','-2','-3'])) btn-danger @endif pull-center"><i class="fa fa-send" aria-hidden="true"></i></a>
                                             @else
                                                 <a href="/admin/anaminese/cadastro/{{$item->id}}"  class="btn btn-sm btn-primary pull-center" style="padding: 2px 7px;"><i class="voyager-edit"></i></a>
                                                 <a href="/admin/encaminhamento/{{$item->id}}/delete" id="delete"  class="btn btn-sm btn-danger pull-center" style="padding: 2px 7px;"><i class="voyager-trash"></i></a>
@@ -132,26 +134,6 @@
                                     @endforeach
                                 </tbody>
                             </table>
-{{--                            <div class="col-sm-6">--}}
-{{--                                <div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">Showing 1 to 10 of 15 entries</div>--}}
-{{--                            </div>--}}
-{{--                            <div class="col-sm-6">--}}
-{{--                                <div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">--}}
-{{--                                    <ul class="pagination">--}}
-{{--                                        <li class="paginate_button previous disabled" aria-controls="dataTable" tabindex="0" id="dataTable_previous">--}}
-{{--                                            <a href="#">Anterior</a>--}}
-{{--                                        </li>--}}
-{{--                                        <li class="paginate_button active" aria-controls="dataTable" tabindex="0">--}}
-{{--                                            <a href="#">1</a></li>--}}
-{{--                                        <li class="paginate_button " aria-controls="dataTable" tabindex="0">--}}
-{{--                                            <a href="#">2</a>--}}
-{{--                                        </li>--}}
-{{--                                        <li class="paginate_button next" aria-controls="dataTable" tabindex="0" id="dataTable_next">--}}
-{{--                                            <a href="#">Proximo</a>--}}
-{{--                                        </li>--}}
-{{--                                    </ul>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
                         </div>
                     </div>
                 </div>
@@ -175,6 +157,24 @@
                     toastr.error(jqXHR.responseJSON.message);
                 })
             })
+
+            $('a.send').click(function(event){
+                event.preventDefault();
+                var url= window.location.origin + $(this).attr('href');
+
+                toastr.warning('Enviando atestado ...');
+                $.post(url, function (response) {
+                    toastr.success(response.message);
+                    setTimeout(function (){
+                        window.location.href = '/admin/encaminhamento';
+                    },2000);
+                }).fail(function (jqXHR, textStatus) {
+                    toastr.error(jqXHR.responseJSON.message);
+                })
+
+
+            });
+
 
             $('a#delete').click(function(event){
                 event.preventDefault();

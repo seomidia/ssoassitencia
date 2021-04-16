@@ -489,56 +489,6 @@ class AnamineseController extends Controller
             });
     }
 
-
-    public function atestado($id){
-
-        $anaminese = DB::table('anamnesis as a')
-            ->join('companies as c','a.companies_id','=','c.id')
-            ->join('users as u','a.user_id_employee','=','u.id')
-            ->join('user_data as ud','ud.user_id','=','u.id')
-            ->join('office as o','a.office_id','=','o.id')
-            ->select(
-                'a.apt',
-                'a.id as anamnese_id',
-                'a.user_id_examining_doctor',
-                'a.message',
-                'a.realization_date',
-                'a.parecer',
-                'a.type',
-                'c.nome_fantasia',
-                'c.cnpj',
-                'c.endereco',
-                'c.numero',
-                'c.complemento',
-                'c.bairro',
-                'c.cidade',
-                'c.uf',
-                'u.id as user_id',
-                'u.name as user_name',
-                'u.email as user_email',
-                'ud.cpf as user_cpf',
-                'ud.rg as user_rg',
-                'ud.nasc as user_nasc',
-                'ud.idade as user_idade',
-                'ud.sexo as user_sexo',
-                'ud.estado_civil as user_estado_civil',
-                'o.name as cargo',
-                'o.id as cargo_id',
-                'o.workplace as ambiente'
-            )
-            ->where('a.id',$id)
-            ->get();
-
-
-        return \PDF::loadView('atestado.atestado',['atestado' => $anaminese])
-            ->setPaper('a4', 'portrait')
-            ->save('storage/atestados/' . 'atestado-' . $anaminese[0]->user_name)
-            ->stream('atestado-' . $anaminese[0]->user_name . '-' . rand(0,999999),array('Attachment'=>0));
-
-
-//        return view('atestado.atestado',['atestado' => $anaminese]);
-    }
-
     public function Complementar($id){
             $update = DB::table('anamnesis')
                 ->where('id',$id)

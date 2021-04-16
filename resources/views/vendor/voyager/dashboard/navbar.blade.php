@@ -32,6 +32,7 @@
             </ol>
             @show
         </div>
+        @if(Auth::user()->role_id == 6)
         <ul class="nav navbar-nav @if (__('voyager::generic.is_rtl') == 'true') navbar-left @else navbar-right @endif" style="margin-right: 45px; scroll-behavior: smooth">
             <li class="dropdown profile">
                 <a href="#" class="dropdown-toggle text-right" data-toggle="dropdown" role="button"
@@ -82,7 +83,8 @@
                 </ul>
             </li>
         </ul>
-        <ul class="nav navbar-nav @if (__('voyager::generic.is_rtl') == 'true') navbar-left @else navbar-right @endif">
+        @endif
+            <ul class="nav navbar-nav @if (__('voyager::generic.is_rtl') == 'true') navbar-left @else navbar-right @endif">
             <li class="dropdown profile">
                 <a href="#" class="dropdown-toggle text-right" data-toggle="dropdown" role="button"
                    aria-expanded="false"  style="padding: 0 10px 0 4px"><img src="{{ $user_avatar }}" class="profile-img"> <span
@@ -127,9 +129,11 @@
     </div>
 </nav>
 
+@if(Auth::user()->role_id == 6)
+
 @foreach($list as $key => $item)
     @foreach(App\Http\Controllers\AnamineseController::get_anamnese('a.id',$item->anaminese_id) as $key2 => $amnesis)
         @include('partials.medico.modal')
     @endforeach
 @endforeach
-
+@endif
