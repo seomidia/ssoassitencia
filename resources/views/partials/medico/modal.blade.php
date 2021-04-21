@@ -231,7 +231,10 @@
                     <tr>
                         <td>Parecer Médico</td>
                         @php
-                            $parecer = \App\Anamnesi::get_meta_question($amnesis->id,'parecer');
+                            $parecer = \DB::table('anamnesis')
+                                    ->select('parecer')
+                                    ->where('id',$amnesis->id)
+                                    ->get();
                         @endphp
 
                         <td colspan="3">
@@ -239,14 +242,17 @@
                         </td>
                     </tr>
                     @php
-                        $obs = \App\Anamnesi::get_meta_question($amnesis->id,'message');
+                        $obs = \DB::table('anamnesis')
+                                ->select('message')
+                                ->where('id',$amnesis->id)
+                                ->get();
                     @endphp
-                    @if($obs != '')
+                    @if(count($obs) > 0)
                     <tr>
                         <td>Observações gerais</td>
 
                         <td colspan="3">
-                            {{$obs}}
+                            {{$obs[0]->message}}
                         </td>
                     </tr>
                     @endif
