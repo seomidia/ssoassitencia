@@ -32,7 +32,12 @@
             </ol>
             @show
         </div>
-        @if(Auth::user()->role_id == 6)
+        @php
+            $role = \DB::table('user_roles')->where('user_id',Auth::user()->id)->get();
+            $permissao = (count($role) > 0) ? $role[0]->role_id : '';
+        @endphp
+
+    @if($permissao == 6)
         <ul class="nav navbar-nav @if (__('voyager::generic.is_rtl') == 'true') navbar-left @else navbar-right @endif" style="margin-right: 45px; scroll-behavior: smooth">
             <li class="dropdown profile">
                 <a href="#" class="dropdown-toggle text-right" data-toggle="dropdown" role="button"
