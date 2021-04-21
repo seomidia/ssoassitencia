@@ -9,6 +9,7 @@ use DB;
 use Illuminate\Support\Facades\Auth;
 use Notification;
 use Imagick;
+use ImagickPixel;
 
 
 class Anamnesi extends Model
@@ -19,10 +20,10 @@ class Anamnesi extends Model
     protected function CreateImg($pdfPath,$imgPath){
 
         $imagick = new Imagick();
-        $imagick->setResolution(576,576);
+        $imagick->setResolution(140,140);
         $imagick->readImage($pdfPath['pathToPdf'] . $pdfPath['type']);
         $imagick->resizeImage(2480,3508,Imagick::FILTER_CUBIC,1);
-        $imagick->setCompressionQuality(80);
+        $imagick->setImageCompressionQuality(72);
         $imagick->setImageFormat(str_replace('.','',$imgPath['type']));
         if($imagick->writeImage($imgPath['imgPath'] . $imgPath['type'])){
            return [
@@ -39,6 +40,7 @@ class Anamnesi extends Model
     }
 
     protected function CreatePDF($anaminese,$pathToPdf,$name,$imgPath){
+
         $criatepdf =  \PDF::loadView('atestado.atestado',['atestado' => $anaminese])
             ->setPaper('a4', 'portrait')
             ->save($pathToPdf . '.pdf')
@@ -47,7 +49,7 @@ class Anamnesi extends Model
 
         // criar imagem apartir do pdf --------------------
 
-        Anamnesi::CreateImg(
+       $pdf = Anamnesi::CreateImg(
             [
                 'pathToPdf' => $pathToPdf,
                 'type'=> '.pdf'
@@ -57,7 +59,8 @@ class Anamnesi extends Model
                 'type'=> '.png'
             ]
         );
-        Anamnesi::CreateImg(
+
+       $img = Anamnesi::CreateImg(
             [
                 'pathToPdf' => $imgPath,
                 'type'=> '.png'

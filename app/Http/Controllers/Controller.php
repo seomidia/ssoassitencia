@@ -42,43 +42,6 @@ class Controller extends BaseController
         }
     }
 
-    public function exportImg($id){
-        $anaminese = DB::table('anamnesis as a')
-            ->join('users as u','a.user_id_employee','=','u.id')
-            ->select(
-                'u.name as user_name'
-            )
-            ->where('a.id',$id)
-            ->get();
-
-        $username = $anaminese[0]->user_name;
-        $filename = str_replace(' ','_', $username) ;
-        $pathToPdf = storage_path('app/public/atestados/' . $filename);
-        $name = $filename .'-anamnese-'. $id;
-        $pathAtestadoimgUser = storage_path('app/public/atestados/img/' . $filename);
-
-
-
-        $imagick = new Imagick();
-        $imagick->setResolution(576,576);
-        $imagick->readImage($pathToPdf .'/'. $name . '.pdf');
-        $imagick->resizeImage(2480,3508,Imagick::FILTER_CUBIC,1);
-        $imagick->setCompressionQuality(80);
-        $imagick->setImageFormat('png');
-        $imagick->writeImage($pathAtestadoimgUser .'/'. $name .'.png');
-
-
-        header("Content-Type: image/png");
-        // informa o tipo do arquivo ao navegador
-        header("Content-Length: ".filesize($pathAtestadoimgUser .'/'. $name .'.png'));
-        // informa o tamanho do arquivo ao navegador
-        header("Content-Disposition: attachment; filename=".basename($pathAtestadoimgUser .'/'. $name .'.png'));
-        // informa ao navegador que é tipo anexo e faz abrir a janela de download,
-        //tambem informa o nome do arquivo
-        readfile($pathAtestadoimgUser .'/'. $name .'.png'); // lê o arquivo
-        exit; // aborta pós-ações
-    }
-
     public function sendmail($id){
         $anaminese = DB::table('anamnesis as a')
             ->join('users as u','a.user_id_employee','=','u.id')
@@ -189,16 +152,13 @@ class Controller extends BaseController
             Anamnesi::CreatePDF($anaminese,$pathToPdf,$name,$imgPath);
             unlink($imgPath . '.png');
             rmdir($pathAtestadoimgUser);
-            $existe = false;
-        }else{
-            $existe = true;
         }
 
         return [
             'success' => true,
             'message' => 'PDF criado com sucesso!',
             'fileUri' => asset('storage/atestados/' . $filename .'/'. $name . '.pdf'),
-            'existe' => $existe
+            'existe' => $pathAtestadoimgUser
         ];
     }
 
