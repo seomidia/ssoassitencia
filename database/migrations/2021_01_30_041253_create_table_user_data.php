@@ -25,9 +25,9 @@ class CreateTableUserData extends Migration
             $table->timestamps();
         });
 
-        Schema::table('user_data', function($table) {
-            $table->foreign('user_id')->references('id')->on('users');
-        });
+//        Schema::table('user_data', function($table) {
+//            $table->foreign('user_id')->references('id')->on('users');
+//        });
 
     }
 

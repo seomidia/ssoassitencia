@@ -498,11 +498,13 @@
                 event.preventDefault();
                 var anamnese_id = $('input[name="anamnese_id"]').val();
 
+                $('#voyager-loader').show('slow');
+                toastr.warning('Notificando funcionário!');
                 $.post('/admin/encaminhamento/' + anamnese_id, $(this).serializeArray(), function (response) {
-                    toastr.success('Encaminhamento criado com susesso!');
-                    // setTimeout(function (){
-                    //     window.location.href = '/admin/encaminhamento';
-                    // },2000);
+                    toastr.success('Encaminhamento atualizado com susesso!');
+                    setTimeout(function (){
+                        window.location.href = '/admin/encaminhamento';
+                    },2000);
                 }).fail(function (jqXHR, textStatus) {
                     toastr.error(jqXHR.responseJSON.message);
                 })
@@ -513,8 +515,9 @@
 
                 var anamnese_id = $('input[name="anamnese_id"]').val();
 
+                $('#voyager-loader').show('slow');
                 $.post('/admin/encaminhamento/' + anamnese_id + '/delete', function (response) {
-                    toastr.success('Encaminhamento removido com susesso!');
+                    toastr.error('Encaminhamento removido com susesso!');
                     setTimeout(function (){
                         window.location.href = '/admin/encaminhamento';
                     },2000);

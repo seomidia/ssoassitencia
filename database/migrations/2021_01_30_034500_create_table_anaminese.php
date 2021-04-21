@@ -30,11 +30,11 @@ class CreateTableAnaminese extends Migration
             $table->timestamps();
         });
 
-        Schema::table('anamnesis', function($table) {
-            $table->foreign('user_id_employee')->references('id')->on('users');
-            $table->foreign('user_id_logged')->references('id')->on('users');
-            $table->foreign('user_id_examining_doctor')->references('id')->on('users');
-        });
+//        Schema::table('anamnesis', function($table) {
+//            $table->foreign('user_id_employee')->references('id')->on('users');
+//            $table->foreign('user_id_logged')->references('id')->on('users');
+//            $table->foreign('user_id_examining_doctor')->references('id')->on('users');
+//        });
     }
 
     /**

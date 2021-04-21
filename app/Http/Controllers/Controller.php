@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use DB;
 use Imagick;
 use Illuminate\Support\Facades\Mail;
+use App\Anamnesi;
 
 
 class Controller extends BaseController
@@ -56,11 +57,15 @@ class Controller extends BaseController
         $name = $filename .'-anamnese-'. $id;
         $pathAtestadoimgUser = storage_path('app/public/atestados/img/' . $filename);
 
+
+
         $imagick = new Imagick();
-        // Reads image from PDF
+        $imagick->setResolution(576,576);
         $imagick->readImage($pathToPdf .'/'. $name . '.pdf');
-        // Writes an image or image sequence Example- converted-0.jpg, converted-1.jpg
-        $imagick->writeImages($pathAtestadoimgUser .'/'. $name .'.png',false);
+        $imagick->resizeImage(2480,3508,Imagick::FILTER_CUBIC,1);
+        $imagick->setCompressionQuality(80);
+        $imagick->setImageFormat('png');
+        $imagick->writeImage($pathAtestadoimgUser .'/'. $name .'.png');
 
 
         header("Content-Type: image/png");
@@ -83,7 +88,7 @@ class Controller extends BaseController
             )
             ->where('a.id',$id)
             ->get();
-        $file = storage_path('app/public/atestados/img/') . str_replace(' ','_',$anaminese[0]->name) .'/'. str_replace(' ','_',$anaminese[0]->name) .'-anamnese-'.$id.'.png';
+        $file = storage_path('app/public/atestados/') . str_replace(' ','_',$anaminese[0]->name) .'/'. str_replace(' ','_',$anaminese[0]->name) .'-anamnese-'.$id.'.pdf';
 
         if(is_file($file)) {
 
@@ -96,12 +101,12 @@ class Controller extends BaseController
             if (is_null($result)) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Anexo enviado para ' . $data->name . ' com sucesso'
+                    'message' => 'Atestado enviado para ' . $data->name . ' com sucesso!'
                 ], 200);
             } else {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Não foi possivel enviar o anexo!'
+                    'message' => 'Não foi possivel enviar o atestado!'
                 ], 500);
             }
         }else{
@@ -157,6 +162,7 @@ class Controller extends BaseController
         $pathAtestadoUser = storage_path('app/public/atestados/' . $filename);
         $pathAtestadoimgUser = storage_path('app/public/atestados/img/' . $filename);
 
+
         if(!is_dir($pathAtestado)){
             \File::makeDirectory($pathAtestado, $mode = 0777, true, true);
         }
@@ -176,15 +182,24 @@ class Controller extends BaseController
         $pathToPdf = $pathAtestadoUser . '/';
         $pathToPdf .= $name;
 
-        $criatepdf =  \PDF::loadView('atestado.atestado',['atestado' => $anaminese])
-            ->setPaper('a4', 'portrait')
-            ->save($pathToPdf . '.pdf')
-            ->stream($name  . '.pdf' ,array('Attachment'=>0));
+        $imgPath = $pathAtestadoimgUser . '/';
+        $imgPath .= $name;
 
+        if(!is_file($pathToPdf . '.pdf')){
+            Anamnesi::CreatePDF($anaminese,$pathToPdf,$name,$imgPath);
+            unlink($imgPath . '.png');
+            rmdir($pathAtestadoimgUser);
+            $existe = false;
+        }else{
+            $existe = true;
+        }
 
-        return $criatepdf;
-
-
+        return [
+            'success' => true,
+            'message' => 'PDF criado com sucesso!',
+            'fileUri' => asset('storage/atestados/' . $filename .'/'. $name . '.pdf'),
+            'existe' => $existe
+        ];
     }
 
 }

@@ -19,10 +19,10 @@ class CreateTableOfficeRiskRelationship extends Migration
             $table->unsignedBigInteger('risk_factors_id');
             $table->timestamps();
         });
-        Schema::table('office_risk_relationship', function($table) {
-            $table->foreign('office_id')->references('id')->on('office');
-            $table->foreign('risk_factors_id')->references('id')->on('risk_factors');
-        });
+//        Schema::table('office_risk_relationship', function($table) {
+//            $table->foreign('office_id')->references('id')->on('office');
+//            $table->foreign('risk_factors_id')->references('id')->on('risk_factors');
+//        });
 
     }
 

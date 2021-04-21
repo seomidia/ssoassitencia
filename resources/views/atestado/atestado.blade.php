@@ -19,7 +19,7 @@
         }
         #lei{
             border-bottom: 1px solid #000;
-            font-size: 13px;
+            font-size: 15px;
             padding: 4px;
             font-weight: bold;
             text-align: center;
@@ -28,14 +28,14 @@
             clear: both;
         }
         #titulo{
-            font-size: 14px;
+            font-size: 15px;
             font-weight: bold;
             text-align: center;
             padding: 2px 0;
         }
         #sutitulo{
             border-bottom: 1px solid #dddddd;
-            font-size: 13px;
+            font-size: 15px;
             color: #3d4852;
         }
         #linha{
@@ -51,7 +51,7 @@
         #linha #valor{
             float: left;
             padding: 8px 5px;
-            font-size: 12px;
+            font-size: 15px;
         }
         #empresaPessoa{
             height: 50px;
@@ -61,7 +61,7 @@
         }
 
         #empresaPessoa #valor span {
-            font-size: 14px;
+            font-size: 15px;
         }
         #cargo{
             border-bottom: 1px solid #000;
@@ -79,7 +79,7 @@
         }
         #cargo #valor p{
             margin: 5px 14px;
-            font-size: 13px;
+            font-size: 15px;
         }
         #empresaPessoa #valor {
             border-top: 1px solid #000;
@@ -90,21 +90,21 @@
             font-weight: bold;
         }
         #empresaPessoa #valor p{
-           font-size: 13px;
+           font-size: 15px;
             margin: 5px;
         }
 
         #value ul li{
-            font-size: 13px;
+            font-size: 15px;
         }
 
         #apt{
-            font-size: 12px;
+            font-size: 15px;
             text-align: center;
             border-top: 1px solid #000000;
         }
         #data{
-            font-size: 12px;
+            font-size: 15px;
             text-align: left;
             border-bottom: 1px solid #000000;
         }
@@ -222,7 +222,7 @@
     <div id="section">
         <div id="titulo" style="background: #364f88;color: #fff;text-align: left;font-size: 12px;">Foi clinicamente examinado(a), estando exposto(a) aos seguintes fatores de riscos :</div>
         <div id="value">
-            <ul style="list-style: none;font-style: normal;font-size: 9pt;font-family: Arial;color: #000000;">
+            <ul style="list-style: none;font-style: normal; font-weight:bold;font-size: 20px;font-family: Arial;color: #000000;">
                 @foreach(\App\Anamnesi::get_risk($value->cargo_id) as $key2 => $cargo)
                     <li>{{$cargo->name}} - {{$cargo->description}} </li>
                 @endforeach
@@ -233,7 +233,7 @@
         <div id="titulo" style="background: #364f88;color: #fff;text-align: left;font-size: 12px;">Sendo submetido(a) aos seguintes procedimentos diagnósticos :</div>
         <div id="sutitulo">Procedimentos Realizados :</div>
         <div id="value">
-            <ul style="list-style: none;font-style: normal;font-size: 9pt;font-family: Arial;color: #000000;">
+            <ul style="list-style: none;font-style: normal;; font-weight:bold;font-size: 20px;font-family: Arial;color: #000000;">
                 @foreach(\App\Anamnesi::get_procedures($value->anamnese_id) as $key3 => $procedure)
                     <li>{{$procedure->name}} - {{$procedure->description}} </li>
                 @endforeach
@@ -283,6 +283,11 @@
         <b style="position: relative;top: -28px;">Médico(a) Examinador(a)</b>
     </div>
     <div id="row">
+        @php
+            $photo = \App\Anamnesi::get_meta_question($value->anamnese_id,'photo_employee');
+        @endphp
+
+        <div id="foto"><img src="{{$photo}}" width="80" style="position: absolute;left: 115px;bottom: -730px"></div>
         ____________________________________<br>
         <b  style="position: relative;top: -28px;"> Recebi a 2nd Via - Funcionário(a)</b>
     </div>

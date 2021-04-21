@@ -1,8 +1,6 @@
 @extends('voyager::master')
 @section('css')
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
-
 @stop
 
 @section('page_title', __('Encaminhamentos'))
@@ -32,16 +30,11 @@
 
     <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
-            <div class="modal-content" style="border: 1px solid #fff;height: 1135px;">
-
+            <div class="modal-content" style="border: 1px solid #fff;height: 900px;">
+                <iframe class="responsive-iframe" width="100%" height="100%" src=""></iframe>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="print"><i class="fa fa-print" aria-hidden="true"></i>
-                    </button>
-                    </button>
                     <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times-circle" aria-hidden="true"></i>
-                    Fechar</button>
-                    <div id="popup-atestado"></div>
-
+                        Fechar</button>
                 </div>
             </div>
         </div>
@@ -121,9 +114,8 @@
                                     </td>
                                     <td style="vertical-align: middle">
                                             @if($item->step == 'step_med' && !is_null($item->apt))
-                                                <a target="_blank" href="/admin/anamnese/atestado/{{$item->id}}/" style="padding: 5px 12px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="atestado btn btn-sm @if(in_array($item->apt,[1,2,3])) btn-success @endif @if(in_array($item->apt,[0,'-1','-2','-3'])) btn-danger @endif pull-center">Atestado</a>
-                                                <a target="_blank" href="/admin/anamnese/atestado/{{$item->id}}/image" style="padding: 5px 12px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="atestado btn btn-sm @if(in_array($item->apt,[1,2,3])) btn-success @endif @if(in_array($item->apt,[0,'-1','-2','-3'])) btn-danger @endif pull-center"><i class="fa fa-image" aria-hidden="true"></i></a>
-                                                <a  href="/admin/anamnese/atestado/{{$item->id}}/send" style="padding: 5px 12px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="send btn btn-sm @if(in_array($item->apt,[1,2,3])) btn-success @endif @if(in_array($item->apt,[0,'-1','-2','-3'])) btn-danger @endif pull-center"><i class="fa fa-send" aria-hidden="true"></i></a>
+                                            <a href="/admin/anamnese/atestado/{{$item->id}}/" style="padding: 5px 12px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="atestado btn btn-sm @if(in_array($item->apt,[1,2,3])) btn-success @endif @if(in_array($item->apt,[0,'-1','-2','-3'])) btn-danger @endif pull-center">Atestado</a>
+                                            <a  href="/admin/anamnese/atestado/{{$item->id}}/send" style="padding: 5px 12px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="send btn btn-sm @if(in_array($item->apt,[1,2,3])) btn-success @endif @if(in_array($item->apt,[0,'-1','-2','-3'])) btn-danger @endif pull-center"><i class="fa fa-send" aria-hidden="true"></i></a>
                                             @else
                                                 <a href="/admin/anaminese/cadastro/{{$item->id}}"  class="btn btn-sm btn-primary pull-center" style="padding: 2px 7px;"><i class="voyager-edit"></i></a>
                                                 <a href="/admin/encaminhamento/{{$item->id}}/delete" id="delete"  class="btn btn-sm btn-danger pull-center" style="padding: 2px 7px;"><i class="voyager-trash"></i></a>
@@ -148,6 +140,8 @@
         $(document).ready(function(){
             $('form[name="create_anaminesis"]').submit(function(event){
                 event.preventDefault();
+
+                $('#voyager-loader').show('slow');
                 $.post('{{ route('voyager.create.encaminhamento') }}', $(this).serializeArray(), function (response) {
                     toastr.success('Iniciando Anaminese...');
                     setTimeout(function (){
@@ -158,29 +152,11 @@
                 })
             })
 
-            $('a.send').click(function(event){
-                event.preventDefault();
-                var url= window.location.origin + $(this).attr('href');
-
-                toastr.warning('Enviando atestado ...');
-                $.post(url, function (response) {
-                    toastr.success(response.message);
-                    setTimeout(function (){
-                        window.location.href = '/admin/encaminhamento';
-                    },2000);
-                }).fail(function (jqXHR, textStatus) {
-                    toastr.error(jqXHR.responseJSON.message);
-                })
-
-
-            });
-
-
             $('a#delete').click(function(event){
                 event.preventDefault();
 
                 var url= $(this).attr('href');
-
+                $('#voyager-loader').show('slow');
                 $.post(url, function (response) {
                     toastr.success('Encaminhamento removido com susesso!');
                     setTimeout(function (){
@@ -191,19 +167,39 @@
                 })
             });
 
-            $('.atestado').click(function(){
+            $('.atestado').click(function(event){
+                event.preventDefault();
+
                 var href = window.location.origin + $(this).attr('href');
-                var html = $('#popup-atestado').load(href);
+
+                $('#voyager-loader').show('slow');
+                toastr.warning('Preparando PDF...');
+                $.get(href, function (response) {
+                    if(response.existe) toastr.remove();
+                    $('iframe').attr('src',response.fileUri);
+                    $('.modal').modal('show');
+                    toastr.success(response.message);
+                    $('#voyager-loader').hide('slow');
+                }).fail(function (jqXHR, textStatus) {
+                    toastr.error(jqXHR.responseJSON.message);
+                })
+            });
+            $('.send').click(function(event){
+                event.preventDefault();
+
+                var href = window.location.origin + $(this).attr('href');
+
+                $('#voyager-loader').show('slow');
+                toastr.warning('Enviando atestado...');
+                $.post(href, function (response) {
+                    toastr.success(response.message);
+                    $('#voyager-loader').hide('slow');
+                }).fail(function (jqXHR, textStatus) {
+                    toastr.error(jqXHR.responseJSON.message);
+                })
+
             });
 
-            document.getElementById('print').onclick = function() {
-                    var conteudo = document.getElementById('popup-atestado').innerHTML,
-                    tela_impressao = window.open('about:blank');
-
-                    tela_impressao.document.write(conteudo);
-                    tela_impressao.window.print();
-                    tela_impressao.window.close();
-            };
         });
     </script>
 @stop

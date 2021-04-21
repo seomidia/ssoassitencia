@@ -34,7 +34,7 @@ class SendAtestado extends Mailable
     {
         $this->subject('SSO ASSESSORIA - Atestado.');
         $this->to($this->Email,$this->Name);
-        $this->attach(storage_path('app/public/atestados/img/'.$this->Conta.'/'.$this->Conta . '-anamnese-'. $this->Anamnese .'.png'));
+        $this->attach(storage_path('app/public/atestados/'.$this->Conta.'/'.$this->Conta . '-anamnese-'. $this->Anamnese .'.pdf'));
         return $this->markdown('email.atestado',[
             'name' => $this->Name,
         ]);

@@ -8,10 +8,67 @@ use \App\User;
 use DB;
 use Illuminate\Support\Facades\Auth;
 use Notification;
+use Imagick;
+
 
 class Anamnesi extends Model
 {
     use Notifiable;
+
+
+    protected function CreateImg($pdfPath,$imgPath){
+
+        $imagick = new Imagick();
+        $imagick->setResolution(576,576);
+        $imagick->readImage($pdfPath['pathToPdf'] . $pdfPath['type']);
+        $imagick->resizeImage(2480,3508,Imagick::FILTER_CUBIC,1);
+        $imagick->setCompressionQuality(80);
+        $imagick->setImageFormat(str_replace('.','',$imgPath['type']));
+        if($imagick->writeImage($imgPath['imgPath'] . $imgPath['type'])){
+           return [
+               'success' => true,
+               'message' => ''
+           ];
+        }
+
+        return [
+            'success'=> false,
+            'messagem' => ''
+        ];
+
+    }
+
+    protected function CreatePDF($anaminese,$pathToPdf,$name,$imgPath){
+        $criatepdf =  \PDF::loadView('atestado.atestado',['atestado' => $anaminese])
+            ->setPaper('a4', 'portrait')
+            ->save($pathToPdf . '.pdf')
+            ->stream($name  . '.pdf' ,array('Attachment'=>0));
+
+
+        // criar imagem apartir do pdf --------------------
+
+        Anamnesi::CreateImg(
+            [
+                'pathToPdf' => $pathToPdf,
+                'type'=> '.pdf'
+            ] ,
+            [
+                'imgPath' => $imgPath,
+                'type'=> '.png'
+            ]
+        );
+        Anamnesi::CreateImg(
+            [
+                'pathToPdf' => $imgPath,
+                'type'=> '.png'
+            ] ,
+            [
+                'imgPath' => $pathToPdf,
+                'type'=> '.pdf'
+            ]
+        );
+
+    }
 
     static function get_procedures($anamnese_id)
     {

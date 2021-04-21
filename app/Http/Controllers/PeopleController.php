@@ -14,12 +14,13 @@ class PeopleController extends Controller
     function CreatePessoa(Request $request){
 
         $cpf = $request->input('cpf');
+        $senha = preg_replace('/[^0-9]/', '', $cpf);
 
         $data = [
             'nome'           => $request->input('nome'),
             'email'          => $request->input('email'),
             'cpf'          => $cpf,
-            'password'       => bcrypt($cpf)
+            'password'       => bcrypt($senha)
         ];
 
         $user_id = \App\User::User_register($data);

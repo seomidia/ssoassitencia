@@ -231,7 +231,7 @@
                     <tr>
                         <td>Parecer Médico</td>
                         @php
-                            $parecer = \App\Anamnesi::get_meta_question($amnesis->id,'parecer_medico');
+                            $parecer = \App\Anamnesi::get_meta_question($amnesis->id,'parecer');
                         @endphp
 
                         <td colspan="3">
@@ -239,7 +239,7 @@
                         </td>
                     </tr>
                     @php
-                        $obs = \App\Anamnesi::get_meta_question($amnesis->id,'obs');
+                        $obs = \App\Anamnesi::get_meta_question($amnesis->id,'message');
                     @endphp
                     @if($obs != '')
                     <tr>

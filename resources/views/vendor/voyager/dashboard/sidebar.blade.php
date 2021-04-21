@@ -30,13 +30,17 @@
 
         </div>
         <div id="adminmenu">
-            @if(Auth::user()->role_id == 3)
+            @php
+                $role = \DB::table('user_roles')->where('user_id',Auth::user()->id)->get();
+                $permissao = (count($role) > 0) ? $role[0]->role_id : '';
+            @endphp
+            @if($permissao == 3)
                 {!! menu('gerente','partials.menu.rh.menu') !!}
-            @elseif(Auth::user()->role_id == 4)
+            @elseif($permissao == 4)
                 {!! menu('paciente','partials.menu.paciente.menu') !!}
-            @elseif(Auth::user()->role_id == 6)
+            @elseif($permissao == 6)
                 {!! menu('medico','partials.menu.medico.menu') !!}
-                @elseif(Auth::user()->role_id == 8)
+                @elseif($permissao == 8)
                     {!! menu('assistente','partials.menu.assistente.menu') !!}
                 @else
                     <admin-menu :items="{{ menu('admin', '_json') }}"></admin-menu>

@@ -28,8 +28,6 @@ class CreatePostsTable extends Migration
             $table->enum('status', ['PUBLISHED', 'DRAFT', 'PENDING'])->default('DRAFT');
             $table->boolean('featured')->default(0);
             $table->timestamps();
-
-            //$table->foreign('author_id')->references('id')->on('users');
         });
     }
 

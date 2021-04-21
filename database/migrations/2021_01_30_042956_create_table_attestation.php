@@ -30,16 +30,16 @@ class CreateTableAttestation extends Migration
             $table->timestamps();
         });
 
-        Schema::table('attestation', function($table) {
-            $table->foreign('companies_id')->references('id')->on('companies');
-            $table->foreign('user_id_employee')->references('id')->on('users');
-            $table->foreign('user_id_logged')->references('id')->on('users');
-            $table->foreign('anamnesis_id')->references('id')->on('anamnesis');
-            $table->foreign('office_id')->references('id')->on('office');
-            $table->foreign('products_id')->references('id')->on('products');
-            $table->foreign('user_id_occupational_physician')->references('id')->on('users');
-            $table->foreign('user_id_examining_doctor')->references('id')->on('users');
-        });
+//        Schema::table('attestation', function($table) {
+//            $table->foreign('companies_id')->references('id')->on('companies');
+//            $table->foreign('user_id_employee')->references('id')->on('users');
+//            $table->foreign('user_id_logged')->references('id')->on('users');
+//            $table->foreign('anamnesis_id')->references('id')->on('anamnesis');
+//            $table->foreign('office_id')->references('id')->on('office');
+//            $table->foreign('products_id')->references('id')->on('products');
+//            $table->foreign('user_id_occupational_physician')->references('id')->on('users');
+//            $table->foreign('user_id_examining_doctor')->references('id')->on('users');
+//        });
 
     }
 

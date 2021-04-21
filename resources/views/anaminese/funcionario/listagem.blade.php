@@ -18,13 +18,9 @@
 
     <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
-            <div class="modal-content" style="border: 1px solid #fff;height: 1135px;">
-                <div id="popup-atestado"></div>
-
+            <div class="modal-content" style="border: 1px solid #fff;height: 900px;">
+                <iframe class="responsive-iframe" width="100%" height="100%" src=""></iframe>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="print"><i class="fa fa-print" aria-hidden="true"></i>
-                    </button>
-                    </button>
                     <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times-circle" aria-hidden="true"></i>
                         Fechar</button>
                 </div>
@@ -105,9 +101,10 @@
                                                     </div>
                                                 </td>
                                                 </td  style="text-align: center;vertical-align: middle;">
-                                                <td>
+                                                <td style="vertical-align: middle">
                                                     @if($item->step == 'step_med' && !is_null($item->apt))
-                                                        <a data-toggle="modal" data-target=".bd-example-modal-lg" href="/admin/anamnese/atestado/{{$item->id}}" style="padding: 10px 22px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="atestado btn btn-sm @if(in_array($item->apt,[1,2,3])) btn-success @endif @if(in_array($item->apt,[0,'-1','-2','-3'])) btn-danger @endif pull-center btn2">Atestado</a>
+                                                        <a href="/admin/anamnese/atestado/{{$item->id}}/" style="padding: 5px 12px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="atestado btn btn-sm @if(in_array($item->apt,[1,2,3])) btn-success @endif @if(in_array($item->apt,[0,'-1','-2','-3'])) btn-danger @endif pull-center">Atestado</a>
+                                                        <a  href="/admin/anamnese/atestado/{{$item->id}}/send" style="padding: 5px 12px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="send btn btn-sm @if(in_array($item->apt,[1,2,3])) btn-success @endif @if(in_array($item->apt,[0,'-1','-2','-3'])) btn-danger @endif pull-center"><i class="fa fa-send" aria-hidden="true"></i></a>
                                                     @else
                                                         <a href="/admin/anaminese/questionario/{{$item->id}}" @if($item->step == 'step_med') disabled @endif  class="btn btn-sm btn-primary pull-center btn2  @if($item->step == 'step_med') disabled @endif" ><i class="voyager-edit"></i>Questões</a>
                                                         <a href="{{$item->id}}" @if($item->step == 'step_med') disabled @endif class="btn btn-sm btn-primary pull-center btn2  @if($item->step != 'step_med') devolver @else disabled @endif"><i class="voyager-move"></i>Devolver</a>
@@ -259,23 +256,12 @@
 @section('javascript')
     <script>
         $(document).ready(function(){
-            $('form[name="create_anaminesis"]').submit(function(event){
-                event.preventDefault();
-                $.post('{{ route('voyager.create.encaminhamento') }}', $(this).serializeArray(), function (response) {
-                    toastr.success('Iniciando Anaminese...');
-                    setTimeout(function (){
-                        window.location.href = 'anaminese/cadastro/' + response;
-                    },2000);
-                }).fail(function (jqXHR, textStatus) {
-                    toastr.error(jqXHR.responseJSON.message);
-                })
-            })
-
             $('form[name="devolver"]').submit(function(event){
                 event.preventDefault();
                 var url= $(this).attr('action');
                 var data = $(this).serializeArray();
 
+                $('#voyager-loader').show('slow');
                 $.post(url, $(this).serializeArray(), function (response) {
                     toastr.success('Anaminese foi devolvida ao RH...');
                     setTimeout(function (){
@@ -285,34 +271,44 @@
                     toastr.error(jqXHR.responseJSON.message);
                 })
             })
-
             $('a.devolver').click(function (event) {
                 event.preventDefault();
 
                 var id = $(this).attr('href');
                 $('.justificar-' + id).toggle()
             });
-            $('a.cancelar').click(function (event) {
+            $('.atestado').click(function(event){
                 event.preventDefault();
-                var id = $('a.devolver').attr('href');
 
-                $('.justificar-' + id).hide();
-            });
-            $('.atestado').click(function(){
                 var href = window.location.origin + $(this).attr('href');
-                console.log(href);
-                $('#popup-atestado').html('ola')
-                // $('#popup-atestado').load(href)
+
+                $('#voyager-loader').show('slow');
+                toastr.warning('Preparando PDF...');
+                $.get(href, function (response) {
+                    if(response.existe) toastr.remove();
+                    $('iframe').attr('src',response.fileUri);
+                    $('.modal').modal('show');
+                    toastr.success(response.message);
+                    $('#voyager-loader').hide('slow');
+                }).fail(function (jqXHR, textStatus) {
+                    toastr.error(jqXHR.responseJSON.message);
+                })
             });
-            document.getElementById('print').onclick = function() {
-                var conteudo = document.getElementById('popup-atestado').innerHTML,
-                    tela_impressao = window.open('about:blank');
+            $('.send').click(function(event){
+                event.preventDefault();
 
-                tela_impressao.document.write(conteudo);
-                tela_impressao.window.print();
-                tela_impressao.window.close();
-            };
+                var href = window.location.origin + $(this).attr('href');
 
+                $('#voyager-loader').show('slow');
+                toastr.warning('Enviando atestado...');
+                $.post(href, function (response) {
+                    toastr.success(response.message);
+                    $('#voyager-loader').hide('slow');
+                }).fail(function (jqXHR, textStatus) {
+                    toastr.error(jqXHR.responseJSON.message);
+                })
+
+            });
         });
     </script>
 @stop
