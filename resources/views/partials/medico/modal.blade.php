@@ -238,7 +238,7 @@
                         @endphp
 
                         <td colspan="3">
-                            <textarea  name="medico[parecer]" class="form-control">{{$parecer[0]->parecer}}</textarea>
+                            <textarea  name="medico[parecer]" class="form-control">{{$parecer[0]->parecer}} </textarea>
                         </td>
                     </tr>
                     @php
