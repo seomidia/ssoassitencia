@@ -134,7 +134,7 @@
     </div>
 </nav>
 
-@if(Auth::user()->role_id == 6)
+@if($permissao == 6)
 
 @foreach($list as $key => $item)
     @foreach(App\Http\Controllers\AnamineseController::get_anamnese('a.id',$item->anaminese_id) as $key2 => $amnesis)
