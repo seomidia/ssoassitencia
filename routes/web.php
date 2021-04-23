@@ -56,6 +56,13 @@ Route::get('/json/getCargo', 'OfficeController@getCargo')->name('voyager.get.car
 // ger medico ------------------
 Route::get('/json/getMedicos', 'UserController@getMedico')->name('voyager.get.medico');
 
+// get dia do mes ------------------
+Route::get('/json/diasdomes', 'AnamineseController@getDias')->name('voyager.get.dias');
+Route::get('/json/diasemana/{dia}', 'AnamineseController@getSemana')->name('voyager.get.semana');
+
+// get local ------------------
+Route::post('/json/getlocal', 'AnamineseController@getLocal')->name('voyager.get.local');
+
 
 Route::post('/admin/office', 'OfficeController@store')->name('voyager.office.store');
 Route::post('/admin/office-update', 'OfficeController@update')->name('voyager.office.update1');

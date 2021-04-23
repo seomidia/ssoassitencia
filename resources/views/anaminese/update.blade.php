@@ -245,8 +245,8 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <h3 class="border-left mb-5">Profissional</h3>
-                                    <div class="form-group  col-md-5">
+                                    <div class="form-group  col-md-4">
+                                        <h3 class="border-left mb-5">Profissional</h3>
                                         <label for="pessoa_cpf">Cargo</label>
                                         <select class="form-control select2" name="cargo">
                                             <option value="">Selecione</option>
@@ -256,10 +256,9 @@
                                         </select>
                                         <small id="aviso" class="form-text text-muted"></small>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <h3 class="border-left mb-5">Tipo</h3>
-                                    <div class="form-group  col-md-5 pessoa_cpf">
+                                    <div class="form-group  col-md-4 pessoa_cpf">
+                                        <h3 class="border-left mb-5">Tipo</h3>
+                                        <label for="pessoa_cpf">Tipo de consulta</label>
                                         <select class="form-control select2" name="anamnese_type">
                                             <option value="">Selecione</option>
                                             @foreach($tipo as $key => $tipos)
@@ -268,19 +267,55 @@
                                         </select>
                                         <small id="aviso" class="form-text text-muted"></small>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <h3 class="border-left mb-5">Local de Consulta</h3>
-                                    <div class="form-group  col-md-5">
+                                    <div class="form-group  col-md-4">
+                                        <h3 class="border-left mb-5">Local de Consulta</h3>
+                                        <label for="pessoa_cpf">Clinica</label>
                                         <select class="form-control select2" name="location_id">
-                                            <option value="">Selecione</option>
-                                            @foreach($locais as $key => $location)
-                                                <option value="{{$location->id}}" @if($item->location_id == $location->id) selected @endif>{{$location->name}} - {{$location->endereco}} {{$location->numero}}, {{$location->bairro}}, {{$location->cidade}} - {{$location->estado}} </option>
-                                            @endforeach
+                                            @if(count($locais) > 0)
+                                                @foreach($locais as $key => $value)
+                                                   <option value="{{$value->id}}">{{$value->name}}</option>
+                                                @endforeach
+                                            @endif
                                         </select>
                                         <small id="aviso" class="form-text text-muted"></small>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <h3 class="border-left mb-5">Agendamento de consulta</h3>
+                                        <label for="pessoa_cpf">Dia do mês</label>
+                                        <select class="form-control select2" name="diames" onchange="selectDia()" id="dias">
+                                            @if(isset($item->day))
+                                                    <option value="{{$item->day}}">{{date("d-m-Y", strtotime($item->day))}}</option>
+                                            @endif
+
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <h3 class="border-left mb-5">&nbsp;</h3>
+                                        <label for="pessoa_cpf">Dia da semana</label>
+                                        <input class="form-control" type="text" id="diasemana" value="" disabled>
+                                        <input type="hidden" name="diasemana" value="">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <h3 class="border-left mb-5">&nbsp;</h3>
+
+                                        <label for="pessoa_cpf">Horário</label>
+                                        <select class="form-control select2" name="hora">
+                                            <option value="">Selecione</option>
+                                            @for($i = 8; $i <= 19; $i++)
+                                                @php
+                                                    $i = ($i <= 9) ? 0 . $i : $i;
+                                                @endphp
+                                                <option @if($item->time == $i . ':00:00') selected @endif value="{{$i}}:00">{{$i}}h:00m</option>
+                                                @if($i != 19)
+                                                  <option  @if($item->time == $i . ':15:00') selected @endif value="{{$i}}:15">{{$i}}h:15m</option>
+                                                @endif
+                                            @endfor
+                                        </select>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="anamnese_id" value="{{$anamnese_id}}">
                                 <input type="hidden" name="anamnese_id" value="{{$anamnese_id}}">
                                 <input type="hidden" name="user_logged" value="{{$user_logged}}">
                                 <input type="hidden" name="step" value="{{$item->step}}">
@@ -303,7 +338,6 @@
             v_fun=f
             setTimeout('execmascara()',1)
         }
-
         function execmascara(){
             v_obj.value=v_fun(v_obj.value)
         }
@@ -344,6 +378,7 @@
             return v
 
         }
+
         $(document).ready(function(){
             $('.select2-selection--multiple').css('height','100px');
             document.getElementById('empresa_cnpj').addEventListener('input', function (e) {
@@ -420,6 +455,8 @@
                                 $('input[name="pessoa_nascimento"]').val(response.data.nascimento);
                                 $('input[name="pessoa_idade"]').val(response.data.idade);
                                 $('select[name="pessoa_sexo"] option[value='+ response.data.sexo +']').attr('selected','selected');
+                                getlocal(response);
+
                             }else{
                                 toastr.error('Pessoa não foi encontrada, realize o cadastro!');
                             }
@@ -476,6 +513,8 @@
                 toastr.error(  'Erro ao obter os medicos: <br>' + jqXHR.responseJSON.message);
             })
 
+
+
             $('form[name="cadastro_pessoa"]').submit(function(event){
                 event.preventDefault();
                 $.post('{{ route('voyager.create.People') }}', $(this).serializeArray(), function (response) {
@@ -486,6 +525,10 @@
                     $('input[name="pessoa_nascimento"]').val(response.data.nascimento);
                     $('input[name="pessoa_idade"]').val(response.data.idade);
                     $('select[name="pessoa_sexo"] option[value='+ response.data.sexo +']').attr('selected','selected');
+
+
+
+
 
                     $('#create_pessoa').modal('hide');
 
@@ -527,7 +570,49 @@
             })
 
 
+            // select dias ---------------------------------
+
+            $.ajax({
+                url: "/json/diasdomes/",
+                type: 'get',
+                dataType: 'json',
+                success: function(response){
+                    for(var i = 0; i < response.data.length; i++){
+                        $('select[name="diames"]').append('<option value="'+ response.data[i].data+'">'+response.data[i].data+'</option>');
+                    }
+
+                    selectDia()
+                }
+            }).fail(function (jqXHR, textStatus) {
+                toastr.error(textStatus);
+            })
         });
+
+        function getlocal(response){
+
+            $.ajax({
+                url: "/json/getlocal",
+                type: 'post',
+                data:{
+                    'cidade': response.data.cidade,
+                    'uf': response.data.uf
+                },
+                dataType: 'json',
+                success: function(response){
+                    console.log(response);
+                    if(response.length > 0){
+                        for(var i = 0; i < response.length; i++){
+                            $('select[name="location_id"]').append('<option value="'+ response[i].id+'">'+response[i].name+'</option>');
+                        }
+                    }else{
+                        $('select[name="location_id"]').append('<option value="">Não existe locais para este CEP</option>');
+                    }
+                }
+            }).fail(function (jqXHR, textStatus) {
+                toastr.error(textStatus);
+            })
+
+        }
 
         function limpa_formulário_cep() {
             // Limpa valores do formulário de cep.
@@ -536,6 +621,18 @@
             $("#cidade").val("");
             $("#uf").val("");
             $("#ibge").val("");
+        }
+
+        function selectDia(){
+            // input dia semana ------------------------------------
+            var dia = $('#dias').val();
+
+            $.get('/json/diasemana/' + dia, function (response) {
+                $('input[name="diasemana"],#diasemana').val(response);
+            }).fail(function (jqXHR, textStatus) {
+                toastr.error(textStatus);
+            })
+
         }
 
         //Quando o campo cep perde o foco.
@@ -568,6 +665,8 @@
                             $("#company_bairro").val(dados.bairro);
                             $("#company_cidade").val(dados.localidade);
                             $("#company_estado").val(dados.uf);
+
+                            getlocal(dados.localidade,dados.uf);
                         } //end if.
                         else {
                             //CEP pesquisado não foi encontrado.

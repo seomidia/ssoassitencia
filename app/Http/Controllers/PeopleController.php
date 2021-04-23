@@ -29,7 +29,7 @@ class PeopleController extends Controller
 
             $user_data = DB::table('user_data')->insert([
                 'user_id' => $user_id['data']['user_id'],
-                'cpf' => $request->input('cpf'),
+                'cpf' => str_replace(['.','-'],['',''],$request->input('cpf')),
                 'rg' => $request->input('rg'),
                 'nasc' => $request->input('nascimento'),
                 'idade' => $request->input('idade'),
@@ -53,12 +53,14 @@ class PeopleController extends Controller
                     'message'=> 'Pessoa cadastrada com sucesso!',
                     'data' => [
                         'id' => $user_id['data']['user_id'],
-                        'cpf' => $request->input('cpf'),
+                        'cpf' => str_replace(['.','-'],['',''],$request->input('cpf')),
                         'nome' => $request->input('nome'),
                         'rg' => $request->input('rg'),
                         'nascimento' => $request->input('nascimento'),
                         'idade' => $request->input('idade'),
-                        'sexo' => $request->input('sexo')
+                        'sexo' => $request->input('sexo'),
+                        'cidade' => $request->input('cidade'),
+                        'uf' => $request->input('uf')
                     ]
                 ],200);
 
@@ -81,11 +83,9 @@ class PeopleController extends Controller
 
     }
     function getPessoa(Request $request,$cpf){
-
+        $cpf    = str_replace(['.','-'],['',''],$cpf);
         $people = DB::table('user_data');
         $buscar = $people->where('cpf',$cpf);
-
-        $cpf    = str_replace('.','',$cpf);
 
         $total  = $buscar->count();
 
@@ -98,9 +98,12 @@ class PeopleController extends Controller
                     'user_data.rg as rg',
                     'user_data.nasc as nascimento',
                     'user_data.idade as idade',
-                    'user_data.sexo as sexo'
+                    'user_data.sexo as sexo',
+                    'user_data.cidade',
+                    'user_data.estado'
                 )
                 ->get();
+
 
             return response()->json([
                 'success'=> true,
@@ -112,7 +115,9 @@ class PeopleController extends Controller
                     'rg' => $pessoa[0]->rg,
                     'nascimento' => $pessoa[0]->nascimento,
                     'idade' => $pessoa[0]->idade,
-                    'sexo' => $pessoa[0]->sexo
+                    'sexo' => $pessoa[0]->sexo,
+                    'cidade' => $pessoa[0]->cidade,
+                    'uf' => $pessoa[0]->estado
                 ]
             ],200);
         }else{

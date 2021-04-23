@@ -19,6 +19,92 @@ class AnamineseController extends Controller
         $this->middleware('auth');
     }
 
+    public function dia($num){
+        switch ($num){
+            case '1':
+                return 'Segunda-feira';
+                break;
+            case '2':
+                return 'Terça-feira';
+                break;
+            case '3':
+                return 'Quarta-feira';
+                break;
+            case '4':
+                return 'Quinta-feira';
+                break;
+            case '5':
+                return 'Sexta-feira';
+                break;
+            case '6':
+                return 'Sabado';
+                break;
+            case '0':
+                return 'Domingo';
+                break;
+        }
+    }
+
+    public function getSemana($data){
+        $data = date("Y-m-d", strtotime($data));
+        $semMes2 = date("w", strtotime($data));
+
+        return $this->dia($semMes2);
+    }
+
+    public function getLocal(Request $request){
+        $cidade = $request->input('cidade');
+        $estado = $request->input('uf');
+
+        $local = DB::table('location')
+            ->select('*')
+            ->where(['cidade'=> $cidade,'estado'=>$estado])
+            ->get();
+
+        return $local;
+    }
+
+    public function getDias(){
+        $semMes2 = date("w", strtotime(date("Y-m-d")));
+        $dia = date('d');
+        if($semMes2 >=1 && $semMes2 <=5){
+            $total = 5 - $semMes2;
+
+            for ($i = 0;$i <= $total; $i++){
+                $datas[] = [
+                    'data' => date('d') + $i . '-' . date('m') . '-' . date('Y'),
+                    'dia'  => $this->dia($semMes2 + $i)
+                ];
+            }
+
+            if($semMes2 == 5){
+                $total = 5 - 1;
+                $dia = $dia + 3;
+                for ($i = 0; $i <= $total; $i++) {
+                    $datas[] = [
+                        'data' => $dia + $i . '-' . date('m') . '-' . date('Y'),
+                        'dia'  => $this->dia($semMes2 + $i)
+                    ];
+                }
+
+            }
+        }else {
+            $total = 5 - 1;
+            $dia = $dia + 2;
+            for ($i = 0; $i <= $total; $i++) {
+                $datas[] = [
+                    'data' => $dia + $i . '-' . date('m') . '-' . date('Y'),
+                    'dia'  => $this->dia($semMes2 + $i)
+                ];
+            }
+        }
+        return response()->json([
+            'success' => true,
+            'data' => $datas,
+            'message' => ''
+        ],200);
+    }
+
     //  feedback medico ----------------------------------------------
     public function feedbackMedico(Request $request){
 
@@ -128,6 +214,13 @@ class AnamineseController extends Controller
                 ],200);
             }else{
                 Anamnesi::add_meta_question(['user_id_employee'=> $user,'anamnesis_id'=>$anamnese_id],$data);
+                // agendamento ---------------------------------------------------------------
+                $agendamento = [
+                    'status' => 3,
+                    'updated_at' => date('Y-m-d H:i:s')
+                ];
+                $agenda = DB::table('schedule')->where('anamnesis_id',$anamnese_id)->update($agendamento);
+
                 return response()->json([
                     'success' => true,
                     'anamnese_id' => $anamnese_id,
@@ -162,6 +255,7 @@ class AnamineseController extends Controller
             ->leftjoin('users as u','a.user_id_employee','=','u.id')
             ->leftjoin('user_data as ud','a.user_id_employee','=','ud.user_id')
             ->leftjoin('office as o','a.office_id','=','o.id')
+            ->leftjoin('schedule as s','a.id','=','s.anamnesis_id')
             ->select(
                 'a.*',
                 'c.*',
@@ -171,15 +265,15 @@ class AnamineseController extends Controller
                 'ud.idade',
                 'ud.sexo',
                 'u.name as funcionario',
-                'o.name as cargo'
+                'o.name as cargo',
+                's.day',
+                's.time'
             )
             ->where('a.id',$id)
             ->get();
-
         $procedures = DB::table('procedures')->get();
         $tipo = DB::table('anamnese_type')->get();
-        $locais = DB::table('location')->where('status',1)->get();
-
+        $locais = DB::table('location')->where('id',$dados[0]->location_id )->get();
         return view('anaminese.update',[
             'anamnese_id' => $id,
             'user_logged' => $user_logged,
@@ -191,15 +285,24 @@ class AnamineseController extends Controller
     }
     public function create(Request $request){
 
-        return DB::table('anamnesis')->insertGetId([
+        $id =  DB::table('anamnesis')->insertGetId([
             'user_id_logged' => Auth::user()->id,
             'requester' => Auth::user()->id,
             'step' => 'step_rh',
             'created_at' => date('Y-m-d H:i:s')
         ]);
 
+        $agendamento = [
+            'anamnesis_id' => $id,
+            'created_at' => date('Y-m-d H:i:s')
+        ];
+
+        $agendamento = DB::table('schedule')->insert($agendamento);
+
+  return $id;
     }
     public function updade(Request $request,$id){
+
 
         $cnpj = $request->input('empresa');
 
@@ -284,6 +387,14 @@ class AnamineseController extends Controller
                 'parecer' => $request->input('parecer')
             ];
 
+             $agendamento = [
+                 'user_id_employee' => $func,
+                 'day' => date("Y-m-d", strtotime($request->input('diames'))),
+                 'time' => $request->input('hora'),
+                 'status' => 1,
+                 'updated_at' => date('Y-m-d H:i:s')
+             ];
+            $agenda = DB::table('schedule')->where('anamnesis_id',$id)->update($agendamento);
 
             $updade = DB::table('anamnesis')
                 ->where('id',$id)
