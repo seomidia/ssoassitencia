@@ -19338,6 +19338,8 @@ __webpack_require__(/*! ./checkout */ "./resources/js/checkout.js");
 
 __webpack_require__(/*! ./company */ "./resources/js/company.js");
 
+__webpack_require__(/*! ./logout */ "./resources/js/logout.js");
+
 /***/ }),
 
 /***/ "./resources/js/bootstrap.js":
@@ -19643,6 +19645,37 @@ jQuery(document).ready(function ($) {
         });
       }
     }).fail(function (jqXHR, textStatus) {});
+  });
+});
+
+/***/ }),
+
+/***/ "./resources/js/logout.js":
+/*!********************************!*\
+  !*** ./resources/js/logout.js ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+jQuery(document).ready(function ($) {
+  $('#logout').click(function (event) {
+    event.preventDefault();
+    var csrf = $("meta[name='csrf-token']").attr("content");
+    $.ajax({
+      url: window.location.origin + '/logout',
+      data: {
+        '_token': csrf
+      },
+      type: 'post',
+      dataType: 'json',
+      success: function success(response) {
+        setTimeout(function () {
+          window.location.href = window.location.origin;
+        }, 0);
+      }
+    }).fail(function (jqXHR, textStatus) {
+      console.log(jqXHR.responseJSON.message);
+    });
   });
 });
 

@@ -16,7 +16,22 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/', 'HomeController@index')->name('home');
-Route::get('/empresa', 'EmpresaController@index')->name('empresa');
+Route::get('/trabalhe-conosco', 'HomeController@trabalheconosco')->name('trabalheconosco');
+
+// rotas dinamicas ------------------------------------------------------
+
+$pages = DB::table('pages')
+    ->where('status','ACTIVE')
+    ->get();
+
+    foreach ($pages as $key => $value){
+        $slug = $value->slug;
+        $method = str_replace('-','',$value->slug);
+        Route::get('/' . $slug, 'HomeController@'.$method)->name($method);
+    }
+
+
+
 Route::get('/carrinho', 'CartController@index')->name('cart');
 Route::post('/carrinho/add', 'CartController@add')->name('cart-add');
 Route::post('/carrinho-update/{product}', 'CartController@update')->name('cart-update');
@@ -62,6 +77,9 @@ Route::get('/json/diasemana/{dia}', 'AnamineseController@getSemana')->name('voya
 
 // get local ------------------
 Route::post('/json/getlocal', 'AnamineseController@getLocal')->name('voyager.get.local');
+
+// get categoria ------------------
+Route::get('/json/get-categorias/{product?}', 'CategoryController@getCategory')->name('voyager.get.Category');
 
 
 Route::post('/admin/office', 'OfficeController@store')->name('voyager.office.store');

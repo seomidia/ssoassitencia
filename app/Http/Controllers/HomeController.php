@@ -15,7 +15,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+//        $this->middleware('auth');
 
     }
 
@@ -26,8 +26,49 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $produtos = Product::where('featured',1)->get();
+        $produtos = Product::all();
+        $cat = DB::table('categories as c')
+            ->join('products as p','c.id','=','p.category_id')
+            ->select('c.name as categoria','p.*')
+            ->get();
 
-        return view('home',['produtos' => $produtos]);
+        $colection = collect($cat)
+            ->groupBy('categoria')
+            ->map(function ($item) {
+                return array_merge($item->toArray());
+            });
+
+
+        return view('home',['produtos' => $produtos,'categoria'=> $colection]);
     }
+
+    public function sobrenos()
+    {
+        $datapage = DB::table('pages')
+            ->where('slug','sobre-nos')
+            ->get();
+
+        return view('pages',['datapage'=>$datapage]);
+    }
+    public function politicadeprivacidade()
+    {
+        $datapage = DB::table('pages')
+            ->where('slug','politica-de-privacidade')
+            ->get();
+
+        return view('pages',['datapage'=>$datapage]);
+    }
+    public function parceiros()
+    {
+        $datapage = DB::table('pages')
+            ->where('slug','parceiros')
+            ->get();
+
+        return view('pages',['datapage'=>$datapage]);
+    }
+    public function trabalheconosco()
+    {
+        return view('trabalheconosco');
+    }
+
 }

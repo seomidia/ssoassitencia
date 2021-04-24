@@ -2,7 +2,8 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
-    <title>Pharma &mdash; Colorlib Template</title>
+    <title>{{setting('site.title')}}</title>
+    <meta name="description" content="{{setting('site.description')}}">
     <meta charset="utf-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -23,6 +24,27 @@
 <body>
 <div class="site-wrap">
     <!--HEADER-->
+    @if(Auth::check())
+
+    <div class="topbar">
+        <div class="site-navbar color-header py-2">
+            <div class="container">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="main-nav d-none d-lg-block"></div>
+                    <div class="icons">
+
+                        <i class="fas fa-user"></i> Ola, Kaio Henrique
+                        <a href="http://dev.sso.com/logout" id="logout" style="color: #8b0000;margin-left: 16px;"><i class="fas fa-power-off"></i></a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @endif
+
+
     <div class="site-navbar color-header py-2">
         <!--CAMPO DE BUSCA DE EXAMES-->
         <div class="search-wrap">
@@ -33,13 +55,12 @@
                 </form>
             </div>
         </div>
-
         <div class="container">
             <div class="d-flex align-items-center justify-content-between">
                 <div class="logo">
                     <div class="site-logo">
                         <a href="{{url('/')}}" class="js-logo-clone">
-                            <img src="{{asset('images/header/logo_final_bx.jpg')}}"  alt="Logo SSO - Assessoria em segurança & saude ocupacional" title="SSO - Assessoria em segurança & saude ocupacional">
+                            <img src="{{url('/')}}/storage/{{setting('site.logo')}}"  alt="Logo {{setting('site.title')}}" title="{{setting('site.title')}}">
                         </a>
                     </div>
                 </div>
@@ -54,12 +75,6 @@
                         <span class="icon-shopping-bag"></span>
                         <span class="number">{{\App\Cart::ChecCartFront()}}</span>
                     </a>
-                    @if(Auth::check())
-                        <form name="logout" action="http://dev.sso.com/logout" method="post" style="float: right;">
-                            @csrf
-                            <button type="submit" style="color: #8b0000" class="icons-btn d-inline-block"><i class="fas fa-power-off"></i></button>
-                        </form>
-                    @endif
                     <a href="#" class="site-menu-toggle js-menu-toggle ml-3 d-inline-block d-lg-none"><span
                             class="icon-menu"></span></a>
                 </div>
