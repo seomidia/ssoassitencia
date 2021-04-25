@@ -47,3 +47,20 @@ h3.text-dark{
     border-bottom: 1px solid #dddddd;
     background: #f2f2f2;
 }
+
+.site-footer {
+    background: #2c4167;
+    color: #fff;
+}
+
+.copy{
+    background: #222d3f;
+    color: #fff;
+}
+
+.copy a{
+    color: #fff;
+}
+
+ul.list-unstyled li a{color: #fff}
+ul.list-unstyled li {color: #fff}

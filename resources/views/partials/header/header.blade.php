@@ -33,7 +33,7 @@
                     <div class="main-nav d-none d-lg-block"></div>
                     <div class="icons">
 
-                        <i class="fas fa-user"></i> Ola, Kaio Henrique
+                        <i class="fas fa-user"></i> Ola, {{\Illuminate\Auth::user()->name}}
                         <a href="http://dev.sso.com/logout" id="logout" style="color: #8b0000;margin-left: 16px;"><i class="fas fa-power-off"></i></a>
 
                     </div>

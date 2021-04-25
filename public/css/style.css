@@ -123,7 +123,7 @@ a {
         color: #2e72c3; }
   .site-footer .footer-heading {
     font-size: 1.2rem;
-    color: #000;
+    color: #fff;
     margin-bottom: 1rem; }
 
 /* Navbar */
@@ -605,17 +605,17 @@ a {
 
 .block-3 .owl-nav .owl-prev, .block-3 .owl-nav .owl-next {
   position: absolute;
-  top: 50%;
+  top: 46%;
   -webkit-transform: translateY(-50%);
   -ms-transform: translateY(-50%);
   transform: translateY(-50%);
   font-size: 2rem; }
 
 .block-3 .owl-nav .owl-prev {
-  left: 0; }
+  left: -18px; }
 
 .block-3 .owl-nav .owl-next {
-  right: 0; }
+  right: -18px; }
 
 .block-3 .owl-dots {
   text-align: center; }

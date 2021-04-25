@@ -48,13 +48,13 @@ class CheckoutController extends Controller
             ->get();
 
         $calc = Cart::Calculo($products);
-        $sessionCode = Checkout::SessionCode('suporte@seomidia.com.br','64E41DAABAFE41F29B6E431CB18C87CF',true);
+//        $sessionCode = Checkout::SessionCode('suporte@seomidia.com.br','64E41DAABAFE41F29B6E431CB18C87CF',true);
 
         return view('checkout',[
             'produtos' => $products,
             'subtotal' => $calc['subtotal'],
             'total' => $calc['total'],
-            'sessionCode' => $sessionCode
+//            'sessionCode' => $sessionCode
         ]);
 
     }
