@@ -34,8 +34,8 @@
                     <div class="icons">
 
                         <i class="fas fa-user"></i> Ola, {{\Auth::user()->name}}
-                        <a href="http://dev.sso.com/admin" style="color: #000000;margin-left: 16px;"><i class="fas fa-tachometer-alt"></i> Painel </a>
-                        <a href="http://dev.sso.com/logout" id="logout" style="color: #8b0000;margin-left: 16px;"><i class="fas fa-power-off"></i> Sair</a>
+                        <a href="{{url('/admin')}}" style="color: #000000;margin-left: 16px;"><i class="fas fa-tachometer-alt"></i> Painel </a>
+                        <a href="{{url('/logout')}}" id="logout" style="color: #8b0000;margin-left: 16px;"><i class="fas fa-power-off"></i> Sair</a>
 
                     </div>
                 </div>
