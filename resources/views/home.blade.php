@@ -11,7 +11,7 @@
             {{-- <h2 class="sub-title">Segurança e saúde Ocupacional</h2>
             <h1>SSO</h1> --}}
            <p>
-              <a href="#" class="btn btn-primary-2 px-5 py-3">Agende seu exame</a>
+              <a href="/contato" class="btn btn-primary-2 px-5 py-3">Agende seu exame</a>
             </p>
           </div>
         </div>
