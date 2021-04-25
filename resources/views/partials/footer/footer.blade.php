@@ -71,11 +71,16 @@
 
 <script>
     $(window).scroll(function() {
-        if ($(this).scrollTop() > 900){
+        if ($(this).scrollTop() > 400){
             $('.site-navbar').addClass("header-fixo");
+            $('.site-navbar .logo img').css('width','150px');
+            $('.site-navbar').removeClass("py-2");
+
         }
         else{
             $('.site-navbar').removeClass("header-fixo");
+            $('.site-navbar .logo img').removeAttr('style')
+            $('.site-navbar').addClass("py-2");
         }
     });
 </script>

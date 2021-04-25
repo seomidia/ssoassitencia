@@ -37,7 +37,7 @@ h3.text-dark{
 .site-section {
     padding: 3em 0;
 }
-[type="submit"] {
+button.cart [type="submit"] {
     position: absolute;
     bottom: 10px;
     right: 29%;

@@ -17,6 +17,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', 'HomeController@index')->name('home');
 Route::get('/trabalhe-conosco', 'HomeController@trabalheconosco')->name('trabalheconosco');
+Route::post('/trabalhe-conosco', 'HomeController@trabalheEnvia')->name('trabalheEnvia');
+Route::get('/categoria/{categoria}', 'ProductController@category')->name('category');
+Route::post('/buscar', 'ProductController@search')->name('search');
 
 // rotas dinamicas ------------------------------------------------------
 
@@ -43,6 +46,7 @@ Route::get('/obrigado', 'CheckoutController@obrigado')->name('obrigado');
 Route::post('/company-store', 'CompanyController@store')->name('company-store');
 Route::get('/produto/{slug}', 'ProductController@Single')->name('single');
 Route::get('/contato', 'ContatoController@index')->name('contato');
+Route::post('/contato', 'ContatoController@send')->name('send');
 
 
 Route::group(['prefix' => 'admin'], function () {
