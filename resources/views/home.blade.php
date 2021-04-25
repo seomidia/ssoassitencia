@@ -82,7 +82,7 @@
 
               @foreach($produtos as $produto)
 
-                  <div class=" py-5  text-center item mb-4">
+                  <div class="text-center item mb-4">
                       <a href="produto/{{$produto->slug}}">
                             <h3 class="text-dark">{{$produto->name}}</h3>
                           <p class="price">
