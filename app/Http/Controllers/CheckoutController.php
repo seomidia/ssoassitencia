@@ -108,6 +108,19 @@ class CheckoutController extends Controller
         foreach ($request->prod as $ids){
             $prods[] = $ids['value'];
         }
+        if(in_array(2,$prods))
+            if(in_array(3,$prods))
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Consulta Admissional não pode conter Demissional!'
+                ],500);
+
+        if(in_array(3,$prods))
+            if(in_array(2,$prods))
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Consulta Demissional não pode conter Admissional!'
+                ],500);
 
         $prod = DB::table('products')
             ->wherein('id',$prods)

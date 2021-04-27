@@ -21,6 +21,9 @@
       <div class="row mb-5 justify-content-md-center">
           <div class="container-form col-md-10">
               <form name="exames-complementares" action="" method="post">
+
+                  <h1 class="title-form">@if($tipo) Consulta médica @else Exame complementar @endif</h1>
+
                   <h2>INSTRUÇÕES PARA COMPRA E AGENDAMENTO</h2>
                   <p>
                       Preencher um formulário por pessoa. Caso deseje agendar para mais pessoas iniciar novamente o forumlário.
@@ -43,19 +46,13 @@
                   </p>
 
 
-                      <div class="form-group">
-                          <label for="quem" class="text-black">Para quem é o atendimento?  <span class="text-danger">*</span></label><br>
-                          <input type="radio" name="agendar" value="outra_pessoa"> Vou agendar para outra pessoa
-                          <input type="radio" name="agendar" value="rh"> Vou agendar para mim
-                      </div>
-                  <div class="form-group">
-                      <label for="quem" class="text-black">Aconsulta é?  <span class="text-danger">*</span></label><br>
-                      <input type="radio" name="anamnese" value="sim"> Exame médico Admissional
-                      <input type="radio" name="anamnese" value="sim"> Exame médico Demissional
-                      <input type="radio" name="anamnese" value="nao"> Exame complementar
+                  <div class="form-group col-md-12" >
+                      <label for="quem" class="text-black">Para quem é o atendimento?  <span class="text-danger">*</span></label><br>
+                      <p> <input type="radio" checked name="agendar" value="outra_pessoa"> Vou agendar para outra pessoa</p>
+                      <p> <input type="radio"  name="agendar" value="rh"> Vou agendar para mim</p>
                   </div>
 
-                  <div class="exames-complementar col-md-8">
+                  <div class="exames-complementar col-md-12">
                       <div class="row">
                         @foreach($produtos as $key => $produto)
                               <div class="col-md-12" style="clear: both">&nbsp;</div>
@@ -64,7 +61,7 @@
                             <div class="col-md-12" style="clear: both">&nbsp;</div>
                             @foreach($produto as $item)
                               <div class="form-checkbox-item col-md-6">
-                                <input type="checkbox" @if($prod_id == $item->id) checked @endif class="form-checkbox" id="{{$item->slug}}" name="prod[]" value="{{$item->id}}">
+                                <input type="checkbox" @if($prod_id == $item->id) checked  @endif class="form-checkbox" id="{{$item->slug}}" name="prod[]" value="{{$item->id}}">
                                 <label for="{{$item->slug}}"> {{$item->name}} - <b>R$ {{number_format($item->price,2,",",".")}}</b> </label>
                               </div>
                             @endforeach
@@ -77,7 +74,7 @@
                       <h5>Detalhes da compra</h5>
                       <div class="col-md-12" style="clear: both">&nbsp;</div>
 
-                      <table class="table" id="cart">
+                      <table class="table table-responsive" id="cart">
                           <tr>
                               <th>Exame</th>
                               <th>QTD</th>

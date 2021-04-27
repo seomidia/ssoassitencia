@@ -30,13 +30,26 @@ class CartController extends Controller
     {
         $session_id = $_COOKIE["session_key"];
 
+        $get_categoria = DB::table('products as p')
+            ->join('categories as c','p.category_id','=','c.id')
+            ->where('p.id',$product_id)
+            ->get();
+
+        if(in_array($get_categoria[0]->id,[3,6])){
+            $cat = [3,4,5,6,7,8];
+            $tipo = true;
+        }else{
+            $cat = [4,5,7,8];
+            $tipo = false;
+        }
+
         $exames = DB::table('products as p')
             ->join('categories as c', 'p.category_id','=','c.id')
             ->select(
                 'p.*',
                 'c.name as categoria'
             )
-            ->wherein('p.category_id',[4,5,7,8])
+            ->wherein('p.category_id',$cat)
             ->get();
 
         $colection = collect($exames)
@@ -45,7 +58,7 @@ class CartController extends Controller
                 return array_merge($item->toArray());
             });
 
-        return view('cart',['prod_id' => $product_id,'produtos' => $colection]);
+        return view('cart',['prod_id' => $product_id,'produtos' => $colection,'tipo'=>$tipo]);
     }
 
     public function add(Request $request)

@@ -70,40 +70,68 @@ jQuery(document).ready(function($){
 
     $('form[name="exames-complementares"]').on('submit',function (event) {
         event.preventDefault();
-        Swal.mixin({
-            input: 'text',
-            confirmButtonText: 'Proximo &rarr;',
-            showCancelButton: true,
-            progressSteps: ['1', '2', '3','4']
-        }).queue([
-            'Nome',
-            'E-mail',
-            'CPF',
-            'Telefone'
-        ]).then((result) => {
-            if (result.value) {
-                $.ajax({
-                    url: window.location.origin + '/finalizar',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    data: {
-                        'prod':$(this).serializeArray(),
-                        'comprador':result.value
-                    },
-                    type: 'post',
-                    dataType: 'json',
-                    success: function (response) {
-                        console.log(response);
-                        window.open (
-                            response,
-                            'Pagamento',
-                            "width=920, height=600, top=100, left=110, scrollbars=no " );
-                    }
+        var text = 'Empresa não emcontrada, deseja cadastra-la?';
+        var agendar = $('input[name="agendar"]').val();
 
+        if(agendar == 'outra_pessoa') text = 'Após a compra, encaminhe o exame para seu respectivo paciente!';
+
+
+        Swal.fire({
+            title: 'Atenção',
+            text: text,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sim',
+            cancelButtonText: 'Não',
+        }).then((result) => {
+            if(result.isConfirmed){
+                        Swal.mixin({
+                        input: 'text',
+                        confirmButtonText: 'Proximo &rarr;',
+                        showCancelButton: true,
+                        progressSteps: ['1', '2', '3','4']
+                    }).queue([
+                        'Nome',
+                        'E-mail',
+                        'CPF',
+                        'Telefone'
+                    ]).then((result) => {
+                        if (result.value) {
+                            $.ajax({
+                                url: window.location.origin + '/finalizar',
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                },
+                                data: {
+                                    'prod':$(this).serializeArray(),
+                                    'comprador':result.value
+                                },
+                                type: 'post',
+                                dataType: 'json',
+                                success: function (response) {
+                                    window.open (
+                                        response,
+                                        "_blank" );
+                                    setTimeout(function (){
+                                        window.location.href = '/';
+                                    },2000);
+                                }
+
+                            }).fail(function (jqXHR, textStatus) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: jqXHR.responseJSON.message,
+                                    // footer: '<a href>Why do I have this issue?</a>'
+                                })
+                            })
+                        }
                 })
-            }
-        })
+        }
     });
+
+});
 
 })
