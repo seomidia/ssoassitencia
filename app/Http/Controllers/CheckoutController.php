@@ -7,15 +7,12 @@ use App\Cart;
 use App\Checkout;
 use App\Order;
 use Illuminate\Http\Request;
+use PagSeguro;
 use Validator,Redirect,Response;
 
 
 class CheckoutController extends Controller
 {
-    protected $PAGSEGURO_API_URL;
-    protected $PAGSEGURO_EMAIL;
-    protected $PAGSEGURO_TOKEN;
-    protected $SANDBOX_ENVIRONMENT;
     /**
      * Create a new controller instance.
      *
@@ -23,13 +20,6 @@ class CheckoutController extends Controller
      */
     public function __construct()
     {
-        $this->PAGSEGURO_API_URL = 'https://ws.pagseguro.uol.com.br/v2';
-        if($this->SANDBOX_ENVIRONMENT){
-            $this->PAGSEGURO_API_URL = 'https://ws.sandbox.pagseguro.uol.com.br/v2';
-        }
-
-        $this->PAGSEGURO_EMAIL = 'suporte@seomidia.com.br';
-        $this->PAGSEGURO_TOKEN = '64E41DAABAFE41F29B6E431CB18C87CF';
     }
 
     /**
@@ -48,15 +38,47 @@ class CheckoutController extends Controller
             ->get();
 
         $calc = Cart::Calculo($products);
-//        $sessionCode = Checkout::SessionCode('suporte@seomidia.com.br','64E41DAABAFE41F29B6E431CB18C87CF',true);
 
         return view('checkout',[
             'produtos' => $products,
             'subtotal' => $calc['subtotal'],
             'total' => $calc['total'],
-//            'sessionCode' => $sessionCode
+            'sessionCode' => ''
         ]);
 
+    }
+
+    public function notification(Request $request){
+        $notificationCode = $request->input('notificationCode');
+
+        $order = DB::table('orders')
+            ->where('orders.code',$notificationCode);
+
+        $datalhes = $order->select('user_id','id')->get();
+
+        if($order->count() > 0){
+            $order->update(['status'=>'pago']);
+
+        $create_os = DB::table('ordem_servico')->insertGetId([
+            'user_id' => $datalhes[0]->user_id,
+            'order_id' => $datalhes[0]->id,
+            'created_at' => date('Y-m-d H:i:s')
+        ]);
+
+        $products_order = $order->select('order_products.*')
+            ->join('order_products','orders.id','=','order_products.order_id')
+            ->get();
+
+            foreach ( $products_order as $item) {
+                $create_exame = DB::table('exame')->insert([
+                    'ordem_servico_id' => $create_os,
+                    'product_id' => $item->product_id,
+                    'created_at' => date('Y-m-d H:i:s')
+                ]);
+
+            }
+
+        }
     }
     public function Autocomplete(Request $request)
     {
@@ -82,8 +104,76 @@ class CheckoutController extends Controller
     }
     public function finalizar(Request $request)
     {
-     return Order::CreateOrder($request->all());
 
+        foreach ($request->prod as $ids){
+            $prods[] = $ids['value'];
+        }
+
+        $prod = DB::table('products')
+            ->wherein('id',$prods)
+            ->get();
+        $total = 0;
+        foreach ($prod as $key => $value){
+            $total = $total + $value->price;
+            $item[] = [
+                'id' => $value->id,
+                'description' => $value->name,
+                'quantity' => '1',
+                'amount' => $value->price,
+                'weight' => '0',
+                'shippingCost' => '0',
+                'width' => '0',
+                'height' => '0',
+                'length' => '0',
+            ];
+        }
+
+
+        $data = [
+            'items' => $item,
+            'shipping' => [
+                'address' => [
+                    'postalCode' => '06410030',
+                    'street' => 'Rua Leonardo Arruda',
+                    'number' => '12',
+                    'district' => 'Jardim dos Camargos',
+                    'city' => 'Barueri',
+                    'state' => 'SP',
+                    'country' => 'BRA',
+                ],
+                'type' => 2,
+                'cost' => '',
+            ],
+            'sender' => [
+                'email' => $request->comprador[1],
+                'name' => $request->comprador[0],
+                'documents' => [
+                    [
+                        'number' => $request->comprador[2],
+                        'type' => 'CPF'
+                    ]
+                ],
+                'phone' => [
+                    'number' => substr($request->comprador[3], -9, 9),
+                    'areaCode' => substr($request->comprador[3], 0, -9),
+                ],
+                'bornDate' => '2020-04-01',
+            ]
+        ];
+
+        $checkout = PagSeguro::checkout()->createFromArray($data);
+        $credentials = PagSeguro::credentials()->get();
+        $information = $checkout->send($credentials); // Retorna um objeto de laravel\pagseguro\Checkout\Information\Information
+
+        if ($information) {
+            $code['code'] = $information->getCode();
+            $code['total'] = $total;
+            Order::CreateOrder($request->comprador,$code);
+        }
+        return response()->json($information->getLink());
     }
+//print_r($information->getCode());
+//print_r($information->getDate());
+//print_r($information->getLink());
 
 }

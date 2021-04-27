@@ -162,6 +162,7 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         'Anam\PhantomMagick\ConverterServiceProvider',
+        laravel\pagseguro\Platform\Laravel5\ServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -228,6 +229,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'Converter' => Anam\PhantomMagick\Facades\Converter::class,
+        'PagSeguro' => laravel\pagseguro\Platform\Laravel5\PagSeguro::class
     ],
 
 ];

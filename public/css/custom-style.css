@@ -64,3 +64,17 @@ button.cart [type="submit"] {
 
 ul.list-unstyled li a{color: #fff}
 ul.list-unstyled li {color: #fff}
+
+.container-form{
+    border: 1px solid #dddddd;
+    border-radius: 5px;
+}
+
+.form-checkbox-item{
+font-size: 14px;
+}
+
+.table td{
+    margin: 0px;
+    padding: 0px;
+}

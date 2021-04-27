@@ -104,12 +104,10 @@
               <h2 class="h3 mb-3 text-black">Detalhes de cobrança</h2>
               <div class="p-3 p-lg-5 border">
                 <div class="form-group">
-                  <label for="quem" class="text-black">Você é? <span class="text-danger">*</span></label>
-                  <select id="quem" name="cliente" class="form-control">
-                      <option value="cliente">Outros</option>
-                      <option value="rh">RH</option>
-
-                  </select>
+                  <label for="quem" class="text-black">Você é? <span class="text-danger">*</span></label><br>
+                    <input type="radio" name="cliente" value="cliente"> Avulso
+                    <input type="radio" name="cliente" value="rh"> Rh
+                    <input type="radio" name="cliente" value="empresa"> Empresa
                 </div>
                 <div class="form-group row">
                   <div class="col-md-6">
@@ -210,7 +208,10 @@
                       @foreach($produtos as $produto)
                         <tr>
                           <td>{{$produto->name}} <strong class="mx-2">x</strong> {{$produto->qtd}}</td>
-                          <td>R$ {{$produto->price}}</td>
+                          <td>
+                              R$ {{$produto->price}}
+                              <input type="hidden" name="prod[]" value="{{$produto->id}}">
+                          </td>
                         </tr>
                       @endforeach
                         <tr>
@@ -223,86 +224,9 @@
                         </tr>
                       </tbody>
                     </table>
-
-                    <!-- <div class="border mb-3">
-                      <h3 class="h6 mb-0"><a class="d-block" data-toggle="collapse" href="#collapsebank" role="button"
-                          aria-expanded="false" aria-controls="collapsebank">Tranferência bancária</a></h3>
-                      <div class="collapse" id="collapsebank">
-                        <div class="py-2 px-4">
-                          <p class="mb-0">Make your payment directly into our bank account. Please use your Order ID as the
-                            payment reference. Your order won’t be shipped until the funds have cleared in our account.</p>
-                        </div>
-                      </div>
-                    </div> -->
-
                       <article class="card">
                           <div class="card-body">
-                              <div class="loadpag" style="display:none;font-size: 20px;position: absolute;min-width: 92%;min-height: 93%;background: #ffff;z-index: 9;opacity: 0.9;text-align: center;">
-                                  <img style="position: sticky;top: 50%;" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/0.16.1/images/loader-large.gif">
-                                  <p style="position: sticky;top: 40%;color: #1ad5d5">Aguarde...</p>
-                              </div>
-
-
-                              <ul class="nav bg-light nav-pills rounded nav-fill mb-3" role="tablist">
-{{--                                  <li class="nav-item">--}}
-{{--                                      <a class="nav-link active" data-toggle="pill" href="#nav-tab-card">--}}
-{{--                                          <i class="fa fa-credit-card"></i> Credit Card</a>--}}
-{{--                                  </li>--}}
-                                  <li class="nav-item">
-                                      <a class="nav-link" data-toggle="pill" href="#nav-tab-bank">
-                                          <i class="fa fa-file-invoice-dollar"></i>  Boleto</a>
-                                  </li>
-                              </ul>
-
-                              <div class="tab-content">
-
-{{--                                  <div class="tab-pane fade show active" id="nav-tab-card">--}}
-{{--                                          <div class="form-group">--}}
-{{--                                              <label for="username">Nome completo (impresso no cartão)</label>--}}
-{{--                                              <input type="text" class="form-control" name="username" placeholder="" required="">--}}
-{{--                                          </div> <!-- form-group.// -->--}}
-
-{{--                                          <div class="form-group">--}}
-{{--                                              <label for="cardNumber">Numero do cartão</label>--}}
-{{--                                              <div class="input-group">--}}
-{{--                                                  <input type="text" class="form-control" name="cardNumber" placeholder="">--}}
-{{--                                                  <div class="input-group-append">--}}
-{{--                                                        <span class="input-group-text text-muted">--}}
-{{--                                                            <i class="fab fa-cc-visa"></i>   <i class="fab fa-cc-amex"></i>  --}}
-{{--                                                            <i class="fab fa-cc-mastercard"></i>--}}
-{{--                                                        </span>--}}
-{{--                                                  </div>--}}
-{{--                                              </div>--}}
-{{--                                          </div> <!-- form-group.// -->--}}
-
-{{--                                          <div class="row">--}}
-{{--                                              <div class="col-sm-8">--}}
-{{--                                                  <div class="form-group">--}}
-{{--                                                      <label><span class="hidden-xs">Vencimento</span> </label>--}}
-{{--                                                      <div class="input-group">--}}
-{{--                                                          <input type="number" class="form-control" placeholder="Mês" name="cart_mes">--}}
-{{--                                                          <input type="number" class="form-control" placeholder="Ano" name="cart_ano">--}}
-{{--                                                      </div>--}}
-{{--                                                  </div>--}}
-{{--                                              </div>--}}
-{{--                                              <div class="col-sm-4">--}}
-{{--                                                  <div class="form-group">--}}
-{{--                                                      <label data-toggle="tooltip" title="" data-original-title="3 digits code on back side of the card">CVV <i class="fa fa-question-circle"></i></label>--}}
-{{--                                                      <input type="number" name="cart_cvv" class="form-control">--}}
-{{--                                                  </div> <!-- form-group.// -->--}}
-{{--                                              </div>--}}
-{{--                                          </div> <!-- row.// -->--}}
-{{--                                  </div> <!-- tab-pane.// -->--}}
-                                  <div class="tab-pane fade py-3 active" id="nav-tab-bank">
-                                      <center>
-                                          <img src="{{asset('images/boleto.png')}}" alt="boleto" title="Boleto">
-                                          <a style="display: none" href="#" id="boleto" target="_blank"><i class="fa fa-print"></i> Clique aqui para ver seu boleto</a>
-                                      </center>
-                                  </div> <!-- tab-pane.// -->
-                              </div> <!-- tab-content .// -->
-                              <input type="hidden" name="type_payment" value="billet">
                               <button class="subscribe btn btn-primary btn-block" type="submit"> Pagar agora  </button>
-
                           </div> <!-- card-body.// -->
                       </article>
 

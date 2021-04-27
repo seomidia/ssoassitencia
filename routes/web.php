@@ -35,18 +35,21 @@ $pages = DB::table('pages')
 
 
 
-Route::get('/carrinho', 'CartController@index')->name('cart');
+Route::get('/carrinho/{produto}', 'CartController@index')->name('cart');
 Route::post('/carrinho/add', 'CartController@add')->name('cart-add');
 Route::post('/carrinho-update/{product}', 'CartController@update')->name('cart-update');
 Route::get('/carrinho-delete/{product}', 'CartController@destroy')->name('cart-destroy');
 Route::get('/checkout', 'CheckoutController@index')->name('checkout');
 Route::post('/get-company', 'CheckoutController@Autocomplete')->name('autocomplete');
 Route::post('/finalizar', 'CheckoutController@finalizar')->name('finalizar');
-Route::get('/obrigado', 'CheckoutController@obrigado')->name('obrigado');
+Route::get('/obrigado', 'CheckoutController@obrigado')->name('pagseguro.redirect');
 Route::post('/company-store', 'CompanyController@store')->name('company-store');
 Route::get('/produto/{slug}', 'ProductController@Single')->name('single');
 Route::get('/contato', 'ContatoController@index')->name('contato');
 Route::post('/contato', 'ContatoController@send')->name('send');
+
+Route::post('/notification', 'CheckoutController@notification')->name('pagseguro.notification');
+Route::post('/json/getproduto', 'ProductController@getproduto')->name('voyager.getproduto');
 
 
 Route::group(['prefix' => 'admin'], function () {

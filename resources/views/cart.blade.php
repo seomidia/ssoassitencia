@@ -18,164 +18,83 @@
 
   <div class="site-section">
     <div class="container">
-      <div class="row mb-5">
-          <div class="site-blocks-table col-md-12">
-                      <table class="table table-bordered">
-                      <thead>
-                        <tr>
-                          <th class="product-name">Exame</th>
-                          <th class="product-price">Valor</th>
-                          <th class="product-quantity">QTD</th>
-                          <th class="product-total">Total</th>
-                          <th class="product-remove">Remove</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                      @if(count($produtos) > 0)
+      <div class="row mb-5 justify-content-md-center">
+          <div class="container-form col-md-10">
+              <form name="exames-complementares" action="" method="post">
+                  <h2>INSTRUÇÕES PARA COMPRA E AGENDAMENTO</h2>
+                  <p>
+                      Preencher um formulário por pessoa. Caso deseje agendar para mais pessoas iniciar novamente o forumlário.
+                  </p>
+                  <h2>Opção 1) Agendamento para outra pessoa</h2>
+                  <p>
+                      Neste caso você deve ter as informações da empresa e do funcionário como NOME, CPF, email, celular, etc e preencher as abas abaixo: EXAMES e PREÇOS, INFORMAÇÕES DA EMPRESA
+                  </p>
+                  <p>
+                      O funcionário/paciente irá receber um email com o link do questionário que deve preencher antes de comparecer na clínica. Trabalhamos de Segunda a Sexta feira das 8hs as 18hs.              </p>
+                  <p>
+                      Após o exame médico o paciente e a pessoa que realizou o agendamento irão receber um email com o Atestado médico anexo.
+                  </p>
+                  <h2>Opção 2) Agendamento para mim</h2>
+                  <p>
+                      Neste caso você deve ter as informações da empresa e preencher as abas abaixo: EXAMES e PREÇOS, INFORMAÇÕES DA EMPRESA, INFORMAÇÕES DO PACIENTE
+                  </p>
+                  <p>
+                      Após isto basta comparecer em nossa clínica de Segunda a Sexta feira das 8hs as 18hs para consulta médica. O resultado chegará no email que informou no cadastro.
+                  </p>
 
-                      @foreach($produtos as $produto)
-                        <tr>
-                          <td class="product-thumbnail">
-                              {{$produto->name}}
-                          </td>
-                          <td>
-                              @if($produto->sale == '')
-                                  R$ {{$produto->price}}
-                              @else
-                                  <del>R$ {{$produto->price}}</del>
-                                  @endif
-                                  @if($produto->sale != '') &mdash; R$ {{$produto->sale}} @endif
 
-                          </td>
-                          <td>
-                              <form action="/carrinho-update/{{$produto->id}}" name="update-qtd" type="post">
-                                  @csrf
+                      <div class="form-group">
+                          <label for="quem" class="text-black">Para quem é o atendimento?  <span class="text-danger">*</span></label><br>
+                          <input type="radio" name="agendar" value="outra_pessoa"> Vou agendar para outra pessoa
+                          <input type="radio" name="agendar" value="rh"> Vou agendar para mim
+                      </div>
+                  <div class="form-group">
+                      <label for="quem" class="text-black">Aconsulta é?  <span class="text-danger">*</span></label><br>
+                      <input type="radio" name="anamnese" value="sim"> Exame médico Admissional
+                      <input type="radio" name="anamnese" value="sim"> Exame médico Demissional
+                      <input type="radio" name="anamnese" value="nao"> Exame complementar
+                  </div>
 
-                                  <div class="input-group mb-3" style="max-width: 120px;margin: 0 auto;">
+                  <div class="exames-complementar col-md-8">
+                      <div class="row">
+                        @foreach($produtos as $key => $produto)
+                              <div class="col-md-12" style="clear: both">&nbsp;</div>
 
-                                      <div class="input-group-prepend">
-                                        <button class="btn btn-outline-primary js-btn-minus updateqtd" type="button">&minus;</button>
-                                      </div>
+                              <h5>{{$key}}</h5>
+                            <div class="col-md-12" style="clear: both">&nbsp;</div>
+                            @foreach($produto as $item)
+                              <div class="form-checkbox-item col-md-6">
+                                <input type="checkbox" @if($prod_id == $item->id) checked @endif class="form-checkbox" id="{{$item->slug}}" name="prod[]" value="{{$item->id}}">
+                                <label for="{{$item->slug}}"> {{$item->name}} - <b>R$ {{number_format($item->price,2,",",".")}}</b> </label>
+                              </div>
+                            @endforeach
+                        @endforeach
+                      </div>
+                  </div>
+                  <div class="pagamento">
+                      <div class="col-md-12" style="clear: both">&nbsp;</div>
 
-                                      <input type="text" class="form-control text-center" name="cart_qtd" value="{{$produto->qtd}}" placeholder=""
-                                        aria-label="Example text with button addon" aria-describedby="button-addon1">
+                      <h5>Detalhes da compra</h5>
+                      <div class="col-md-12" style="clear: both">&nbsp;</div>
 
-                                      <div class="input-group-append">
-                                        <button  class="btn btn-outline-primary js-btn-plus updateqtd" type="button">&plus;</button>
-                                      </div>
-                                    </div>
-                                  <button type="submit" style="display: none" class="update-card">envia</button>
-
-                              </form>
-
-                          </td>
-                            <td>
-                                @if($produto->sale == '')
-                                    R$ {{$produto->price * $produto->qtd}}
-                                @else
-                                    R$ {{$produto->sale * $produto->qtd}}
-                                    @endif
-
-                            </td>
-                          <td><a href="/carrinho-delete/{{$produto->id}}" class="btn btn-primary height-auto btn-sm">X</a></td>
-                        </tr>
-                      @endforeach
-
-                      @else
+                      <table class="table" id="cart">
                           <tr>
-                              <td colspan="5">
-                                  Carrinho vazio <a href="{{url('/')}}">volte para loja!</a>
-                              </td>
+                              <th>Exame</th>
+                              <th>QTD</th>
+                              <th>Valor</th>
                           </tr>
-                      @endif
-                      </tbody>
-                    </table>
-          </div>
-      </div>
-
-      <div class="row">
-        <div class="col-md-6">
-          <div class="row mb-5">
-            <div class="col-md-6 mb-3 mb-md-0">
-              <button id="cart-update" class="btn btn-primary btn-md btn-block">Atualizar carrinho</button>
-            </div>
-            <div class="col-md-6">
-              <a href="{{url('/')}}" class="btn btn-outline-primary btn-md btn-block">Continuar comprando</a>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12">
-              <label class="text-black h4" for="coupon">Cupom</label>
-              <p>Entre com o codigo.</p>
-            </div>
-            <div class="col-md-8 mb-3 mb-md-0">
-              <input type="text" class="form-control py-3" id="coupon" placeholder="Codigo do cupom">
-            </div>
-            <div class="col-md-4">
-              <button class="btn btn-primary btn-md px-4">Aplicar</button>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6 pl-5">
-          <div class="row justify-content-end">
-            <div class="col-md-7">
-              <div class="row">
-                <div class="col-md-12 text-right border-bottom mb-5">
-                  <h3 class="text-black h4 text-uppercase">Total da compra</h3>
-                </div>
+                          <tr><td colspan="3" style="text-align: center"> Não existe exames selecionados </td></tr>
+                          <tr>
+                              <td colspan="2" style="text-align: right;padding: 5px 5px">TOTAL | </td>
+                              <td style="padding: 5px 0px">R$ 00,00</td>
+                          </tr>
+                      </table>
+              </form>
               </div>
-              <div class="row mb-3">
-                <div class="col-md-6">
-                  <span class="text-black">Subtotal</span>
-                </div>
-                <div class="col-md-6 text-right">
-                  <strong class="text-black">R$ {{$subtotal}}</strong>
-                </div>
-              </div>
-              <div class="row mb-5">
-                <div class="col-md-6">
-                  <span class="text-black">Total</span>
-                </div>
-                <div class="col-md-6 text-right">
-                  <strong class="text-black">R$ {{$total}}</strong>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col-md-12">
-                  <button class="btn btn-primary btn-lg btn-block" onclick="window.location='/checkout'">Finalizar compra</button>
-                </div>
-              </div>
-            </div>
           </div>
-        </div>
       </div>
     </div>
   </div>
 
-  <div class="site-section bg-secondary bg-image" style="background-image: url('images/bg_2.jpg');">
-    <div class="container">
-      <div class="row align-items-stretch">
-        <div class="col-lg-6 mb-5 mb-lg-0">
-          <a href="#" class="banner-1 h-100 d-flex" style="background-image: url('images/bg_1.jpg');">
-            <div class="banner-1-inner align-self-center">
-              <h2>Pharma Products</h2>
-              <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Molestiae ex ad minus rem odio voluptatem.
-              </p>
-            </div>
-          </a>
-        </div>
-        <div class="col-lg-6 mb-5 mb-lg-0">
-          <a href="#" class="banner-1 h-100 d-flex" style="background-image: url('images/bg_2.jpg');">
-            <div class="banner-1-inner ml-auto  align-self-center">
-              <h2>Rated by Experts</h2>
-              <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Molestiae ex ad minus rem odio voluptatem.
-              </p>
-            </div>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
 
 @endsection

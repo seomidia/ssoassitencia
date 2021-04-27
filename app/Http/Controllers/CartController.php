@@ -26,19 +26,26 @@ class CartController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index(Request $request)
+    public function index(Request $request,$product_id)
     {
         $session_id = $_COOKIE["session_key"];
 
-        $products = DB::table('cart_products as cp')
-                     ->join('products as p','cp.product_id','=','p.id')
-                     ->where('cp.session_id',$session_id)
-                     ->select('p.id','p.name','p.price','p.sale','cp.qtd')
-                     ->get();
+        $exames = DB::table('products as p')
+            ->join('categories as c', 'p.category_id','=','c.id')
+            ->select(
+                'p.*',
+                'c.name as categoria'
+            )
+            ->wherein('p.category_id',[4,5,7,8])
+            ->get();
 
-        $calc = Cart::Calculo($products);
+        $colection = collect($exames)
+            ->groupBy('categoria')
+            ->map(function ($item) {
+                return array_merge($item->toArray());
+            });
 
-        return view('cart',['produtos' => $products, 'subtotal' => $calc['subtotal'], 'total' => $calc['total']]);
+        return view('cart',['prod_id' => $product_id,'produtos' => $colection]);
     }
 
     public function add(Request $request)
@@ -49,12 +56,31 @@ class CartController extends Controller
 
         if($existe == 0){
             DB::table('cart_products')->insert([
-               'session_id' => $session_id,
+                'session_id' => $session_id,
                 'product_id' => $product_id,
                 'qtd' => 1
             ]);
         }
-        return redirect('/carrinho');
+        return redirect('/carrinho/' .  $product_id);
+    }
+    static function addficha($product_ids)
+    {
+        $session_id = $_COOKIE["session_key"];
+        $existe = Cart::CheckCart($session_id,$product_ids);
+
+        $limpaCart = DB::table('cart_products')
+            ->where('session_id',$session_id)
+            ->delete();
+
+        if($existe == 0){
+            foreach ( $product_ids as $item) {
+                DB::table('cart_products')->insert([
+                    'session_id' => $session_id,
+                    'product_id' => $item,
+                    'qtd' => 1
+                ]);
+            }
+        }
     }
 
     public function update(Request $request,$id)

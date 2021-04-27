@@ -51,5 +51,13 @@ class ProductController extends Controller
         return view('busca',['produtos' => $colection,'buscar' => $s]);
     }
 
+    public function getproduto(Request $request){
+        $ids = $request->id;
+        \App\Http\Controllers\CartController::addficha($ids);
+
+        return DB::table('products')
+            ->wherein('id',$ids)
+            ->get();
+    }
 
 }
