@@ -53,11 +53,38 @@ class ProductController extends Controller
 
     public function getproduto(Request $request){
         $ids = $request->id;
+
+
+        if($_COOKIE["prod_consulta"] != '' && !is_null($ids)){
+            if(!in_array($_COOKIE["prod_consulta"],$ids))
+                $ids[] = $_COOKIE["prod_consulta"];
+        }
+
+
+        if(!is_null($ids)){
+
         \App\Http\Controllers\CartController::addficha($ids);
 
-        return DB::table('products')
-            ->wherein('id',$ids)
+        return DB::table('products as p')
+            ->join('categories as c','p.category_id','=','c.id')
+            ->select('p.price','p.name as product_name','p.description','p.category_id','c.name as categoria')
+            ->wherein('p.id',$ids)
             ->get();
+        }else{
+            $session_id = $_COOKIE["session_id"];
+
+            $limpaCart = DB::table('cart_products')
+                ->where('session_id',$session_id)
+                ->delete();
+
+        }
+
     }
 
+    public function getservico($id){
+
+        return DB::table('products as p')
+            ->where('category_id',$id)
+            ->get();
+    }
 }

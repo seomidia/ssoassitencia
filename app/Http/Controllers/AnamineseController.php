@@ -18,7 +18,6 @@ class AnamineseController extends Controller
     {
         $this->middleware('auth');
     }
-
     public function dia($num){
         switch ($num){
             case '1':
@@ -44,14 +43,12 @@ class AnamineseController extends Controller
                 break;
         }
     }
-
     public function getSemana($data){
         $data = date("Y-m-d", strtotime($data));
         $semMes2 = date("w", strtotime($data));
 
         return $this->dia($semMes2);
     }
-
     public function getLocal(Request $request){
         $cidade = $request->input('cidade');
         $estado = $request->input('uf');
@@ -63,7 +60,6 @@ class AnamineseController extends Controller
 
         return $local;
     }
-
     public function getDias(){
         $semMes2 = date("w", strtotime(date("Y-m-d")));
         $dia = date('d');
@@ -104,7 +100,6 @@ class AnamineseController extends Controller
             'message' => ''
         ],200);
     }
-
     //  feedback medico ----------------------------------------------
     public function feedbackMedico(Request $request){
 

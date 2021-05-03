@@ -1037,10 +1037,10 @@ a {
   transform: rotate(-90deg) translateX(-100%) translateY(-70%); }
 
 .banner-wrap {
-  background: #74d12b;
+  background: rgba(0,143,213,0.9);
   border-radius: 4px; }
   .banner-wrap a {
-    padding: 30px;
+    padding: 30px 17px;
     display: block;
     text-align: center; }
     .banner-wrap a h5 {
@@ -1055,7 +1055,14 @@ a {
       .banner-wrap a p strong {
         font-size: .9rem;
         display: block; }
-
+ .banner-wrap i {
+     font-size: 96px !important;
+     width: auto;
+     height: auto;
+     text-shadow: 2px 2px 0 rgba(0,0,0,0.15);
+     background: transparent;
+     color: #FFFFFF;
+ }
 .banner-1 {
   background-size: cover;
   background-position: center;

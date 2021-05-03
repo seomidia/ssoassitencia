@@ -54,11 +54,11 @@
 </div>
 
 </div>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 <script src="{{asset('js/app.js')}}"></script>
 <script src="{{asset('js/popper.min.js')}}"></script>
@@ -69,7 +69,38 @@
 
 <script src="{{asset('js/main.js')}}"></script>
 
+<!-- JavaScript -->
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script src="https://cdn.jsdelivr.net/npm/smartwizard@5/dist/js/jquery.smartWizard.min.js" type="text/javascript"></script>
+<script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js'></script>
+
+<script src="https://raw.githack.com/sabieber/token-autocomplete/master/built/token-autocomplete.js"></script>
+<link href="https://raw.githack.com/sabieber/token-autocomplete/master/lib/token-autocomplete.css" rel="stylesheet" type="text/css" media="all">
 <script>
+    $(document).ready(function($){
+        @if(Auth::check())
+        $('button[type="button"]').prop('disabled', false);
+        @else
+        $('button[type="button"]').prop('disabled', true);
+        @endif
+        $('span#sample-input').attr('data-placeholder','Escriva os riscos aqui!')
+        let tokenAutocomplete = new TokenAutocomplete({
+            name: 'riscos',
+            selector: '#sample',
+            noMatchesText: 'Nada encontrado...',
+            // initialTokens: [
+            //     {value: '', text: 'Risco1'},
+            //     {value: '', text: 'Risco2'},
+            // ],
+            initialSuggestions: [
+                @foreach($riscos as $key => $value)
+                {value: '{{$value->id}}', text: '{{$value->name}}', description: '{{$value->description}}'},
+                @endforeach
+            ]
+        });
+        tokenAutocomplete.debug(true);
+    })
+
     $(window).scroll(function() {
         if ($(this).scrollTop() > 400){
             $('.site-navbar').addClass("header-fixo");
@@ -84,6 +115,7 @@
         }
     });
 </script>
+@yield('js')
 
 </body>
 

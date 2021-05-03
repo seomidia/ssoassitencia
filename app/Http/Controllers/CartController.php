@@ -76,23 +76,49 @@ class CartController extends Controller
         }
         return redirect('/carrinho/' .  $product_id);
     }
+    public function getcart(){
+        $session_id = $_COOKIE["session_id"];
+
+
+        return DB::table('cart_products as cp')
+            ->join('products as p','cp.product_id','=','p.id')
+            ->join('categories as c','p.category_id','=','c.id')
+            ->select('p.price','p.name as product_name','p.description','p.category_id','c.name as categoria')
+            ->where('session_id',$session_id)
+            ->get();
+
+    }
     static function addficha($product_ids)
     {
-        $session_id = $_COOKIE["session_key"];
-        $existe = Cart::CheckCart($session_id,$product_ids);
-
-        $limpaCart = DB::table('cart_products')
-            ->where('session_id',$session_id)
-            ->delete();
-
-        if($existe == 0){
-            foreach ( $product_ids as $item) {
-                DB::table('cart_products')->insert([
-                    'session_id' => $session_id,
-                    'product_id' => $item,
-                    'qtd' => 1
-                ]);
+        $session_id = $_COOKIE["session_id"];
+        if(!is_null($product_ids)){
+            if($_COOKIE["prod_consulta"] !=''){
+                if(!in_array($_COOKIE["prod_consulta"],$product_ids))
+                    $product_ids[] = $_COOKIE["prod_consulta"];
             }
+
+
+            $limpaCart = DB::table('cart_products')
+                ->where('session_id',$session_id)
+                ->delete();
+
+            $existe = Cart::CheckCart($session_id,$product_ids);
+
+
+            if($existe == 0 && !empty($product_ids)){
+
+                foreach ( $product_ids as $item) {
+                    DB::table('cart_products')->insert([
+                        'session_id' => $session_id,
+                        'product_id' => $item,
+                        'qtd' => 1
+                    ]);
+                }
+            }
+        }else{
+            $limpaCart = DB::table('cart_products')
+                ->where('session_id',$session_id)
+                ->delete();
         }
     }
 

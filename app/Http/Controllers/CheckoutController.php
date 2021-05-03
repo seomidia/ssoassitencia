@@ -9,6 +9,7 @@ use App\Order;
 use Illuminate\Http\Request;
 use PagSeguro;
 use Validator,Redirect,Response;
+use Auth;
 
 
 class CheckoutController extends Controller
@@ -50,6 +51,8 @@ class CheckoutController extends Controller
 
     public function notification(Request $request){
         $notificationCode = $request->input('notificationCode');
+
+
 
         $order = DB::table('orders')
             ->where('orders.code',$notificationCode);
@@ -102,25 +105,20 @@ class CheckoutController extends Controller
     {
         return view('obrigado');
     }
+
+    public function getUserData($field){
+        $date = DB::table('user_data')
+            ->select($field)
+            ->where('user_id',Auth::user()->id)
+            ->get();
+        return $date[0]->$field;
+    }
     public function finalizar(Request $request)
     {
-
         foreach ($request->prod as $ids){
             $prods[] = $ids['value'];
         }
-        if(in_array(2,$prods))
-            if(in_array(3,$prods))
-                return response()->json([
-                    'status' => true,
-                    'message' => 'Consulta Admissional não pode conter Demissional!'
-                ],500);
 
-        if(in_array(3,$prods))
-            if(in_array(2,$prods))
-                return response()->json([
-                    'status' => true,
-                    'message' => 'Consulta Demissional não pode conter Admissional!'
-                ],500);
 
         $prod = DB::table('products')
             ->wherein('id',$prods)
@@ -146,42 +144,41 @@ class CheckoutController extends Controller
             'items' => $item,
             'shipping' => [
                 'address' => [
-                    'postalCode' => '06410030',
-                    'street' => 'Rua Leonardo Arruda',
-                    'number' => '12',
-                    'district' => 'Jardim dos Camargos',
-                    'city' => 'Barueri',
-                    'state' => 'SP',
+                    'postalCode' => $this->getUserData('cep'),
+                    'street' => $this->getUserData('endereco'),
+                    'number' => $this->getUserData('numero'),
+                    'district' => $this->getUserData('bairro'),
+                    'city' => $this->getUserData('cidade'),
+                    'state' => $this->getUserData('estado'),
                     'country' => 'BRA',
                 ],
                 'type' => 2,
                 'cost' => '',
             ],
             'sender' => [
-                'email' => $request->comprador[1],
-                'name' => $request->comprador[0],
+                'email' => Auth::user()->email,
+                'name' => Auth::user()->name,
                 'documents' => [
                     [
-                        'number' => $request->comprador[2],
+                        'number' => $this->getUserData('cpf'),
                         'type' => 'CPF'
                     ]
                 ],
                 'phone' => [
-                    'number' => substr($request->comprador[3], -9, 9),
-                    'areaCode' => substr($request->comprador[3], 0, -9),
+                    'number' => substr($this->getUserData('telefone'), -9, 9),
+                    'areaCode' => substr($this->getUserData('telefone'), 0, -9),
                 ],
-                'bornDate' => '2020-04-01',
+                'bornDate' => date("Y-m-d", strtotime(str_replace('/','-',$this->getUserData('nasc')))),
             ]
         ];
 
         $checkout = PagSeguro::checkout()->createFromArray($data);
         $credentials = PagSeguro::credentials()->get();
         $information = $checkout->send($credentials); // Retorna um objeto de laravel\pagseguro\Checkout\Information\Information
-
         if ($information) {
             $code['code'] = $information->getCode();
             $code['total'] = $total;
-            Order::CreateOrder($request->comprador,$code);
+            Order::CreateOrder($code);
         }
         return response()->json($information->getLink());
     }

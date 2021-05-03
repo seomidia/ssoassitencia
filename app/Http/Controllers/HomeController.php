@@ -28,18 +28,18 @@ class HomeController extends Controller
     public function index()
     {
         $cat = DB::table('categories as c')
-            ->join('products as p','c.id','=','p.category_id')
-            ->select('c.name as categoria','p.*')
+            ->select('c.id','c.name as categoria')
             ->get();
 
-        $colection = collect($cat)
-            ->groupBy('categoria')
-            ->map(function ($item) {
-                return array_merge($item->toArray());
-            });
+        $riscos = DB::table('risk_factors')->get();
 
 
-        return view('home',['categoria'=> $colection]);
+        $exames = DB::table('products')
+            ->where('category_id','!=',3)
+            ->where('category_id','!=',6)
+            ->get();
+
+        return view('home',['categoria'=> $cat,'riscos' => $riscos,'exames' => $exames]);
     }
 
     public function sobrenos()

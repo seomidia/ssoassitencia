@@ -16,29 +16,31 @@ class Order extends Model
     ];
 
 
-    protected function CreateOrder(array $data,$code)
+    protected function CreateOrder($code)
     {
-        $data['email'] = $data[1];
-        $data['password'] = bcrypt($data[2]);
-
 
         // checa se user existe, se nao existir será cadastrado --------------------
 
-        $UserCount = User::where('email',$data['email']);
+        $UserCount = User::where('email',Auth::user()->email);
 
         if($UserCount->count() == 0){
-                \App\User::User_register($data,'cliente');
+                return [
+                    'status' => false,
+                    'message' => 'Usuario não existe'
+                ];
         }
 
         // obtem dados de usuario cadastrado --------------------------
         $user = $UserCount->get();
         $orderD = [
             'user_id' =>  $user[0]->id,
-            'session_id' => $_COOKIE["session_key"],
+            'session_id' => $_COOKIE["session_id"],
             'payment_type' => 'Pagseguro online',
             'total' => $code['total'],
             'code' => $code['code'],
         ];
+
+
         //cria uma nova order -----------------------------------------
         $order = $this->create($orderD);
 
@@ -46,7 +48,7 @@ class Order extends Model
         $order_products = DB::table('order_products');
 
         // migrar da table cart_products para a order_products ---------------------
-        $cart_list = $cart->where('session_id',$_COOKIE["session_key"])->get();
+        $cart_list = $cart->where('session_id',$_COOKIE["session_id"])->get();
         foreach ($cart_list as $item){
             $order_products->insert([
                 'order_id' => $order->id,
@@ -58,7 +60,7 @@ class Order extends Model
 
         }
         // deleta registros da cart_products --------------------------------
-        $cart->where('session_id','=',$_COOKIE["session_key"])->delete();
+        $cart->where('session_id','=',$_COOKIE["session_id"])->delete();
 
         // criar um novo registro na order_shipping ------------------------
 

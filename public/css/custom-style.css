@@ -24,6 +24,7 @@ div.color-header{
 .header-fixo{
     position: fixed;
     width: 100%;
+    z-index: 998;
 }
 
 .item{
@@ -108,3 +109,45 @@ font-size: 14px;
     margin: 0px;
     padding: 0px;
 }
+
+.linha {
+    width: 5%;
+    margin: 0 auto;
+    border-top: 1px solid #00addc;
+}
+
+.login {
+    display: none;
+}
+.modal-dialog {
+    max-width: 600px!important;
+}
+.alert {
+    padding: 0.01rem 0.50rem!important;
+}
+
+.searchable-container{margin:20px 0 0 0}
+.searchable-container label.btn-default.active{background-color:#007ba7;color:#FFF}
+.searchable-container label.btn-default{width:90%;border:1px solid #efefef;margin:5px; box-shadow:5px 8px 8px 0 #ccc;}
+.searchable-container label .bizcontent{width:100%;}
+.searchable-container .btn-group{width:90%}
+.searchable-container .btn span.glyphicon{
+    opacity: 0;
+}
+.searchable-container .btn.active span.glyphicon {
+    opacity: 1;
+}
+.bizcontent input{
+display: none;
+}
+.searchable-container label.btn-default {
+    width: 100%;
+    border: 1px solid #efefef;
+    margin: 5px;
+    margin-left: 5px;
+    box-shadow: 5px 8px 8px 0 #ccc;
+}
+.searchable-container .btn-group {
+    width: 100%;
+}
+

@@ -50,6 +50,8 @@ Route::post('/contato', 'ContatoController@send')->name('send');
 
 Route::post('/notification', 'CheckoutController@notification')->name('pagseguro.notification');
 Route::post('/json/getproduto', 'ProductController@getproduto')->name('voyager.getproduto');
+Route::get('/json/getservico/{categoria}', 'ProductController@getservico')->name('voyager.getservico');
+Route::get('/json/getcart', 'CartController@getcart')->name('voyager.getcart');
 
 
 Route::group(['prefix' => 'admin'], function () {
