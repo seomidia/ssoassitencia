@@ -115,72 +115,80 @@ class CheckoutController extends Controller
     }
     public function finalizar(Request $request)
     {
-        foreach ($request->prod as $ids){
-            $prods[] = $ids['value'];
-        }
+        if(Auth::check()) {
+
+            foreach ($request->prod as $ids) {
+                $prods[] = $ids['value'];
+            }
 
 
-        $prod = DB::table('products')
-            ->wherein('id',$prods)
-            ->get();
-        $total = 0;
-        foreach ($prod as $key => $value){
-            $total = $total + $value->price;
-            $item[] = [
-                'id' => $value->id,
-                'description' => $value->name,
-                'quantity' => '1',
-                'amount' => $value->price,
-                'weight' => '0',
-                'shippingCost' => '0',
-                'width' => '0',
-                'height' => '0',
-                'length' => '0',
+            $prod = DB::table('products')
+                ->wherein('id', $prods)
+                ->get();
+            $total = 0;
+            foreach ($prod as $key => $value) {
+                $total = $total + $value->price;
+                $item[] = [
+                    'id' => $value->id,
+                    'description' => $value->name,
+                    'quantity' => '1',
+                    'amount' => $value->price,
+                    'weight' => '0',
+                    'shippingCost' => '0',
+                    'width' => '0',
+                    'height' => '0',
+                    'length' => '0',
+                ];
+            }
+
+
+            $data = [
+                'items' => $item,
+                'shipping' => [
+                    'address' => [
+                        'postalCode' => $this->getUserData('cep'),
+                        'street' => $this->getUserData('endereco'),
+                        'number' => $this->getUserData('numero'),
+                        'district' => $this->getUserData('bairro'),
+                        'city' => $this->getUserData('cidade'),
+                        'state' => $this->getUserData('estado'),
+                        'country' => 'BRA',
+                    ],
+                    'type' => 2,
+                    'cost' => '',
+                ],
+                'sender' => [
+                    'email' => Auth::user()->email,
+                    'name' => Auth::user()->name,
+                    'documents' => [
+                        [
+                            'number' => $this->getUserData('cpf'),
+                            'type' => 'CPF'
+                        ]
+                    ],
+                    'phone' => [
+                        'number' => substr($this->getUserData('telefone'), -9, 9),
+                        'areaCode' => substr($this->getUserData('telefone'), 0, -9),
+                    ],
+                    'bornDate' => date("Y-m-d", strtotime(str_replace('/', '-', $this->getUserData('nasc')))),
+                ]
             ];
+
+            $checkout = PagSeguro::checkout()->createFromArray($data);
+            $credentials = PagSeguro::credentials()->get();
+            $information = $checkout->send($credentials); // Retorna um objeto de laravel\pagseguro\Checkout\Information\Information
+            if ($information) {
+                $code['code'] = $information->getCode();
+                $code['total'] = $total;
+                Order::CreateOrder($code);
+            }
+            return response()->json($information->getLink());
+        }else{
+            return response()->json([
+                'status' => false,
+                'message' => 'É necessarios estar logado para finalizar o agendamento!'
+            ],500);
         }
-
-
-        $data = [
-            'items' => $item,
-            'shipping' => [
-                'address' => [
-                    'postalCode' => $this->getUserData('cep'),
-                    'street' => $this->getUserData('endereco'),
-                    'number' => $this->getUserData('numero'),
-                    'district' => $this->getUserData('bairro'),
-                    'city' => $this->getUserData('cidade'),
-                    'state' => $this->getUserData('estado'),
-                    'country' => 'BRA',
-                ],
-                'type' => 2,
-                'cost' => '',
-            ],
-            'sender' => [
-                'email' => Auth::user()->email,
-                'name' => Auth::user()->name,
-                'documents' => [
-                    [
-                        'number' => $this->getUserData('cpf'),
-                        'type' => 'CPF'
-                    ]
-                ],
-                'phone' => [
-                    'number' => substr($this->getUserData('telefone'), -9, 9),
-                    'areaCode' => substr($this->getUserData('telefone'), 0, -9),
-                ],
-                'bornDate' => date("Y-m-d", strtotime(str_replace('/','-',$this->getUserData('nasc')))),
-            ]
-        ];
-
-        $checkout = PagSeguro::checkout()->createFromArray($data);
-        $credentials = PagSeguro::credentials()->get();
-        $information = $checkout->send($credentials); // Retorna um objeto de laravel\pagseguro\Checkout\Information\Information
-        if ($information) {
-            $code['code'] = $information->getCode();
-            $code['total'] = $total;
-            Order::CreateOrder($code);
-        }
-        return response()->json($information->getLink());
     }
 //print_r($information->getCode());
 //print_r($information->getDate());

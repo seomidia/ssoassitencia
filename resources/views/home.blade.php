@@ -97,12 +97,13 @@
                             </a>
                         </li>
                     </ul>
-                    <form name="consulta" action="" method="post">
                         <div class="tab-content">
                             <div id="step-1" class="tab-pane" role="tabpanel" style="height: 335px;">
                                 <p class="alert alert-warning"><small><a href="#" id="create_pessoa" style="color: #333333"  data-toggle="modal" data-target="#exampleModal">Se não for assinante, cadastre como avulso <strong>clique aqui</strong>.</a></small></p>
                                 @include('step.quem')
                             </div>
+                            <form name="consulta" action="" method="post">
+
                             <div id="step-2" class="tab-pane" role="tabpanel" style="height: 335px;">
                                     <p class="alert alert-warning"><small><a href="#" id="create_pessoa" style="color: #333333"  data-toggle="modal" data-target="#exampleModal">Nesta etapa você vai criar o serviço que deseja.</a></small></p>
                                     @include('step.servicos')
@@ -117,8 +118,9 @@
                                 <p class="alert alert-warning"><small><a href="#" id="create_pessoa" style="color: #333333"  data-toggle="modal" data-target="#exampleModal">Confira seu pedido é efetue o pagamento para liberação em seu painel.</a></small></p>
                                 @include('step.pagamento')
                             </div>
+                            </form>
+
                         </div>
-                    </form>
                 </div>
             </div>
         </div>
