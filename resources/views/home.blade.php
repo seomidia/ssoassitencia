@@ -103,7 +103,7 @@
                                 @include('step.quem')
                             </div>
                             <form name="consulta" action="" method="post">
-
+                                @csrf
                             <div id="step-2" class="tab-pane" role="tabpanel" style="height: 335px;">
                                     <p class="alert alert-warning"><small><a href="#" id="create_pessoa" style="color: #333333"  data-toggle="modal" data-target="#exampleModal">Nesta etapa você vai criar o serviço que deseja.</a></small></p>
                                     @include('step.servicos')
@@ -345,10 +345,8 @@
 
             $.ajax({
                 url: window.location.origin +'/json/getproduto',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
                 data:{
+                    '_token':$('meta[name="csrf-token"]').attr('content'),
                     'id': prod
                 },
                 type:'post',
@@ -459,9 +457,9 @@
                                 window.open (
                                     response,
                                     "_blank" );
-                                setTimeout(function (){
-                                    window.location.href = '/';
-                                },2000);
+                                // setTimeout(function (){
+                                //     window.location.href = '/';
+                                // },2000);
                             }
 
                         }).fail(function (jqXHR, textStatus) {

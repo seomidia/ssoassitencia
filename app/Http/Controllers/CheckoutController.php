@@ -49,40 +49,49 @@ class CheckoutController extends Controller
 
     }
 
-    public function notification(Request $request){
-        $notificationCode = $request->input('notificationCode');
-
-
-
-        $order = DB::table('orders')
-            ->where('orders.code',$notificationCode);
-
-        $datalhes = $order->select('user_id','id')->get();
-
-        if($order->count() > 0){
-            $order->update(['status'=>'pago']);
-
-        $create_os = DB::table('ordem_servico')->insertGetId([
-            'user_id' => $datalhes[0]->user_id,
-            'order_id' => $datalhes[0]->id,
-            'created_at' => date('Y-m-d H:i:s')
-        ]);
-
-        $products_order = $order->select('order_products.*')
-            ->join('order_products','orders.id','=','order_products.order_id')
-            ->get();
-
-            foreach ( $products_order as $item) {
-                $create_exame = DB::table('exame')->insert([
-                    'ordem_servico_id' => $create_os,
-                    'product_id' => $item->product_id,
-                    'created_at' => date('Y-m-d H:i:s')
-                ]);
-
-            }
-
-        }
+    public static function Notification($information)
+    {
+        \Log::debug(print_r($information->getStatus()->getCode(), 1));
     }
+
+//    public function notification(Request $request){
+//        $notificationCode = $request->input('notificationCode');
+//
+//        $credentials = PagSeguro::credentials()->get();
+//        $transaction = PagSeguro::transaction()->get($notificationCode, $credentials);
+//        $information = $transaction->getInformation();
+//
+//        dd($information);
+
+//        $order = DB::table('orders')
+//            ->where('orders.code',$notificationCode);
+//
+//        $datalhes = $order->select('user_id','id')->get();
+//
+//        if($order->count() > 0){
+//            $order->update(['status'=>'pago']);
+//
+//        $create_os = DB::table('ordem_servico')->insertGetId([
+//            'user_id' => $datalhes[0]->user_id,
+//            'order_id' => $datalhes[0]->id,
+//            'created_at' => date('Y-m-d H:i:s')
+//        ]);
+//
+//        $products_order = $order->select('order_products.*')
+//            ->join('order_products','orders.id','=','order_products.order_id')
+//            ->get();
+//
+//            foreach ( $products_order as $item) {
+//                $create_exame = DB::table('exame')->insert([
+//                    'ordem_servico_id' => $create_os,
+//                    'product_id' => $item->product_id,
+//                    'created_at' => date('Y-m-d H:i:s')
+//                ]);
+//
+//            }
+//
+//        }
+//    }
     public function Autocomplete(Request $request)
     {
         $search = $request->input('search');
@@ -116,8 +125,13 @@ class CheckoutController extends Controller
     public function finalizar(Request $request)
     {
         if(Auth::check()) {
-
-            foreach ($request->prod as $ids) {
+            if(!is_null($request->prod))
+                 $cartProd = $request->prod;
+            $cartProd[] =[
+                'name' =>'prod[]',
+                'value' => $_COOKIE["prod_consulta"]
+            ];
+            foreach ($cartProd as $ids) {
                 $prods[] = $ids['value'];
             }
 

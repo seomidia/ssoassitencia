@@ -2,14 +2,14 @@
 
 return [
     /* DEFINE SE SERÁ UTILIZADO O AMBIENTE DE TESTES */
-    'use-sandbox' => true,
+    'use-sandbox' => false,
 
     /*
      * Coloque abaixo as informações do seu cadastro no PagSeguro
      */
     'credentials' => [//INFORME AS CREDENCIAIS PADRÕES DE SUA LOJA, MAS PORDERÁ SER ALTERADA EM RUNTIME
         'email' => 'suporte@seomidia.com.br',
-        'token' => '64E41DAABAFE41F29B6E431CB18C87CF',
+        'token' => '64446e59-c0ca-46d3-83ba-015496d2887a6d61128c48398c153deebaea4f6c55f4f3eb-ed8a-419f-87d2-036397931167',
     ],
 
     /*
@@ -27,7 +27,7 @@ return [
             'route-name' => 'pagseguro.redirect', // Criar uma rota com este nome
         ],
         'notification' => [
-            'callback' => null, // Callable callback to Notification function (notificationInfo) : void {}
+            'callback' => ['App\Http\Controllers\CheckoutController','Notification'], // Callable callback to Notification function (notificationInfo) : void {}
             'credential' => 'default', // Callable resolve credential function (notificationCode) : Credentials {}
             'route-name' => 'pagseguro.notification', // Criar uma rota com este nome
         ],
