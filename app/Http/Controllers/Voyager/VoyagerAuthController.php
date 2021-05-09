@@ -9,6 +9,7 @@ class VoyagerAuthController extends BaseVoyagerAuthController
 {
     public function postLogin(Request $request)
     {
+
         $this->validateLogin($request);
 
         // If the class is using the ThrottlesLogins trait, we can automatically throttle
@@ -27,12 +28,16 @@ class VoyagerAuthController extends BaseVoyagerAuthController
             ->join('user_roles as ur','u.id','=','ur.user_id')
             ->select('ur.role_id')
             ->where('u.email',$credentials['email'])
-            ->get();
+            ->first();
 
-            return response()->json([
-                'autenticacao' => $this->sendLoginResponse($request),
-                'tipo_user' => $data_user[0]->role_id
-            ]);
+            $origin = $request->input('originLogin');
+
+            if(!is_null($data_user) && isset($origin)){
+                return response()->json([
+                    'autenticacao' => $this->sendLoginResponse($request),
+                    'tipo_user' => $data_user->role_id
+                ]);
+            }
         }
 
         // If the login attempt was unsuccessful we will increment the number of attempts

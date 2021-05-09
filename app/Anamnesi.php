@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Notifications\Notifiable;
 use \App\User;
 use DB;
@@ -38,7 +39,6 @@ class Anamnesi extends Model
         ];
 
     }
-
     protected function CreatePDF($anaminese,$pathToPdf,$name,$imgPath){
 
         $criatepdf =  \PDF::loadView('atestado.atestado',['atestado' => $anaminese])
@@ -72,7 +72,6 @@ class Anamnesi extends Model
         );
 
     }
-
     static function get_procedures($anamnese_id)
     {
         return DB::table('procedure_relationship as pr')
@@ -82,7 +81,6 @@ class Anamnesi extends Model
             ->get();
 
     }
-
     static function get_risk($office_id)
     {
         return DB::table('office_risk_relationship as orr')
@@ -95,8 +93,6 @@ class Anamnesi extends Model
             ->get();
 
     }
-
-
     protected function notification($user_id, $anamnese_id)
     {
         $result = DB::table('anamnesis as a')
@@ -134,7 +130,6 @@ class Anamnesi extends Model
 //        $user->notify(new \App\Notifications\encaminhamento());
         Notification::send($user, new \App\Notifications\encaminhamento($job));
     }
-
     public function updateAnamnese($data)
     {
         $data = [
@@ -144,7 +139,6 @@ class Anamnesi extends Model
             'message' => $data['message'],
         ];
     }
-
     protected function get_meta_question($anamnese_id, $question)
     {
         $meta = DB::table('meta_resposes')
@@ -155,23 +149,24 @@ class Anamnesi extends Model
 
         return $data;
     }
-
     protected function count_procedure($anamnese_id, $procedure_id)
     {
         return DB::table('procedure_relationship')
             ->where(['anamnesis_id' => $anamnese_id, 'procedures_id' => $procedure_id])
             ->count();
     }
-
     protected function add_procedure($anamnese_id, $procedures, $updata = false)
     {
         if (!$updata) {
             foreach ($procedures as $key => $procedure) {
-                DB::table('procedure_relationship')->insert([
+                if(isset($procedure->id)) $procedure = $procedure->id;
+                $data = [
                     'anamnesis_id' => $anamnese_id,
                     'procedures_id' => $procedure,
                     'created_at' => date('Y-m-d H:i:s')
-                ]);
+                ];
+
+                DB::table('procedure_relationship')->insert($data);
             }
         } else {
 
@@ -200,7 +195,6 @@ class Anamnesi extends Model
         }
 
     }
-
     protected function add_meta_question(array $data, $question)
     {
         $from = [
@@ -226,7 +220,6 @@ class Anamnesi extends Model
         }
 
     }
-
     protected function update_meta_respose($data, $from)
     {
         if (!in_array('medico', $from)) {
@@ -297,8 +290,6 @@ class Anamnesi extends Model
             }
         }
     }
-
-
     protected function create_meta_respose($data, $from)
     {
         if (!in_array('medico', $from)) {
@@ -342,6 +333,34 @@ class Anamnesi extends Model
                     }
                 }
             }
+        }
+    }
+
+    // create anamnesis ---------------------------------
+
+    protected function CreateAnamnesi($data){
+
+        $created = [
+            'user_id_logged' => $data->user_id_logged,
+            'user_id_employee' => $data->user_id_logged,
+            'requester' => $data->requester,
+            'step' => $data->step,
+            'type' => $data->consulta->name,
+            'created_at' => date('Y-m-d H:i:s')
+        ];
+
+        $id =  DB::table('anamnesis')->insertGetId($created);
+
+        return $id;
+
+    }
+
+    protected function ExameAnamnesiRelationship($anamnesi_id = null,$order = null,$exame){
+
+        if(!is_null($anamnesi_id)){
+            $this->add_procedure($anamnesi_id,$exame);
+        }else{
+            $this->add_procedure($order,$exame);
         }
     }
 }

@@ -77,30 +77,30 @@
 <script src="https://raw.githack.com/sabieber/token-autocomplete/master/built/token-autocomplete.js"></script>
 <link href="https://raw.githack.com/sabieber/token-autocomplete/master/lib/token-autocomplete.css" rel="stylesheet" type="text/css" media="all">
 <script>
-    $(document).ready(function($){
+    $(document).ready(function($) {
         @if(Auth::check())
         $('button[type="button"]').prop('disabled', false);
         @else
         $('button[type="button"]').prop('disabled', true);
         @endif
-        $('span#sample-input').attr('data-placeholder','Escriva os riscos aqui!')
-        let tokenAutocomplete = new TokenAutocomplete({
-            name: 'riscos',
-            selector: '#sample',
-            noMatchesText: 'Nada encontrado...',
-            // initialTokens: [
-            //     {value: '', text: 'Risco1'},
-            //     {value: '', text: 'Risco2'},
-            // ],
-            initialSuggestions: [
-                @foreach($riscos as $key => $value)
-                {value: '{{$value->id}}', text: '{{$value->name}}', description: '{{$value->description}}'},
-                @endforeach
-            ]
-        });
-        tokenAutocomplete.debug(true);
-    })
-
+        // $('span#sample-input').attr('data-placeholder','Escriva os riscos aqui!')
+        // let tokenAutocomplete = new TokenAutocomplete({
+        //     name: 'riscos[]',
+        //     selector: '#sample',
+        //     noMatchesText: 'Nada encontrado...',
+        // initialTokens: [
+        //     {value: '', text: 'Risco1'},
+        //     {value: '', text: 'Risco2'},
+        // ],
+        {{--        initialSuggestions: [--}}
+        {{--            @foreach($riscos as $key => $value)--}}
+        {{--            {value: '{{$value->id}}', text: '{{$value->name}}', description: '{{$value->description}}'},--}}
+        {{--            @endforeach--}}
+        {{--        ]--}}
+        {{--    });--}}
+        {{--    tokenAutocomplete.debug(true);--}}
+        {{--})--}}
+    });
     $(window).scroll(function() {
         if ($(this).scrollTop() > 400){
             $('.site-navbar').addClass("header-fixo");

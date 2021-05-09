@@ -316,10 +316,11 @@
                 })
             }
         }
-        function risco(prod){
+        function next(prod){
             $(".active").trigger("click")
+            $('button.sw-btn-next').trigger("click");
             addCart(prod.value)
-            $('#risco').show();
+            // $('#risco').show();
         }
         function riscofield(value){
             if(value.value == 'sim'){
@@ -449,7 +450,8 @@
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                             },
                             data: {
-                                'prod':$(this).serializeArray(),
+                                'prod':$('input[name="prod[]"]').serializeArray(),
+                                'riscos':$('select[name="riscos[]"]').serializeArray(),
                             },
                             type: 'post',
                             dataType: 'json',

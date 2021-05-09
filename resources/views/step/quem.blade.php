@@ -17,6 +17,7 @@
                             <input class="form-control" type="password" name="password">
                         </div>
                         <p class="alert alert-danger" style="display: none" id="message"></p>
+                    <input type="hidden" name="originLogin" value="site">
                         <button type="submit" class="btn btn-secondary">Logar</button>
                     </form>
                 @endif

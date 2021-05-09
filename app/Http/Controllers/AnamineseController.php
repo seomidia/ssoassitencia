@@ -241,7 +241,23 @@ class AnamineseController extends Controller
             ->where('requester',Auth::user()->id)
             ->orderBy('a.id', 'desc')
             ->get();
-        return view('anaminese.listagem',['anamnese' => $listagem]);
+
+        $order = DB::table('orders as o')
+            ->join('order_products as op','o.id','=','op.order_id')
+            ->join('products as p','op.product_id','=','p.id')
+            ->select(
+                'p.name',
+                'o.payment_type',
+                'o.code',
+                'p.price',
+                'o.status',
+                'o.created_at'
+            )
+            ->where('user_id',Auth::user()->id)
+            ->wherein('o.status',['Paga','pending','Aguardando pagamento','Devolvida'])
+            ->get();
+
+        return view('anaminese.listagem',['anamnese' => $listagem,'orders' => $order]);
     }
     public function cadastro($id){
         $user_logged = Auth::user()->id;
@@ -266,7 +282,11 @@ class AnamineseController extends Controller
             )
             ->where('a.id',$id)
             ->get();
-        $procedures = DB::table('procedures')->get();
+//        $procedures = DB::table('procedures')->get();
+        $procedures = DB::table('products')
+            ->wherein('category_id',[4,5,7,8])
+            ->get();
+
         $tipo = DB::table('anamnese_type')->get();
         $locais = DB::table('location')->where('id',$dados[0]->location_id )->get();
         return view('anaminese.update',[
@@ -410,7 +430,6 @@ class AnamineseController extends Controller
 
         }
     }
-
     public function destroy($id){
         $delete = DB::table('anamnesis')
             ->where('id',$id)
@@ -445,7 +464,7 @@ class AnamineseController extends Controller
                 'o.name as cargo'
             )
             ->where('user_id_employee',Auth::user()->id)
-            ->whereIn('step',['step_funci','step_med'])
+            ->whereIn('step',['step_funci','step_med','step_site'])
             ->orderBy('a.id', 'desc')
             ->get();
 
@@ -515,7 +534,6 @@ class AnamineseController extends Controller
         return view('anaminese.funcionario.update',['anamnese_id' => $id, 'user_id' => Auth::user()->id, 'dados'=> $dados]);
 
     }
-
     public function questionStore(Request $request){
         $data = $request->question;
         $user = $request->input('user_id_employee');
@@ -533,7 +551,6 @@ class AnamineseController extends Controller
                 'message'=> 'Anamnese encaminhada para medico!'
             ],200);
     }
-
     public function Busca(){
 
         if(isset($_GET['filter']) && $_GET['filter'] =='nome' ){
@@ -567,7 +584,6 @@ class AnamineseController extends Controller
 
         return view('vendor/voyager/index',['paciente' => $value,'filtro' => $filter]);
     }
-
     static function get_anamnese($filtro,$id){
         return  DB::table('anamnesis as a')
             ->leftjoin('companies as c','a.companies_id','=','c.id')
@@ -580,7 +596,6 @@ class AnamineseController extends Controller
             ->get();
 
     }
-
     static function questions($user_id,$anamnese_id){
         $input = DB::table('meta_resposes')
             ->where('user_id_employee',$user_id)
@@ -594,7 +609,6 @@ class AnamineseController extends Controller
                 return array_merge($item->toArray());
             });
     }
-
     public function Complementar($id){
             $update = DB::table('anamnesis')
                 ->where('id',$id)
@@ -609,7 +623,6 @@ class AnamineseController extends Controller
 
 
     }
-
     public function Complementarlist(){
 
         $doctor = (Auth::user()->role_id == 8) ? Auth::user()->parent : Auth::user()->id;
@@ -629,7 +642,6 @@ class AnamineseController extends Controller
             ->get();
         return view('anaminese.complementar',['anamnese' => $listagem]);
     }
-
     public function ComplementarStatus(Request $request,$id)
     {
         $a = $request->all();

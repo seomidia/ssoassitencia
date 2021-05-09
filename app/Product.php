@@ -35,4 +35,72 @@ class Product extends Model
 
     }
 
+    protected function getConsulta($id){
+        $consulta = DB::table('products')
+            ->where('id',$id)
+            ->first();
+
+        if(isset($consulta->category_id) && in_array($consulta->category_id,[3,6]))
+            return $consulta;
+    }
+    protected function getExames($id){
+        $consulta = DB::table('products')
+            ->select('id','category_id')
+            ->where('id',$id)
+            ->first();
+
+        if(isset($consulta->category_id) && in_array($consulta->category_id,[4,5,7,8])){
+            unset($consulta->category_id);
+            return $consulta;
+        }
+    }
+    protected function CreateService($data){
+        $products = DB::table('order_products')
+            ->where('order_id',$data->idOrder)->get();
+
+        $servico = new \stdClass();
+        $servico->user_id_logged = $data->useridOrder;
+        $servico->requester = $data->useridOrder;
+        $servico->step = 'step_site';
+
+        foreach ($products as $key => $product){
+            if(!is_null($this->getConsulta($product->product_id)))
+                $servico->consulta = $this->getConsulta($product->product_id);
+
+            if(!is_null($this->getExames($product->product_id)))
+                $servico->exames[] = $this->getExames($product->product_id);
+        }
+
+
+        if(!empty($servico->consulta)){
+            $anamnesi_id = \App\Anamnesi::CreateAnamnesi($servico);
+        }
+
+        if(!empty($servico->exames)){
+            if(isset($anamnesi_id)){
+                \App\Anamnesi::ExameAnamnesiRelationship($anamnesi_id,$servico->exames);
+            }else{
+                \App\Anamnesi::ExameAnamnesiRelationship($servico);
+            }
+        }
+
+
+    }
+
+    protected function CreateAnamnesi(){
+        $id =  DB::table('anamnesis')->insertGetId([
+            'user_id_logged' => Auth::user()->id,
+            'requester' => Auth::user()->id,
+            'step' => 'step_rh',
+            'created_at' => date('Y-m-d H:i:s')
+        ]);
+
+        $agendamento = [
+            'anamnesis_id' => $id,
+            'created_at' => date('Y-m-d H:i:s')
+        ];
+
+        $agendamento = DB::table('schedule')->insert($agendamento);
+
+    }
 }

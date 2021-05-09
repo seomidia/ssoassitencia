@@ -102,22 +102,21 @@ class PeopleController extends Controller
                     'user_data.cidade',
                     'user_data.estado'
                 )
-                ->get();
-
+                ->first();
 
             return response()->json([
                 'success'=> true,
                 'message'=> '',
                 'data' => [
-                    'id' => $pessoa[0]->id,
-                    'cpf' => $pessoa[0]->cpf,
-                    'nome' => $pessoa[0]->nome,
-                    'rg' => $pessoa[0]->rg,
-                    'nascimento' => $pessoa[0]->nascimento,
-                    'idade' => $pessoa[0]->idade,
-                    'sexo' => $pessoa[0]->sexo,
-                    'cidade' => $pessoa[0]->cidade,
-                    'uf' => $pessoa[0]->estado
+                    'id' => $pessoa->id,
+                    'cpf' => $pessoa->cpf,
+                    'nome' => $pessoa->nome,
+                    'rg' => $pessoa->rg,
+                    'nascimento' => $pessoa->nascimento,
+                    'idade' => $pessoa->idade,
+                    'sexo' => $pessoa->sexo,
+                    'cidade' => $pessoa->cidade,
+                    'uf' => $pessoa->estado
                 ]
             ],200);
         }else{

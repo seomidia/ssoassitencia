@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Product;
 use DB;
 use App\Cart;
 use App\Checkout;
@@ -10,6 +11,7 @@ use Illuminate\Http\Request;
 use PagSeguro;
 use Validator,Redirect,Response;
 use Auth;
+use Illuminate\Support\Str;
 
 
 class CheckoutController extends Controller
@@ -48,50 +50,65 @@ class CheckoutController extends Controller
         ]);
 
     }
-
-    public static function Notification($information)
-    {
-        \Log::debug(print_r($information->getStatus()->getCode(), 1));
-    }
-
-//    public function notification(Request $request){
-//        $notificationCode = $request->input('notificationCode');
 //
-//        $credentials = PagSeguro::credentials()->get();
-//        $transaction = PagSeguro::transaction()->get($notificationCode, $credentials);
-//        $information = $transaction->getInformation();
-//
-//        dd($information);
-
-//        $order = DB::table('orders')
-//            ->where('orders.code',$notificationCode);
-//
-//        $datalhes = $order->select('user_id','id')->get();
-//
-//        if($order->count() > 0){
-//            $order->update(['status'=>'pago']);
-//
-//        $create_os = DB::table('ordem_servico')->insertGetId([
-//            'user_id' => $datalhes[0]->user_id,
-//            'order_id' => $datalhes[0]->id,
-//            'created_at' => date('Y-m-d H:i:s')
-//        ]);
-//
-//        $products_order = $order->select('order_products.*')
-//            ->join('order_products','orders.id','=','order_products.order_id')
-//            ->get();
-//
-//            foreach ( $products_order as $item) {
-//                $create_exame = DB::table('exame')->insert([
-//                    'ordem_servico_id' => $create_os,
-//                    'product_id' => $item->product_id,
-//                    'created_at' => date('Y-m-d H:i:s')
-//                ]);
-//
-//            }
-//
-//        }
+//    public static function Notification($information)
+//    {
+//        $data = (object) $information;
+//        dd($data->code);
+//        \Log::debug(print_r($information->getStatus()->getCode(), 1));
 //    }
+
+    public static function Notification(Request $request){
+        $notificationCode = $request->input('notificationCode');
+
+        $credentials = PagSeguro::credentials()->get();
+        $transaction = PagSeguro::transaction()->get($notificationCode, $credentials);
+        $information = $transaction->getInformation();
+
+        $reference = $information->getReference();
+        $status    = $information->getStatus();
+
+
+        $order = DB::table('orders')
+            ->where('orders.code',$reference);
+
+        $datalhes = $order->select('user_id','id')->first();
+
+        if($order->count() > 0){
+            $order->update(['status'=> $status->getName()]);
+
+        $create_os = DB::table('ordem_servico')->insertGetId([
+            'user_id' => $datalhes->user_id,
+            'order_id' => $datalhes->id,
+            'created_at' => date('Y-m-d H:i:s')
+        ]);
+
+        $products_order = $order->select('order_products.*')
+            ->join('order_products','orders.id','=','order_products.order_id')
+            ->get();
+
+            foreach ( $products_order as $item) {
+                $create_exame = DB::table('exame')->insert([
+                    'ordem_servico_id' => $create_os,
+                    'product_id' => $item->product_id,
+                    'created_at' => date('Y-m-d H:i:s')
+                ]);
+
+            }
+
+        }
+
+        //-- eventos -------------------------------------------
+        if($status->getCode() == 3){
+            $servico = new \stdClass();
+            $servico->codeStatus = $status->getCode();
+            $servico->nameStatus = $status->getName();
+            $servico->useridOrder = $datalhes->user_id;
+            $servico->idOrder = $datalhes->id;
+
+            Product::CreateService($servico);
+        }
+    }
     public function Autocomplete(Request $request)
     {
         $search = $request->input('search');
@@ -124,6 +141,8 @@ class CheckoutController extends Controller
     }
     public function finalizar(Request $request)
     {
+
+
         if(Auth::check()) {
             if(!is_null($request->prod))
                  $cartProd = $request->prod;
@@ -155,6 +174,7 @@ class CheckoutController extends Controller
                 ];
             }
 
+            $referencia = (string) Str::uuid();
 
             $data = [
                 'items' => $item,
@@ -169,7 +189,7 @@ class CheckoutController extends Controller
                         'country' => 'BRA',
                     ],
                     'type' => 2,
-                    'cost' => '',
+                    'cost' => ''
                 ],
                 'sender' => [
                     'email' => Auth::user()->email,
@@ -185,14 +205,15 @@ class CheckoutController extends Controller
                         'areaCode' => substr($this->getUserData('telefone'), 0, -9),
                     ],
                     'bornDate' => date("Y-m-d", strtotime(str_replace('/', '-', $this->getUserData('nasc')))),
-                ]
+                ],
+                'reference' => $referencia
             ];
 
             $checkout = PagSeguro::checkout()->createFromArray($data);
             $credentials = PagSeguro::credentials()->get();
             $information = $checkout->send($credentials); // Retorna um objeto de laravel\pagseguro\Checkout\Information\Information
             if ($information) {
-                $code['code'] = $information->getCode();
+                $code['code'] = $referencia;
                 $code['total'] = $total;
                 Order::CreateOrder($code);
             }

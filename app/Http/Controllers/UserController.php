@@ -17,11 +17,9 @@ class UserController extends Controller
 
         return view('assistente.listagem',['users' => $list]);
     }
-
     public function AssistenteCreate(){
         return view('assistente.form');
     }
-
     public function AssistenteEdit($id){
         $user = DB::table('users')
             ->select('name','email')
@@ -33,7 +31,6 @@ class UserController extends Controller
             'id' => $id
         ]);
     }
-
     public function AssistenteStore(Request $request){
 
         $data = $request->all();
@@ -110,8 +107,6 @@ class UserController extends Controller
             ],500);
         }
     }
-
-
     public function getMedico()
     {
         $office = DB::table('user_roles')

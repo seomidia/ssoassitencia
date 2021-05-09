@@ -10,24 +10,26 @@
         <i class="icon voyager-documentation"></i>
         {{ __('Encaminhamentos')}}
     </h1>
-    <div class="page-content browse container-fluid">
-        <div class="row">
-            <div class="col-md-12">
-                <form name="create_anaminesis" action="{{Route('voyager.create.encaminhamento')}}" type="post">
-                    <button class="btn btn-success btn-add-new">
-                        <i class="voyager-plus"></i> <span>Criar</span>
-                    </button>
-                </form>
+
+    @if(in_array(Auth::user()->role_id,[3]))
+            <div class="page-content browse container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <form name="create_anaminesis" action="{{Route('voyager.create.encaminhamento')}}" type="post">
+                        <button class="btn btn-success btn-add-new">
+                            <i class="voyager-plus"></i> <span>Criar</span>
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
-
-
-    @include('voyager::multilingual.language-selector')
+    @endif
 @stop
 
 @section('content')
 
+
+@if(in_array(Auth::user()->role_id,[3]))
     <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content" style="border: 1px solid #fff;height: 900px;">
@@ -39,7 +41,7 @@
             </div>
         </div>
     </div>
-
+@endif
 
     <div class="page-content browse container-fluid">
         <div class="row">
@@ -59,6 +61,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
+                                @if(count($anamnese) > 0)
                                     @foreach($anamnese as $key => $item)
                                 <tr>
                                     <td style="vertical-align: middle">{{$item->empresa}}</td>
@@ -117,13 +120,20 @@
                                             <a href="/admin/anamnese/atestado/{{$item->id}}/" style="padding: 5px 12px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="atestado btn btn-sm @if(in_array($item->apt,[1,2,3])) btn-success @endif @if(in_array($item->apt,[0,'-1','-2','-3'])) btn-danger @endif pull-center">Atestado</a>
                                             <a  href="/admin/anamnese/atestado/{{$item->id}}/send" style="padding: 5px 12px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="send btn btn-sm @if(in_array($item->apt,[1,2,3])) btn-success @endif @if(in_array($item->apt,[0,'-1','-2','-3'])) btn-danger @endif pull-center"><i class="fa fa-send" aria-hidden="true"></i></a>
                                             @else
-                                                <a href="/admin/anaminese/cadastro/{{$item->id}}"  class="btn btn-sm btn-primary pull-center" style="padding: 2px 7px;"><i class="voyager-edit"></i></a>
-                                                <a href="/admin/encaminhamento/{{$item->id}}/delete" id="delete"  class="btn btn-sm btn-danger pull-center" style="padding: 2px 7px;"><i class="voyager-trash"></i></a>
+                                                @if(in_array($item->step,['step_site','step_rh']))
+                                                    <a href="/admin/anaminese/cadastro/{{$item->id}}"  class="btn btn-sm btn-primary pull-center" style="padding: 2px 7px;"><i class="voyager-edit"></i></a>
+                                                    <a href="/admin/encaminhamento/{{$item->id}}/delete" id="delete"  class="btn btn-sm btn-danger pull-center" style="padding: 2px 7px;"><i class="voyager-trash"></i></a>
+                                                @endif
                                             @endif
                                     </td>
                                     </td>
                                 </tr>
                                     @endforeach
+                                @else
+                                    <tr>
+                                        <td colspan="8" style="text-align: center">Não existe Anamnese disponivel no momento !</td>
+                                    </tr>
+                                @endif
                                 </tbody>
                             </table>
                         </div>
