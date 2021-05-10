@@ -13,6 +13,14 @@ class PeopleController extends Controller
 {
     function CreatePessoa(Request $request){
 
+        foreach ($request->all() as $key => $value){
+            if($value == '')
+                return response()->json([
+                    'success'=> false,
+                    'message'=> 'O campo ' . $key . ' é obrigatório'
+                ],500);
+        }
+
         $cpf = $request->input('cpf');
         $senha = preg_replace('/[^0-9]/', '', $cpf);
 

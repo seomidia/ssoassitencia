@@ -7,13 +7,10 @@ $(document).ready(function(){
             previous: 'Voltar'
         }
     });
-
     // create pessoa ---------------------------------
-
     $('a#create_pessoa').on('click',function(event){
         event.preventDefault();
     });
-
     $('#search').on('keyup', function() {
         var pattern = $(this).val();
         $('.searchable-container .items').hide();
@@ -21,8 +18,8 @@ $(document).ready(function(){
             return $(this).text().match(new RegExp(pattern, 'i'));
         }).show();
     });
-
     // step serviços ----------------------------------------------
+
 });
 
 

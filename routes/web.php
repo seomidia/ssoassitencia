@@ -119,6 +119,7 @@ Route::get('/admin/anamnese/atestado/{anamnese}/image', 'Controller@exportImg');
 Route::post('/admin/anamnese/atestado/{anamnese}/send', 'Controller@sendmail');
 Route::get('/admin/anaminese/cadastro/{anaminese}', 'AnamineseController@cadastro')->name('voyager.anaminese.cadastro');
 Route::get('/admin/pedidos', 'OrderController@pedidos')->name('pedido');
+Route::get('/admin/exames', 'ExamesController@index')->name('exames');
 
 
 // busca medico --------------------------------

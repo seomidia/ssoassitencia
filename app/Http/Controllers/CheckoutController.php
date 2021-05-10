@@ -76,26 +76,6 @@ class CheckoutController extends Controller
 
         if($order->count() > 0){
             $order->update(['status'=> $status->getName()]);
-
-        $create_os = DB::table('ordem_servico')->insertGetId([
-            'user_id' => $datalhes->user_id,
-            'order_id' => $datalhes->id,
-            'created_at' => date('Y-m-d H:i:s')
-        ]);
-
-        $products_order = $order->select('order_products.*')
-            ->join('order_products','orders.id','=','order_products.order_id')
-            ->get();
-
-            foreach ( $products_order as $item) {
-                $create_exame = DB::table('exame')->insert([
-                    'ordem_servico_id' => $create_os,
-                    'product_id' => $item->product_id,
-                    'created_at' => date('Y-m-d H:i:s')
-                ]);
-
-            }
-
         }
 
         //-- eventos -------------------------------------------

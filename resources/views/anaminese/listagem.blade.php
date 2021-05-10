@@ -29,7 +29,6 @@
 @section('content')
 
 
-@if(in_array(Auth::user()->role_id,[3]))
     <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content" style="border: 1px solid #fff;height: 900px;">
@@ -41,7 +40,6 @@
             </div>
         </div>
     </div>
-@endif
 
     <div class="page-content browse container-fluid">
         <div class="row">
@@ -52,6 +50,7 @@
                             <table id="dataTable" class="table table-hover">
                                 <thead>
                                 <tr>
+                                    <th style="text-align: center">Codigo</th>
                                     <th style="text-align: center">Empresa</th>
                                     <th style="text-align: center">Funcionario</th>
                                     <th style="text-align: center">Cargo</th>
@@ -64,6 +63,7 @@
                                 @if(count($anamnese) > 0)
                                     @foreach($anamnese as $key => $item)
                                 <tr>
+                                    <td style="vertical-align: middle">#{{$item->id}}</td>
                                     <td style="vertical-align: middle">{{$item->empresa}}</td>
                                     <td style="vertical-align: middle">{{$item->funcionario}}</td>
                                     <td style="vertical-align: middle">{{$item->cargo}}</td>
@@ -71,6 +71,9 @@
                                         <div  class="
                                             @if($item->step == 'step_rh')
                                                 alert-danger
+                                            @endif
+                                            @if($item->step == 'step_site')
+                                                alert-info
                                             @endif
                                             @if($item->step == 'step_funci')
                                                 alert-success
@@ -81,6 +84,9 @@
                                             aviso">
                                             @if($item->step == 'step_rh')
                                                 Não iniciado
+                                            @endif
+                                            @if($item->step == 'step_site')
+                                                Ecommerce
                                             @endif
                                             @if($item->step == 'step_funci')
                                                 Funcionario
@@ -120,10 +126,10 @@
                                             <a href="/admin/anamnese/atestado/{{$item->id}}/" style="padding: 5px 12px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="atestado btn btn-sm @if(in_array($item->apt,[1,2,3])) btn-success @endif @if(in_array($item->apt,[0,'-1','-2','-3'])) btn-danger @endif pull-center">Atestado</a>
                                             <a  href="/admin/anamnese/atestado/{{$item->id}}/send" style="padding: 5px 12px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="send btn btn-sm @if(in_array($item->apt,[1,2,3])) btn-success @endif @if(in_array($item->apt,[0,'-1','-2','-3'])) btn-danger @endif pull-center"><i class="fa fa-send" aria-hidden="true"></i></a>
                                             @else
-                                                @if(in_array($item->step,['step_site','step_rh']))
-                                                    <a href="/admin/anaminese/cadastro/{{$item->id}}"  class="btn btn-sm btn-primary pull-center" style="padding: 2px 7px;"><i class="voyager-edit"></i></a>
-                                                    <a href="/admin/encaminhamento/{{$item->id}}/delete" id="delete"  class="btn btn-sm btn-danger pull-center" style="padding: 2px 7px;"><i class="voyager-trash"></i></a>
-                                                @endif
+                                                    @if(in_array($item->step,['step_site','step_funci','step_rh']))
+                                                        <a href="/admin/anaminese/cadastro/{{$item->id}}"  class="btn btn-sm btn-primary pull-center" style="padding: 2px 7px;"><i class="voyager-edit"></i></a>
+                                                        <a href="/admin/encaminhamento/{{$item->id}}/delete" id="delete"  class="btn btn-sm btn-danger pull-center" style="padding: 2px 7px;"><i class="voyager-trash"></i></a>
+                                                   @endif
                                             @endif
                                     </td>
                                     </td>

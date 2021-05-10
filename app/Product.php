@@ -55,6 +55,8 @@ class Product extends Model
         }
     }
     protected function CreateService($data){
+
+
         $products = DB::table('order_products')
             ->where('order_id',$data->idOrder)->get();
 
@@ -67,19 +69,21 @@ class Product extends Model
             if(!is_null($this->getConsulta($product->product_id)))
                 $servico->consulta = $this->getConsulta($product->product_id);
 
-            if(!is_null($this->getExames($product->product_id)))
+            if(!is_null($this->getExames($product->product_id))){
                 $servico->exames[] = $this->getExames($product->product_id);
+            }
         }
-
 
         if(!empty($servico->consulta)){
             $anamnesi_id = \App\Anamnesi::CreateAnamnesi($servico);
         }
 
+
         if(!empty($servico->exames)){
             if(isset($anamnesi_id)){
-                \App\Anamnesi::ExameAnamnesiRelationship($anamnesi_id,$servico->exames);
+                \App\Anamnesi::ExameAnamnesiRelationship($servico->exames,$anamnesi_id);
             }else{
+                $servico->order = $data->idOrder;
                 \App\Anamnesi::ExameAnamnesiRelationship($servico);
             }
         }

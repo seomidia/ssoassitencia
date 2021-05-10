@@ -17,8 +17,14 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    static function data($data){
-        return date("d/m/Y", strtotime($data));
+    static function data($data, $time = null){
+        $format = (is_null($time)) ? 'd-m-Y' : 'd-m-Y H:i:s';
+
+        return date($format, strtotime($data));
+    }
+    static function formatCash($value)
+    {
+        return  number_format($value, 2, ',', '.');
     }
     static function formatar_cpf_cnpj($doc) {
         $doc = preg_replace("/[^0-9]/", "", $doc);

@@ -195,6 +195,21 @@ class Anamnesi extends Model
         }
 
     }
+    protected function add_exame($exames){
+        unset($exames->user_id_logged);
+        unset($exames->requester);
+        unset($exames->step);
+
+        foreach ($exames->exames as $key => $exame) {
+            $data = [
+                'order_id' => $exames->order,
+                'product_id' =>  $exame->id
+            ];
+            $exist = \DB::table('exame')->where($data)->count();
+            if($exist == 0)
+               DB::table('exame')->insert($data);
+        }
+    }
     protected function add_meta_question(array $data, $question)
     {
         $from = [
@@ -355,12 +370,12 @@ class Anamnesi extends Model
 
     }
 
-    protected function ExameAnamnesiRelationship($anamnesi_id = null,$order = null,$exame){
+    protected function ExameAnamnesiRelationship($exame,$anamnesi_id = null){
 
         if(!is_null($anamnesi_id)){
             $this->add_procedure($anamnesi_id,$exame);
         }else{
-            $this->add_procedure($order,$exame);
+            $this->add_exame($exame);
         }
     }
 }

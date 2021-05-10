@@ -32,6 +32,7 @@ class OrderController extends Controller
             ->join('order_products as op','o.id','=','op.order_id')
             ->join('products as p','op.product_id','=','p.id')
             ->select(
+                'o.id',
                 'p.name',
                 'o.payment_type',
                 'o.code',
@@ -40,7 +41,7 @@ class OrderController extends Controller
                 'o.created_at'
             )
             ->where('user_id',Auth::user()->id)
-            ->wherein('o.status',['Paga','pending','Aguardando pagamento','Devolvida'])
+            ->wherein('o.status',['Paga','pedding','Aguardando pagamento','Devolvida'])
             ->orderby('o.id','desc')
             ->get();
 

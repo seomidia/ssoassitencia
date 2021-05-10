@@ -246,6 +246,7 @@ class AnamineseController extends Controller
             ->join('order_products as op','o.id','=','op.order_id')
             ->join('products as p','op.product_id','=','p.id')
             ->select(
+                'o.id',
                 'p.name',
                 'o.payment_type',
                 'o.code',
@@ -282,6 +283,7 @@ class AnamineseController extends Controller
             )
             ->where('a.id',$id)
             ->get();
+
 //        $procedures = DB::table('procedures')->get();
         $procedures = DB::table('products')
             ->wherein('category_id',[4,5,7,8])
@@ -464,7 +466,7 @@ class AnamineseController extends Controller
                 'o.name as cargo'
             )
             ->where('user_id_employee',Auth::user()->id)
-            ->whereIn('step',['step_funci','step_med','step_site'])
+            ->whereIn('step',['step_funci','step_med'])
             ->orderBy('a.id', 'desc')
             ->get();
 
