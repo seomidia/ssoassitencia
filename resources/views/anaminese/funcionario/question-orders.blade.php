@@ -2,36 +2,17 @@
 <thead>
 <tr>
     <th style="text-align: center">Codigo</th>
-    <th style="text-align: center">Consulta</th>
-    <th style="text-align: center">Tipo pagamento</th>
-    <th style="text-align: center">Referencia</th>
+    <th style="text-align: center">Produto</th>
     <th style="text-align: center">Valor</th>
-    <th style="text-align: center">Status</th>
-    <th style="text-align: center">Data</th>
 </tr>
 </thead>
 <tbody>
-@foreach($orders as $key => $item)
-
-        <tr class="
-        @if($item->status == 'Aguardando pagamento')
-            bg-warning
-        @elseif($item->status == 'Paga')
-            bg-success
-        @elseif($item->status == 'Devolvida' || $item->status == 'Cancelado')
-            bg-danger
-        @else
-            bg-info
-        @endif
-        ">
-            <td style="vertical-align: middle">#{{$item->id}}</td>
-            <td style="vertical-align: middle">{{$item->name}}</td>
-            <td style="vertical-align: middle;text-align: center">{{$item->payment_type}}</td>
-            <td style="vertical-align: middle;text-align: center">{{$item->code}}</td>
+  @foreach($order as $key => $item)
+        <tr class="bg-info">
+            <td style="vertical-align: middle;text-align: center">#{{$item->produto_id}}</td>
+            <td style="vertical-align: middle;text-align: center">{{$item->name}}</td>
             <td style="vertical-align: middle;text-align: center">R$ {{\App\Http\Controllers\Controller::formatCash($item->price)}}</td>
-            <td style="vertical-align: middle;text-align: center"><div  class="aviso">{{$item->status}}</td>
-            <td style="vertical-align: middle;text-align: center">{{\App\Http\Controllers\Controller::data($item->created_at,'time')}}</td>
         </tr>
-@endforeach
+    @endforeach
 </tbody>
 

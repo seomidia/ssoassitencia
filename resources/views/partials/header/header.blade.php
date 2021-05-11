@@ -48,15 +48,15 @@
 
     <div class="site-navbar color-header py-2">
         <!--CAMPO DE BUSCA DE EXAMES-->
-        <div class="search-wrap">
-            <div class="container">
-                <a href="#" class="search-close js-search-close"><span class="icon-close2"></span></a>
-                <form action="{{url('/buscar')}}" method="post">
-                    @csrf
-                    <input type="text" class="form-control" name="s" placeholder="Buscar exame...">
-                </form>
-            </div>
-        </div>
+{{--        <div class="search-wrap">--}}
+{{--            <div class="container">--}}
+{{--                <a href="#" class="search-close js-search-close"><span class="icon-close2"></span></a>--}}
+{{--                <form action="{{url('/buscar')}}" method="post">--}}
+{{--                    @csrf--}}
+{{--                    <input type="text" class="form-control" name="s" placeholder="Buscar exame...">--}}
+{{--                </form>--}}
+{{--            </div>--}}
+{{--        </div>--}}
         <div class="container">
             <div class="d-flex align-items-center justify-content-between">
                 <div class="logo">
@@ -72,7 +72,7 @@
                     </nav>
                 </div>
                 <div class="icons">
-                    <a href="#" class="icons-btn d-inline-block js-search-open"><span class="icon-search"></span></a>
+{{--                    <a href="#" class="icons-btn d-inline-block js-search-open"><span class="icon-search"></span></a>--}}
 {{--
                     <a href="/carrinho" class="icons-btn d-inline-block bag" style="margin-right: 20px">
                         <span class="icon-shopping-bag"></span>

@@ -2,15 +2,16 @@
 
 return [
     /* DEFINE SE SERÁ UTILIZADO O AMBIENTE DE TESTES */
-    'use-sandbox' => false,
+    'use-sandbox' => true,
 
     /*
      * Coloque abaixo as informações do seu cadastro no PagSeguro
      */
     'credentials' => [//INFORME AS CREDENCIAIS PADRÕES DE SUA LOJA, MAS PORDERÁ SER ALTERADA EM RUNTIME
         'email' => 'suporte@seomidia.com.br',
-        'token' => '64446e59-c0ca-46d3-83ba-015496d2887a6d61128c48398c153deebaea4f6c55f4f3eb-ed8a-419f-87d2-036397931167',
+        'token' => '64E41DAABAFE41F29B6E431CB18C87CF',
     ],
+//        'token' => '64446e59-c0ca-46d3-83ba-015496d2887a6d61128c48398c153deebaea4f6c55f4f3eb-ed8a-419f-87d2-036397931167',
 
     /*
      * Informe abaixo o nome / url das rotas de aplicação para notificações

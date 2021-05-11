@@ -8,28 +8,8 @@ use DB;
 class Checkout extends Model
 {
 
-    protected function SessionCode($PAGSEGURO_EMAIL,$PAGSEGURO_TOKEN,$SANDBOX_ENVIRONMENT = true)
-    {
-//        $PAGSEGURO_API_URL = 'https://ws.pagseguro.uol.com.br/v2';
-//        if($SANDBOX_ENVIRONMENT){
-//            $PAGSEGURO_API_URL = 'https://ws.sandbox.pagseguro.uol.com.br/v2';
-//        }
-//
-//        $params = array(
-//            'email' => $PAGSEGURO_EMAIL,
-//            'token' => $PAGSEGURO_TOKEN
-//        );
-//
-//        $header = array();
-//
-//
-//        $response = $this->curlExec($PAGSEGURO_API_URL."/sessions", $params, $header);
-//        $json = json_decode(json_encode(simplexml_load_string($response)));
-//        return $json->id;
-    }
     protected function pagseguro($field)
     {
-
 
         $curl = curl_init();
 

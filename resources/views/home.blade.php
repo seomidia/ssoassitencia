@@ -71,7 +71,7 @@
         <div class="row align-items-stretch">
             <div class="linha"></div>
             <div class="col-md-12 col-lg-12 text-center py-3 mb-3 mb-lg-0">
-                    <h2>Veja como é fácil consultar no Exame Agora</h2>
+                    <h2>Veja como é fácil consultar</h2>
             </div>
             <div class="col-md-12 col-lg-12 py-3 mb-3 mb-lg-0">
                 <div id="smartwizard">
@@ -153,13 +153,13 @@
                         </div>
                         <div class="form-group col-md-6">
                             <label for="message-text" class="col-form-label">Telefone:</label>
-                            <input type="text" class="form-control" name="telefone" data-mask="(00) 0000-0000">
+                            <input type="tel" class="form-control" name="telefone" data-mask="(00) 0000-0000">
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group col-md-4">
                             <label for="message-text" class="col-form-label">CPF:</label>
-                            <input id="cpf" type="text" class="form-control" name="cpf" maxlength="14" onkeypress='mascaraMutuario(this,cpfCnpj)'>
+                            <input id="cpf" type="text" class="form-control" name="cpf" maxlength="14" onchange="TestaCPF(this)" onkeypress='mascaraMutuario(this,cpfCnpj)'>
                         </div>
                         <div class="form-group col-md-4">
                             <label for="message-text" class="col-form-label">RG:</label>
@@ -251,6 +251,7 @@
 @endsection
 
 @section('js')
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
     <script>
         function setCookie(cname,cvalue,exdays) {
             if(getCookie('session_id') == "" && cname == 'session_id'){
@@ -310,6 +311,7 @@
                 $('#consultas').show();
                 $('#consultas select').html('');
                 $.get(ulr,function(response){
+                    $('#consultas select').append('<option value="" selected>Selecione</option>');
                     $.each( response, function( key, value ) {
                         $('#consultas select').append('<option value="'+ value.id +'">'+ value.name +'</option>');
                     });
@@ -440,16 +442,28 @@
 
         }
         $(document).ready(function(){
+            $('input[name="telefone"]')
+                .mask("(99) 9999-9999?9")
+                .focusout(function (event) {
+                    var target, phone, element;
+                    target = (event.currentTarget) ? event.currentTarget : event.srcElement;
+                    phone = target.value.replace(/\D/g, '');
+                    element = $(target);
+                    element.unmask();
+                    if(phone.length > 10) {
+                        element.mask("(99) 99999-999?9");
+                    } else {
+                        element.mask("(99) 9999-9999?9");
+                    }
+                });
             setCookie('session_id',Math.floor((Math.random() * 1000000000000000000) + 1),1);
             addCartList();
             $('form[name="consulta"]').on('submit',function (event) {
                 event.preventDefault();
                         $.ajax({
                             url: window.location.origin + '/finalizar',
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            },
                             data: {
+                                '_token':$('meta[name="csrf-token"]').attr('content'),
                                 'prod':$('input[name="prod[]"]').serializeArray(),
                                 'riscos':$('select[name="riscos[]"]').serializeArray(),
                             },
@@ -459,9 +473,9 @@
                                 window.open (
                                     response,
                                     "_blank" );
-                                // setTimeout(function (){
-                                //     window.location.href = '/';
-                                // },2000);
+                                setTimeout(function (){
+                                    window.location.href = '/admin/pedidos';
+                                },10000);
                             }
 
                         }).fail(function (jqXHR, textStatus) {
@@ -476,32 +490,24 @@
 
             $('form[name="cadastro_pessoa"]').submit(function(event){
                 event.preventDefault();
-                $.post('{{ route('voyager.create.People') }}', $(this).serializeArray(), function (response) {
-                    $('input[name="user_funcionario"]').val(response.data.id);
-                    $('input[name="pessoa_cpf"]').val(response.data.cpf);
-                    $('input[name="pessoa"]').val(response.data.nome);
-                    $('input[name="pessoa_rg"]').val(response.data.rg);
-                    $('input[name="pessoa_nascimento"]').val(response.data.nascimento);
-                    $('input[name="pessoa_idade"]').val(response.data.idade);
-                    $('select[name="pessoa_sexo"] option[value='+ response.data.sexo +']').attr('selected','selected');
+                var cpf = $('input[name="cpf"]').val();
+                    $.post('{{ route('voyager.create.People') }}', $(this).serializeArray(), function (response) {
+                        $('#exampleModal').modal('hide');
+                        Swal.fire({
+                            title: 'Sucesso',
+                            text: response.message,
+                            icon: 'success',
+                        })
+                    }).fail(function (jqXHR, textStatus) {
+                        Swal.fire({
+                            title: 'Atenção',
+                            text: jqXHR.responseJSON.message,
+                            icon: 'warning',
+                        })
 
-                    $('#create_pessoa').modal('hide');
-                    Swal.fire({
-                        title: 'Sucesso',
-                        text: response.message,
-                        icon: 'success',
                     })
-                }).fail(function (jqXHR, textStatus) {
-                    Swal.fire({
-                        title: 'Atenção',
-                        text: jqXHR.responseJSON.message,
-                        icon: 'warning',
-                    })
-
-                })
             })
         });
-
         function limpa_formulário_cep() {
             // Limpa valores do formulário de cep.
             $("#rua").val("");
@@ -510,7 +516,6 @@
             $("#uf").val("");
             $("#ibge").val("");
         }
-
         //Quando o campo cep perde o foco.
         $('input[name="cep"]').blur(function() {
 
@@ -563,6 +568,88 @@
             }
         });
 
+        function mascaraMutuario(o,f){
+            v_obj=o
+            v_fun=f
+            setTimeout('execmascara()',1)
+        }
+        function execmascara(){
+            v_obj.value=v_fun(v_obj.value)
+        }
 
+        function cpfCnpj(v){
+
+            //Remove tudo o que não é dígito
+            v=v.replace(/\D/g,"")
+
+            if (v.length <= 14) { //CPF
+
+                //Coloca um ponto entre o terceiro e o quarto dígitos
+                v=v.replace(/(\d{3})(\d)/,"$1.$2")
+
+                //Coloca um ponto entre o terceiro e o quarto dígitos
+                //de novo (para o segundo bloco de números)
+                v=v.replace(/(\d{3})(\d)/,"$1.$2")
+
+                //Coloca um hífen entre o terceiro e o quarto dígitos
+                v=v.replace(/(\d{3})(\d{1,2})$/,"$1-$2")
+
+            } else { //CNPJ
+
+                //Coloca ponto entre o segundo e o terceiro dígitos
+                v=v.replace(/^(\d{2})(\d)/,"$1.$2")
+
+                //Coloca ponto entre o quinto e o sexto dígitos
+                v=v.replace(/^(\d{2})\.(\d{3})(\d)/,"$1.$2.$3")
+
+                //Coloca uma barra entre o oitavo e o nono dígitos
+                v=v.replace(/\.(\d{3})(\d)/,".$1/$2")
+
+                //Coloca um hífen depois do bloco de quatro dígitos
+                v=v.replace(/(\d{4})(\d)/,"$1-$2")
+
+            }
+
+            return v
+
+        }
+
+        function TestaCPF(strCPF) {
+
+            var Soma;
+            var Resto;
+            Soma = 0;
+            if (strCPF == "00000000000"){
+                Swal.fire({
+                    title: 'Atenção',
+                    text: 'CPF é invalido',
+                    icon: 'warning',
+                })
+                return false;
+            }
+            if (strCPF == "11111111111") return false;
+            if (strCPF == "22222222222") return false;
+            if (strCPF == "33333333333") return false;
+            if (strCPF == "44444444444") return false;
+            if (strCPF == "55555555555") return false;
+            if (strCPF == "66666666666") return false;
+            if (strCPF == "77777777777") return false;
+            if (strCPF == "88888888888") return false;
+            if (strCPF == "99999999999") return false;
+
+            for (i=1; i<=9; i++) Soma = Soma + parseInt(strCPF.substring(i-1, i)) * (11 - i);
+            Resto = (Soma * 10) % 11;
+
+            if ((Resto == 10) || (Resto == 11))  Resto = 0;
+            if (Resto != parseInt(strCPF.substring(9, 10)) ) return false;
+
+            Soma = 0;
+            for (i = 1; i <= 10; i++) Soma = Soma + parseInt(strCPF.substring(i-1, i)) * (12 - i);
+            Resto = (Soma * 10) % 11;
+
+            if ((Resto == 10) || (Resto == 11))  Resto = 0;
+            if (Resto != parseInt(strCPF.substring(10, 11) ) ) return false;
+            return true;
+        }
     </script>
     @stop

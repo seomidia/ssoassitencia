@@ -32,19 +32,28 @@ class OrderController extends Controller
             ->join('order_products as op','o.id','=','op.order_id')
             ->join('products as p','op.product_id','=','p.id')
             ->select(
-                'o.id',
+                'o.id as order',
+                'p.id as produto_id',
                 'p.name',
                 'o.payment_type',
                 'o.code',
                 'p.price',
+                'o.total',
                 'o.status',
                 'o.created_at'
             )
             ->where('user_id',Auth::user()->id)
-            ->wherein('o.status',['Paga','pedding','Aguardando pagamento','Devolvida'])
+            ->wherein('o.status',['Paga','pedding','Aguardando pagamento','Devolvida','Cancelada'])
             ->orderby('o.id','desc')
             ->get();
 
-        return view('anaminese.pedidos',['orders'=>$order]);
+        $colection = collect($order)
+            ->groupBy('order')
+            ->map(function ($item) {
+                return array_merge($item->toArray());
+            });
+
+
+        return view('anaminese.pedidos',['orders'=>$colection]);
     }
 }

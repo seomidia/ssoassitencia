@@ -120,6 +120,7 @@ Route::post('/admin/anamnese/atestado/{anamnese}/send', 'Controller@sendmail');
 Route::get('/admin/anaminese/cadastro/{anaminese}', 'AnamineseController@cadastro')->name('voyager.anaminese.cadastro');
 Route::get('/admin/pedidos', 'OrderController@pedidos')->name('pedido');
 Route::get('/admin/exames', 'ExamesController@index')->name('exames');
+Route::post('/admin/upload-exame', 'ExamesController@upload')->name('exames-upload');
 
 
 // busca medico --------------------------------

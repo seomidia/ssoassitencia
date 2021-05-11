@@ -1,6 +1,22 @@
 @extends('voyager::master')
 @section('css')
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <style>
+        .voyager input[type="file"] {
+            padding: 20px;
+            background: #f2f2f2;
+            border-radius: 4px;
+            border: 3px solid #ddd;
+            outline: none;
+            cursor: pointer;
+            line-height: 16px;
+            color: #aaa;
+            font-weight: 500;
+            font-size: 12px;
+            -webkit-transition: all .3s ease-in-out;
+            transition: all .3s ease-in-out;
+            width: 100%;
+    </style>
 @stop
 
 @section('page_title', __('Exames'))
@@ -47,33 +63,44 @@
                                 <tbody>
                                 @if(count($exames) > 0)
                                     @foreach($exames as $key => $item)
-                                <tr>
-                                    <td style="vertical-align: middle">#{{$item->id}}</td>
-                                    <td style="vertical-align: middle">{{$item->name}}</td>
-                                    <td style="vertical-align: middle">
-                                        <div  class="
-                                            @if($item->status == 0)
-                                                alert-danger
-                                            @endif
-                                            @if($item->status == 1)
-                                                alert-success
-                                            @endif
-                                            aviso">
-                                            @if($item->status == 0)
-                                                Aguardando
-                                            @endif
-                                            @if($item->status == 1)
-                                                Pronto
-                                            @endif
-                                        </div>
-                                    </td>
-                                    <td style="vertical-align: middle">{{$item->created_at}}</td>
-                                    <td style="vertical-align: middle">
-                                        <a href="#" style="padding: 5px 12px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="atestado btn btn-sm btn-danger pull-center">Ver</a>
-                                        <a href="#" style="padding: 5px 12px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="atestado btn btn-sm btn-danger pull-center">Upload</a>
-                                    </td>
-                                    </td>
-                                </tr>
+                                    <tr>
+                                        <td style="vertical-align: middle">#{{$item->id}}</td>
+                                        <td style="vertical-align: middle">{{$item->name}}</td>
+                                        <td style="vertical-align: middle">
+                                            <div id="aviso-{{$item->id}}"  class="
+                                                @if($item->status == 0)
+                                                    alert-danger
+                                                @endif
+                                                @if($item->status == 1)
+                                                    alert-success
+                                                @endif
+                                                aviso">
+                                                @if($item->status == 0)
+                                                    Aguardando
+                                                @endif
+                                                @if($item->status == 1)
+                                                    Pronto
+                                                @endif
+                                            </div>
+                                        </td>
+                                        <td style="vertical-align: middle">{{$item->created_at}}</td>
+                                        <td style="vertical-align: middle">
+                                            <a  href="@if($item->path_file) {{asset($item->path_file)}} @else {{'#'}} @endif" style="padding: 5px 12px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="ver-exame btn btn-sm btn-danger pull-center">Ver</a>
+                                            <a href="{{$item->id}}" style="padding: 5px 12px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="upload btn btn-sm btn-danger pull-center">Upload</a>
+                                        </td>
+                                        </td>
+                                    </tr>
+                                        <tr id="upload-{{$item->id}}" style="display: none">
+                                            <td colspan="5">
+                                                <form  name="form-{{$item->id}}" enctype="multipart/form-data">
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <input  type="file" name="arquivo-{{$item->id}}">
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </td>
+                                        </tr>
                                     @endforeach
                                 @else
                                     <tr>
@@ -95,40 +122,55 @@
     <script>
         $(document).ready(function(){
 
-
-            $('.atestado').click(function(event){
+            $('a.upload').click(function (event) {
                 event.preventDefault();
+                var href = $(this).attr('href');
+                $('#upload-'+href).toggle();
+            });
+            $('form').on('change',function(){
+                var id = $(this).attr('name').split('-')[1];
+                var form = $('form[name="form-'+ id +'"]')[0];
+                // var file = form[0][0].files[0];
+                var file = $('input[name="arquivo-'+ id +'"]')[0].files[0];
 
-                var href = window.location.origin + $(this).attr('href');
+                var formData = new FormData(form);
+                formData.append('exame_id',id);
+                formData.append('arquivo',file);
 
-                $('#voyager-loader').show('slow');
-                toastr.warning('Preparando PDF...');
-                $.get(href, function (response) {
-                    if(response.existe) toastr.remove();
-                    $('iframe').attr('src',response.fileUri);
-                    $('.modal').modal('show');
-                    toastr.success(response.message);
-                    $('#voyager-loader').hide('slow');
+
+                var url = window.location.origin + '/admin/upload-exame';
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: url,
+                    type:'post',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response){
+                        console.log(response);
+                        toastr.success(response.message);
+                        $('#upload-'+id).toggle();
+                        $('#aviso-'+id).removeClass('alert-danger');
+                        $('#aviso-'+id).addClass('alert-success');
+                        $('#aviso-'+id).html('Pronto');
+
+
+                    }
                 }).fail(function (jqXHR, textStatus) {
                     toastr.error(jqXHR.responseJSON.message);
                 })
-            });
-            $('.send').click(function(event){
+
+
+            })
+            $('a.ver-exame').click(function(event){
                 event.preventDefault();
-
-                var href = window.location.origin + $(this).attr('href');
-
-                $('#voyager-loader').show('slow');
-                toastr.warning('Enviando atestado...');
-                $.post(href, function (response) {
-                    toastr.success(response.message);
-                    $('#voyager-loader').hide('slow');
-                }).fail(function (jqXHR, textStatus) {
-                    toastr.error(jqXHR.responseJSON.message);
-                })
-
+                $('iframe').attr('src','');
+                var href = $(this).attr('href');
+                $('iframe').attr('src',href);
+                $('.modal').modal('show');
             });
-
         });
     </script>
 @stop

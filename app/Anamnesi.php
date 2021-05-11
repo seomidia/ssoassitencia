@@ -203,7 +203,8 @@ class Anamnesi extends Model
         foreach ($exames->exames as $key => $exame) {
             $data = [
                 'order_id' => $exames->order,
-                'product_id' =>  $exame->id
+                'product_id' =>  $exame->id,
+                'created_at' => date('Y-m-d H:i:s')
             ];
             $exist = \DB::table('exame')->where($data)->count();
             if($exist == 0)

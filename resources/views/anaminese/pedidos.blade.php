@@ -20,16 +20,45 @@
                     <div class="panel-body">
                         <div class="table-responsive">
                             <table id="dataTable" class="table table-hover">
-                                @if(count($orders) != 0)
-                                    @include('anaminese.funcionario.question-orders')
-                                @else
-                                    <tr>
-                                        <td colspan="8" style="text-align: center">Não existe pedidos disponivel no momento !</td>
+
+                                <thead>
+                                <tr>
+                                    <th style="text-align: center">Codigo</th>
+                                    <th style="text-align: center">Tipo pagamento</th>
+                                    <th style="text-align: center">Referencia</th>
+                                    <th style="text-align: center">Valor total</th>
+                                    <th style="text-align: center">Status</th>
+                                    <th style="text-align: center">Data</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($orders as $key => $order)
+                                    <tr id="{{$key}}">
+                                        <td style="text-align: center">#{{$key}}</td>
+                                        <td style="text-align: center">{{$order[0]->payment_type}}</td>
+                                        <td style="text-align: center">{{$order[0]->code}}</td>
+                                        <td style="vertical-align: middle;text-align: center">R$ {{\App\Http\Controllers\Controller::formatCash($order[0]->total)}}</td>
+                                        <td style="text-align: center">{{$order[0]->status}}</td>
+                                        <td style="vertical-align: middle;text-align: center">{{\App\Http\Controllers\Controller::data($order[0]->created_at,'time')}}</td>
                                     </tr>
+                                    <tr id="content-{{$key}}" style="display: none">
+                                        <td colspan="6">
+                                            <table class="table table-hover">
+                                                @if(count($orders) != 0)
+                                                    @include('anaminese.funcionario.question-orders')
+                                                @else
+                                                    <tr>
+                                                        <td colspan="8" style="text-align: center">Não existe pedidos disponivel no momento !</td>
+                                                    </tr>
 
-                                @endif
-
+                                                @endif
+                                            </table>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
                             </table>
+
                         </div>
                     </div>
                 </div>
@@ -55,7 +84,6 @@
                     toastr.error(jqXHR.responseJSON.message);
                 })
             })
-
             $('a#delete').click(function(event){
                 event.preventDefault();
 
@@ -70,7 +98,6 @@
                     toastr.error(jqXHR.responseJSON.message);
                 })
             });
-
             $('.atestado').click(function(event){
                 event.preventDefault();
 
@@ -103,7 +130,12 @@
                 })
 
             });
+            $('table#dataTable tr').click(function (event){
+                event.preventDefault();
 
+                var id =  $(this).attr('id');
+                $('#dataTable #content-'+id).toggle()
+            })
         });
     </script>
 @stop
