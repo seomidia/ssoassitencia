@@ -473,9 +473,9 @@
                                 window.open (
                                     response,
                                     "_blank" );
-                                setTimeout(function (){
-                                    window.location.href = '/admin/pedidos';
-                                },10000);
+                                // setTimeout(function (){
+                                //     window.location.href = '/admin/pedidos';
+                                // },10000);
                             }
 
                         }).fail(function (jqXHR, textStatus) {
