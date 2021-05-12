@@ -236,7 +236,7 @@
                     <button type="submit" class="btn btn-primary">Salvar</button>
                 </div>
             </form>
-
+            <div id="load" style="border: 1px solid #ddd;position: absolute;z-index: 9998;width: 100%;height: 100%;background: #fff;opacity: 0.7;text-align: center;padding: 400px 0px;color: #000;font-size: 20px;display: none"><img src="{{asset('images/load.gif')}}"> Enviando...</div>
         </div>
     </div>
 </div>
@@ -490,15 +490,21 @@
 
             $('form[name="cadastro_pessoa"]').submit(function(event){
                 event.preventDefault();
+                $('#load').show('slow');
+
                 var cpf = $('input[name="cpf"]').val();
                     $.post('{{ route('voyager.create.People') }}', $(this).serializeArray(), function (response) {
                         $('#exampleModal').modal('hide');
+                        $('#load').hide();
+
                         Swal.fire({
                             title: 'Sucesso',
                             text: response.message,
                             icon: 'success',
                         })
                     }).fail(function (jqXHR, textStatus) {
+                        $('#load').hide();
+
                         Swal.fire({
                             title: 'Atenção',
                             text: jqXHR.responseJSON.message,

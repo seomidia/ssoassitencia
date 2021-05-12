@@ -13,6 +13,7 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         'pagseguro/notification',
-        '/json/getproduto'
+        'json/getproduto',
+        'finalizar',
     ];
 }

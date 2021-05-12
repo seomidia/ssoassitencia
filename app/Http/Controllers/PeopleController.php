@@ -58,13 +58,15 @@ class PeopleController extends Controller
         $cpf = $request->input('cpf');
         $telefone = $request->input('telefone');
 
+        $cpf = str_replace(['.','-'],['',''],$cpf);
+
         if(!$this->validaCPF($cpf)){
             return response()->json([
                 'success'=> false,
                 'message'=> 'O CPF é invalido'
             ],500);
         }
-        $tel = str_replace(['(',')','-'],['','',''],$telefone);
+        $tel = str_replace(['(',')','-',' '],['','','',''],$telefone);
         if(!$this->phoneValidate($tel)){
             return response()->json([
                 'success'=> false,
@@ -103,7 +105,7 @@ class PeopleController extends Controller
                 'idade' => $request->input('idade'),
                 'sexo' => $request->input('sexo'),
                 'estado_civil' => $request->input('estado_civil'),
-                'telefone' => $request->input('telefone'),
+                'telefone' => $tel,
                 'cep' => $request->input('cep'),
                 'endereco' => $request->input('endereco'),
                 'numero' => $request->input('numero'),

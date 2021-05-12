@@ -21,6 +21,7 @@ class ExamesController extends Controller
                 'e.created_at',
                 'ef.path_file'
             )
+            ->where('os.user_id',Auth::user()->id)
             ->get();
         return view('exames.listagem',['exames'=>$exames]);
     }
