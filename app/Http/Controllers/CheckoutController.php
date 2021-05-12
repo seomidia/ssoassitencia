@@ -50,20 +50,9 @@ class CheckoutController extends Controller
         ]);
 
     }
-//
-//    public static function Notification($information)
-//    {
-//        $data = (object) $information;
-//        dd($data->code);
-//        \Log::debug(print_r($information->getStatus()->getCode(), 1));
-//    }
 
-    public static function Notification(Request $request){
-        $notificationCode = $request->input('notificationCode');
-
-        $credentials = PagSeguro::credentials()->get();
-        $transaction = PagSeguro::transaction()->get($notificationCode, $credentials);
-        $information = $transaction->getInformation();
+    public static function Notification($information)
+    {
 
         $reference = $information->getReference();
         $status    = $information->getStatus();
@@ -73,7 +62,6 @@ class CheckoutController extends Controller
             ->where('orders.code',$reference);
 
         $datalhes = $order->select('user_id','id')->first();
-
         if($order->count() > 0){
             $order->update(['status'=> $status->getName()]);
         }
@@ -88,7 +76,41 @@ class CheckoutController extends Controller
 
             Product::CreateService($servico);
         }
+
+//        \Log::debug(print_r($information->getStatus()->getCode(), 1));
     }
+
+//    public static function Notification(Request $request){
+//        $notificationCode = $request->input('notificationCode');
+//
+//        $credentials = PagSeguro::credentials()->get();
+//        $transaction = PagSeguro::transaction()->get($notificationCode, $credentials);
+//        $information = $transaction->getInformation();
+//
+//        $reference = $information->getReference();
+//        $status    = $information->getStatus();
+//
+//
+//        $order = DB::table('orders')
+//            ->where('orders.code',$reference);
+//
+//        $datalhes = $order->select('user_id','id')->first();
+//
+//        if($order->count() > 0){
+//            $order->update(['status'=> $status->getName()]);
+//        }
+//
+//        //-- eventos -------------------------------------------
+//        if($status->getCode() == 3){
+//            $servico = new \stdClass();
+//            $servico->codeStatus = $status->getCode();
+//            $servico->nameStatus = $status->getName();
+//            $servico->useridOrder = $datalhes->user_id;
+//            $servico->idOrder = $datalhes->id;
+//
+//            Product::CreateService($servico);
+//        }
+//    }
     public function Autocomplete(Request $request)
     {
         $search = $request->input('search');

@@ -48,11 +48,11 @@ Route::get('/produto/{slug}', 'ProductController@Single')->name('single');
 Route::get('/contato', 'ContatoController@index')->name('contato');
 Route::post('/contato', 'ContatoController@send')->name('send');
 
-Route::post('/pagseguro/notification', 'CheckoutController@notification')->name('pagseguro.notification');
-//Route::post('/pagseguro/notification', [
-//    'uses' => '\laravel\pagseguro\Platform\Laravel5\NotificationController@notification',
-//    'as' => 'pagseguro.notification',
-//]);
+//Route::post('/pagseguro/notification', 'CheckoutController@notification')->name('pagseguro.notification');
+Route::post('/pagseguro/notification', [
+    'uses' => '\laravel\pagseguro\Platform\Laravel5\NotificationController@notification',
+    'as' => 'pagseguro.notification',
+]);
 Route::post('/json/getproduto', 'ProductController@getproduto')->name('voyager.getproduto');
 Route::get('/json/getservico/{categoria}', 'ProductController@getservico')->name('voyager.getservico');
 Route::get('/json/getcart', 'CartController@getcart')->name('voyager.getcart');
