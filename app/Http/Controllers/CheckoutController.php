@@ -73,7 +73,6 @@ class CheckoutController extends Controller
             $servico->nameStatus = $status->getName();
             $servico->useridOrder = $datalhes->user_id;
             $servico->idOrder = $datalhes->id;
-
             Product::CreateService($servico);
         }
 

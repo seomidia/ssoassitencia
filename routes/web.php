@@ -81,6 +81,10 @@ Route::get('/json/getParent', 'AnamineseQuestionController@getParent')->name('vo
 // ger cargo ------------------
 Route::get('/json/getCargo', 'OfficeController@getCargo')->name('voyager.get.cargo');
 
+// ger risco ------------------
+Route::post('/json/getrisco', 'OfficeController@getrisco')->name('voyager.get.risco');
+Route::get('/json/getallrisco', 'OfficeController@getallrisco')->name('voyager.get.getallrisco');
+
 // ger medico ------------------
 Route::get('/json/getMedicos', 'UserController@getMedico')->name('voyager.get.medico');
 

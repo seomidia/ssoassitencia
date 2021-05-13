@@ -290,6 +290,11 @@ class AnamineseController extends Controller
             ->get();
 
         $tipo = DB::table('anamnese_type')->get();
+        $riscos = DB::table('office_risk_relationship as orr')
+            ->join('risk_factors as rf','orr.risk_factors_id','=','rf.id')
+            ->select('rf.id','rf.name')
+            ->where('orr.anamnesi_id',$id)
+            ->get();
         $locais = DB::table('location')->where('id',$dados[0]->location_id )->get();
         return view('anaminese.update',[
             'anamnese_id' => $id,
@@ -297,7 +302,8 @@ class AnamineseController extends Controller
             'dados'=> $dados,
             'procedures' => $procedures,
             'tipo' => $tipo,
-            'locais' => $locais
+            'locais' => $locais,
+            'riscos' => $riscos
         ]);
     }
     public function create(Request $request){
@@ -416,6 +422,33 @@ class AnamineseController extends Controller
             $updade = DB::table('anamnesis')
                 ->where('id',$id)
                 ->update($data);
+
+            // atualiza riscos -----------------------------------------
+              // checar se existe riscos -------------------------------
+                    $Risk = DB::table('office_risk_relationship');
+                    if($Risk->where('anamnesi_id',$id)->count() > 0){
+                        $Risk->where('anamnesi_id',$id)->delete();
+                        foreach ($request->riscos as $risco) {
+                            $r = [
+                                'risk_factors_id' => $risco,
+                                'anamnesi_id'=>$id,
+                                'created_at'=> date('Y-m-d H:i:s')
+                            ];
+                            $Risk->insert($r);
+
+                        }
+                    }else{
+                        foreach ($request->riscos as $risco) {
+                            $r = [
+                                'risk_factors_id' => $risco,
+                                'anamnesi_id'=>$id,
+                                'created_at'=> date('Y-m-d H:i:s')
+                            ];
+                            $Risk->insert($r);
+
+                        }
+                    }
+
 
 
 

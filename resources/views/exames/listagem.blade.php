@@ -85,8 +85,12 @@
                                         </td>
                                         <td style="vertical-align: middle">{{$item->created_at}}</td>
                                         <td style="vertical-align: middle">
+                                            @if($item->status == 1)
                                             <a  href="@if($item->path_file) {{asset($item->path_file)}} @else {{'#'}} @endif" style="padding: 5px 12px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="ver-exame btn btn-sm btn-danger pull-center">Ver</a>
+                                            @endif
+                                            @if(in_array($permissao,[1,7]))
                                             <a href="{{$item->id}}" style="padding: 5px 12px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="upload btn btn-sm btn-danger pull-center">Upload</a>
+                                                @endif
                                         </td>
                                         </td>
                                     </tr>

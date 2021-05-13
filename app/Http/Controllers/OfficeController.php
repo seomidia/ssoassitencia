@@ -58,4 +58,24 @@ class OfficeController extends Controller
         return response()->json(['data' => $office]);
 
     }
+    public function getrisco(Request $request){
+        $cargo = $request->input('cargo');
+
+        $risk = DB::table('office_risk_relationship as orr')
+            ->leftjoin('risk_factors as rf','orr.risk_factors_id','=','rf.id')
+            ->select('rf.id','rf.name')
+            ->where('orr.office_id',$cargo)
+            ->get();
+
+        return response()->json(['data' => $risk]);
+
+    }
+    public function getallrisco(){
+
+        $risk = DB::table('risk_factors')
+            ->get();
+
+        return response()->json(['data' => $risk]);
+
+    }
 }

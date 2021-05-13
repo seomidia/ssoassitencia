@@ -231,6 +231,7 @@
                                         </div>
 
                                     </div>
+                                @if(\App\Anamnesi::count_procedure($anamnese_id) > 0)
                                 <div class="row">
                                     <h3 class="border-left mb-5">Exames</h3>
                                     <div class="form-group  col-md-12">
@@ -244,11 +245,13 @@
                                         <small id="aviso" class="form-text text-muted"></small>
                                     </div>
                                 </div>
+                                @endif
+
                                 <div class="row">
                                     <div class="form-group  col-md-4">
                                         <h3 class="border-left mb-5">Profissional</h3>
                                         <label for="pessoa_cpf">Cargo</label>
-                                        <select class="form-control select2" name="cargo">
+                                        <select class="form-control select2" name="cargo" onchange="getRiscos(this)">
                                             <option value="">Selecione</option>
                                             @if(isset($item->office_id))
                                                 <option selected value="{{$item->office_id}}">{{$item->cargo}}</option>
@@ -280,6 +283,20 @@
                                         <small id="aviso" class="form-text text-muted"></small>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <h3 class="border-left mb-5">Riscos</h3>
+                                    <div class="form-group  col-md-12">
+                                        <label for="pessoa_cpf">Selecione os riscos</label>
+                                        <select id="riscos" class="form-control select2" name="riscos[]" multiple="">
+                                            @foreach($riscos as $key => $risco)
+                                                <option  value="{{$risco->id}}" selected>{{$risco->name}}</option>
+                                            @endforeach
+                                        </select>
+                                        <a href="#" onclick="getAllriscos();return false;">Todos os riscos</a>
+                                        <small id="aviso" class="form-text text-muted"></small>
+                                    </div>
+                                </div>
+
                                 <div class="row">
                                     <div class="col-md-4">
                                         <h3 class="border-left mb-5">Agendamento de consulta</h3>
@@ -613,6 +630,49 @@
             })
 
         }
+
+        function getRiscos(response){
+
+            $.ajax({
+                url: "/json/getrisco",
+                type: 'post',
+                data:{
+                    'cargo': response.value,
+                },
+                dataType: 'json',
+                success: function(response){
+                    $('select#riscos').html('')
+
+                    for(var i = 0; i < response.data.length; i++){
+                            $('select#riscos').append('<option value="'+ response.data[i].id+'" selected>'+response.data[i].name+'</option>');
+                        }
+
+                }
+            }).fail(function (jqXHR, textStatus) {
+                toastr.error(textStatus);
+            })
+
+        }
+        function getAllriscos(response){
+
+            $.ajax({
+                url: "/json/getallrisco",
+                type: 'get',
+                dataType: 'json',
+                success: function(response){
+                    console.log(response);
+
+                    for(var i = 0; i < response.data.length; i++){
+                            $('select#riscos').append('<option value="'+ response.data[i].id+'">'+response.data[i].name+'</option>');
+                        }
+                    $('.select2-selection').trigger('click');
+                }
+            }).fail(function (jqXHR, textStatus) {
+                toastr.error(textStatus);
+            })
+
+        }
+
 
         function limpa_formulário_cep() {
             // Limpa valores do formulário de cep.

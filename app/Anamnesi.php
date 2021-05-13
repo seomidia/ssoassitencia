@@ -149,11 +149,15 @@ class Anamnesi extends Model
 
         return $data;
     }
-    protected function count_procedure($anamnese_id, $procedure_id)
+    protected function count_procedure($anamnese_id, $procedure_id = null)
     {
-        return DB::table('procedure_relationship')
-            ->where(['anamnesis_id' => $anamnese_id, 'procedures_id' => $procedure_id])
-            ->count();
+        $procedure =DB::table('procedure_relationship');
+        if(!is_null($procedure_id)){
+            $procedure = $procedure->where(['anamnesis_id' => $anamnese_id, 'procedures_id' => $procedure_id]);
+        }else{
+            $procedure = $procedure->where('anamnesis_id', $anamnese_id);
+        }
+        return $procedure->count();
     }
     protected function add_procedure($anamnese_id, $procedures, $updata = false)
     {

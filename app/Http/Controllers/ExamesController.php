@@ -23,7 +23,11 @@ class ExamesController extends Controller
             )
             ->where('os.user_id',Auth::user()->id)
             ->get();
-        return view('exames.listagem',['exames'=>$exames]);
+
+            $role = \DB::table('user_roles')->where('user_id',Auth::user()->id)->get();
+            $permissao = (count($role) > 0) ? $role[0]->role_id : '';
+
+        return view('exames.listagem',['exames'=>$exames,'permissao' =>$permissao]);
     }
 
     public function upload(Request $request){
