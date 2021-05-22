@@ -34,7 +34,8 @@ class UserController extends Controller
     public function AssistenteStore(Request $request){
 
         $data = $request->all();
-        $exist = User::UserCount('email',$data['email']);
+        if(isset($data['email']))
+            $exist = User::UserCount('email',$data['email']);
 
         if($exist == 0){
             $user = \TCG\Voyager\Models\User::create([
@@ -63,7 +64,8 @@ class UserController extends Controller
     public function AssistenteUpdate(Request $request,$id){
 
         $data = $request->all();
-        $exist = User::UserCount('id',$id);
+        if(isset($id))
+          $exist = User::UserCount('id',$id);
 
         if($exist > 0){
             $senha = $request->input('password');

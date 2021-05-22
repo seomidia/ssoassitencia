@@ -19330,10 +19330,13 @@ module.exports = function(module) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js"); // require('./cart');
-// require('./checkout');
-// require('./company');
+__webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
+__webpack_require__(/*! ./cart */ "./resources/js/cart.js");
+
+__webpack_require__(/*! ./checkout */ "./resources/js/checkout.js");
+
+__webpack_require__(/*! ./company */ "./resources/js/company.js");
 
 __webpack_require__(/*! ./logout */ "./resources/js/logout.js");
 
@@ -19412,6 +19415,381 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     forceTLS: true
 // });
+
+/***/ }),
+
+/***/ "./resources/js/cart.js":
+/*!******************************!*\
+  !*** ./resources/js/cart.js ***!
+  \******************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+function currencyFormatted(value, str_cifrao) {
+  return str_cifrao + ' ' + value.formatMoney(2, ',', '.');
+}
+
+Number.prototype.formatMoney = function (c, d, t) {
+  var n = this,
+      c = isNaN(c = Math.abs(c)) ? 2 : c,
+      d = d == undefined ? "." : d,
+      t = t == undefined ? "," : t,
+      s = n < 0 ? "-" : "",
+      i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "",
+      j = (j = i.length) > 3 ? j % 3 : 0;
+  return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+};
+
+function addCart() {
+  var prod = [];
+  var table;
+  var total = 0;
+  $('input[type="checkbox"]:checked').each(function () {
+    checked = $(this).val();
+    prod.push(checked);
+  });
+  $.ajax({
+    url: window.location.origin + '/json/getproduto',
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    },
+    data: {
+      'id': prod
+    },
+    type: 'post',
+    dataType: 'json',
+    success: function success(response) {
+      $('table#cart').html('');
+      table = '<tr><th>Exame</th><th>QTD</th><th>Valor</th></tr>';
+
+      if (response.length == 0) {
+        table += '<tr><td colspan="3" style="text-align: center"> Não existe exames selecionados </td></tr>';
+      } else {
+        for (var i = 0; i < response.length; i++) {
+          total = total + response[i].price;
+          table += '<tr><td>' + response[i].name + '</td><td>1x</td><td>' + currencyFormatted(response[i].price, 'R$') + '</td></tr>';
+        }
+      }
+
+      table += '<tr><td colspan="2" style="text-align: right;padding: 5px 5px;font-weight: bold">TOTAL | </td><td style="padding: 5px 0px">' + currencyFormatted(total, 'R$') + '</td></tr>';
+      table += '<tr><td colspan="2" style="padding-top: 10px;font-weight: bold"> <img src="//assets.pagseguro.com.br/ps-integration-assets/banners/pagamento/todos_animado_550_50.gif" alt="Logotipos de meios de pagamento do PagSeguro" title="Este site aceita pagamentos com as principais bandeiras e bancos, saldo em conta PagSeguro e boleto."> </td><td style="text-align: right;padding-right: 170px;padding-top: 15px"> <button class="btn btn-success" type="submit">Pagar agora</button> </td></tr>';
+      $('table#cart').append(table);
+    }
+  });
+}
+
+jQuery(document).ready(function ($) {
+  // criar sessão -----------------------------------
+  if (Cookies.get('session_key') == undefined) Cookies.set('session_key', Math.floor(Math.random() * 1000000000000000000 + 1));
+  $('#cart-update').click(function () {
+    $(".update-card").trigger("click");
+  });
+  $('input[type="checkbox"]').click(function () {
+    addCart();
+  });
+  $('form[name="exames-complementares"]').on('submit', function (event) {
+    var _this = this;
+
+    event.preventDefault();
+    var text = 'Empresa não emcontrada, deseja cadastra-la?';
+    var agendar = $('input[name="agendar"]').val();
+    if (agendar == 'outra_pessoa') text = 'Após a compra, encaminhe o exame para seu respectivo paciente!';
+    Swal.fire({
+      title: 'Atenção',
+      text: text,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sim',
+      cancelButtonText: 'Não'
+    }).then(function (result) {
+      if (result.isConfirmed) {
+        Swal.mixin({
+          input: 'text',
+          confirmButtonText: 'Proximo &rarr;',
+          showCancelButton: true,
+          progressSteps: ['1', '2', '3', '4']
+        }).queue(['Nome', 'E-mail', 'CPF', 'Telefone']).then(function (result) {
+          if (result.value) {
+            $.ajax({
+              url: window.location.origin + '/finalizar',
+              headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+              },
+              data: {
+                'prod': $(_this).serializeArray(),
+                'comprador': result.value
+              },
+              type: 'post',
+              dataType: 'json',
+              success: function success(response) {
+                window.open(response, "_blank");
+                setTimeout(function () {
+                  window.location.href = '/';
+                }, 2000);
+              }
+            }).fail(function (jqXHR, textStatus) {
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: jqXHR.responseJSON.message // footer: '<a href>Why do I have this issue?</a>'
+
+              });
+            });
+          }
+        });
+      }
+    });
+  });
+});
+
+/***/ }),
+
+/***/ "./resources/js/checkout.js":
+/*!**********************************!*\
+  !*** ./resources/js/checkout.js ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+jQuery(document).ready(function ($) {
+  $('#quem').on('change', function () {
+    if ($(this).val() == 'rh') {
+      Swal.fire('Atenção', 'Para comprar como RH será necessario efetuar sei login no sistema.', 'warning').then(function (result) {
+        window.location = window.location.origin + '/admin/login';
+      });
+    }
+  });
+  $("#c_companyname").autocomplete({
+    source: function source(request, response) {
+      // Fetch data
+      $.ajax({
+        url: window.location.origin + "/get-company",
+        type: 'post',
+        dataType: "json",
+        data: {
+          '_token': document.querySelector('meta[name="csrf-token"]').content,
+          search: request.term
+        },
+        success: function success(data) {
+          response(data);
+
+          if (!data[0].success) {
+            Swal.fire({
+              title: 'Atenção',
+              text: "Empresa não emcontrada, deseja cadastra-la?",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Sim',
+              cancelButtonText: 'Não'
+            }).then(function (result) {
+              if (result.isConfirmed) {
+                $('#exampleModal').modal('show');
+              }
+            });
+          }
+        }
+      });
+    },
+    select: function select(event, ui) {
+      // Set selection
+      $(this).val(ui.item.label); // display the selected text
+
+      $('input[name="empresa_id"]').val(ui.item.value); // display the selected text
+      // $('#selectuser_id').val(ui.item.value); // save selected id to input
+
+      return false;
+    }
+  });
+
+  function limpa_formulário_cep() {
+    // Limpa valores do formulário de cep.
+    $("#rua").val("");
+    $("#bairro").val("");
+    $("#cidade").val("");
+    $("#uf").val("");
+    $("#ibge").val("");
+  } //Quando o campo cep perde o foco.
+
+
+  $(".cep").blur(function () {
+    //Nova variável "cep" somente com dígitos.
+    var cep = $(this).val().replace(/\D/g, ''); //Verifica se campo cep possui valor informado.
+
+    if (cep != "") {
+      //Expressão regular para validar o CEP.
+      var validacep = /^[0-9]{8}$/; //Valida o formato do CEP.
+
+      if (validacep.test(cep)) {
+        //Preenche os campos com "..." enquanto consulta webservice.
+        $("#endereco").val("...");
+        $("#cidade").val("...");
+        $("#uf").val("..."); //Consulta o webservice viacep.com.br/
+
+        $.getJSON("https://viacep.com.br/ws/" + cep + "/json/?callback=?", function (dados) {
+          if (!("erro" in dados)) {
+            //Atualiza os campos com os valores da consulta.
+            $("#endereco").val(dados.logradouro + ' - ' + dados.bairro);
+            $("#cidade").val(dados.localidade);
+            $("#uf").val(dados.uf);
+          } //end if.
+          else {
+              //CEP pesquisado não foi encontrado.
+              limpa_formulário_cep();
+              alert("CEP não encontrado.");
+            }
+        });
+      } //end if.
+      else {
+          //cep é inválido.
+          limpa_formulário_cep();
+          alert("Formato de CEP inválido.");
+        }
+    } //end if.
+    else {
+        //cep sem valor, limpa formulário.
+        limpa_formulário_cep();
+      }
+  });
+  $('#c_create_account').click(function () {
+    $('#create_an_account').removeClass('hidden');
+    $('#create_an_account').addClass('block');
+  }); // Pagameno ----------------------------------
+  // $('.loadpag').css('display','none');
+  // $('input[name="type_payment"]').val('cartao');
+  //
+  // $('a').click(function(){
+  //      var href = $(this).attr('href');
+  //
+  //      if(href =='#nav-tab-card'){
+  //         $('input[name="type_payment"]').val('cartao');
+  //      }else if(href =='#nav-tab-bank'){
+  //          $('input[name="type_payment"]').val('boleto');
+  //      }
+  //
+  //      console.log(href);
+  //  })
+
+  $('form[name="finalizar"]').submit(function (event) {
+    event.preventDefault();
+    $.ajax({
+      url: window.location.origin + $(this).attr('action'),
+      type: 'post',
+      dataType: 'json',
+      data: $(this).serializeArray(),
+      success: function success(response) {
+        if (response.success) {
+          Swal.fire({
+            title: 'Parabens',
+            text: response.message,
+            icon: response.icon
+          }).then(function (result) {
+            window.location = response.link != '' ? response.link : '';
+          });
+        }
+
+        if (!response.success) {
+          Swal.fire({
+            title: 'Atenção',
+            text: response.message,
+            icon: response.icon
+          }).then(function (result) {
+            if (response.link != '') window.location = response.link != '' ? response.link : '';
+          });
+        }
+
+        console.log(response);
+      }
+    }).fail(function (jqXHR, textStatus) {});
+  });
+});
+
+/***/ }),
+
+/***/ "./resources/js/company.js":
+/*!*********************************!*\
+  !*** ./resources/js/company.js ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+jQuery(document).ready(function ($) {
+  // if(window.location.pathname == '/carrinho' ){
+  //     document.getElementById('cnpj').addEventListener('input', function (e) {
+  //         var x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,3})(\d{0,3})(\d{0,4})(\d{0,2})/);
+  //         e.target.value = !x[2] ? x[1] : x[1] + '.' + x[2] + '.' + x[3] + '/' + x[4] + (x[5] ? '-' + x[5] : '');
+  //     });
+  // }
+  $(".cep_company").blur(function () {
+    //Nova variável "cep" somente com dígitos.
+    var cep = $(this).val().replace(/\D/g, ''); //Verifica se campo cep possui valor informado.
+
+    if (cep != "") {
+      //Expressão regular para validar o CEP.
+      var validacep = /^[0-9]{8}$/; //Valida o formato do CEP.
+
+      if (validacep.test(cep)) {
+        //Preenche os campos com "..." enquanto consulta webservice.
+        $("#company_endereco").val("...");
+        $("#company_cidade").val("...");
+        $("#company_estado").val("..."); //Consulta o webservice viacep.com.br/
+
+        $.getJSON("https://viacep.com.br/ws/" + cep + "/json/?callback=?", function (dados) {
+          if (!("erro" in dados)) {
+            //Atualiza os campos com os valores da consulta.
+            $("#company_endereco").val(dados.logradouro);
+            $("#company_bairro").val(dados.bairro);
+            $("#company_cidade").val(dados.localidade);
+            $("#company_estado").val(dados.uf);
+          } //end if.
+          else {
+              //CEP pesquisado não foi encontrado.
+              limpa_formulário_cep();
+              alert("CEP não encontrado.");
+            }
+        });
+      } //end if.
+      else {
+          //cep é inválido.
+          limpa_formulário_cep();
+          alert("Formato de CEP inválido.");
+        }
+    } //end if.
+    else {
+        //cep sem valor, limpa formulário.
+        limpa_formulário_cep();
+      }
+  });
+  $('form[name="company_store"]').submit(function (event) {
+    event.preventDefault();
+    $.ajax({
+      url: window.location.origin + $(this).attr('action'),
+      type: 'post',
+      dataType: 'json',
+      data: $(this).serializeArray(),
+      success: function success(response) {
+        $('#exampleModal').modal('hide');
+        if (!response.success) Swal.fire({
+          title: 'Atenção',
+          text: response.message,
+          icon: response.icon,
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Sim',
+          cancelButtonText: 'Não'
+        }).then(function (result) {
+          if (result.isConfirmed) {
+            $('#exampleModal').modal('show');
+          }
+        });
+      }
+    }).fail(function (jqXHR, textStatus) {});
+  });
+});
 
 /***/ }),
 

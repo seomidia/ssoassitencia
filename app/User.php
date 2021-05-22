@@ -41,8 +41,9 @@ class User extends \TCG\Voyager\Models\User
         'email_verified_at' => 'datetime',
     ];
 
-    protected function UserCount($column = 'email',$value){
-        return DB::table('users')->where($column,$value)->count();
+    protected function UserCount($column = 'email',$value = null){
+        if(is_null($value))
+            return DB::table('users')->where($column,$value)->count();
     }
 
     protected  function User_register(array $data, $role_name = 'paciente')
