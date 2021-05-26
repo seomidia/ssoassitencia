@@ -19,5 +19,7 @@
         "sass-loader": "^8.0.0",
         "vue-template-compiler": "^2.6.12"
     },
-    "dependencies": {}
+    "dependencies": {
+        "sweetalert2": "^11.0.11"
+    }
 }

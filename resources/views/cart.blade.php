@@ -46,11 +46,11 @@
                         </p>
 
 
-                        <div class="form-group col-md-12" >
-                            <label for="quem" class="text-black">Para quem é o atendimento?  <span class="text-danger">*</span></label><br>
-                            <p> <input type="radio" checked name="agendar" value="outra_pessoa"> Vou agendar para outra pessoa</p>
-                            <p> <input type="radio"  name="agendar" value="rh"> Vou agendar para mim</p>
-                        </div>
+{{--                        <div class="form-group col-md-12" >--}}
+{{--                            <label for="quem" class="text-black">Para quem é o atendimento?  <span class="text-danger">*</span></label><br>--}}
+{{--                            <p> <input type="radio" checked name="agendar" value="outra_pessoa"> Vou agendar para outra pessoa</p>--}}
+{{--                            <p> <input type="radio"  name="agendar" value="rh"> Vou agendar para mim</p>--}}
+{{--                        </div>--}}
 
                         <div class="exames-complementar col-md-12">
                             <div class="row">

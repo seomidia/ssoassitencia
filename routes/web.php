@@ -111,6 +111,7 @@ Route::post('/admin/encaminhamento', 'AnamineseController@create')->name('voyage
 Route::post('/admin/encaminhamento/{encaminhamento}', 'AnamineseController@updade')->name('voyager.update.encaminhamento');
 Route::post('/admin/encaminhamento/{encaminhamento}/delete', 'AnamineseController@destroy')->name('voyager.delete.encaminhamento');
 Route::get('/admin/servicos', 'ServicesController@index')->name('voyager.services');
+Route::get('/admin/create-service/{service}/{order}', 'OrderController@CreateService')->name('voyager.CreateService');
 
 //funcionario -------------------
 
@@ -125,6 +126,8 @@ Route::get('/admin/anaminese/cadastro/{anaminese}', 'AnamineseController@cadastr
 Route::get('/admin/pedidos', 'OrderController@pedidos')->name('pedido');
 Route::get('/admin/exames', 'ExamesController@index')->name('exames');
 Route::post('/admin/upload-exame', 'ExamesController@upload')->name('exames-upload');
+Route::post('/admin/trans-exame', 'ExamesController@transfere')->name('exames-trans');
+Route::post('/admin/checking-procedure', 'ExamesController@checar')->name('exames-checar');
 
 
 // busca medico --------------------------------

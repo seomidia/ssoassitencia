@@ -96,10 +96,10 @@ class Anamnesi extends Model
     protected function notification($user_id, $anamnese_id)
     {
         $result = DB::table('anamnesis as a')
-            ->join('users as u', 'a.user_id_employee', '=', 'u.id')
-            ->join('user_data as ud', 'a.user_id_employee', '=', 'ud.user_id')
-            ->join('companies as c', 'a.companies_id', '=', 'c.id')
-            ->join('location as l', 'a.location_id', '=', 'l.id')
+            ->leftjoin('users as u', 'a.user_id_employee', '=', 'u.id')
+            ->leftjoin('user_data as ud', 'a.user_id_employee', '=', 'ud.user_id')
+            ->leftjoin('companies as c', 'a.companies_id', '=', 'c.id')
+            ->leftjoin('location as l', 'a.location_id', '=', 'l.id')
             ->select(
                 'u.name as paciente',
                 'ud.cpf',
@@ -115,15 +115,16 @@ class Anamnesi extends Model
                 'l.obs'
             )
             ->where('a.id', $anamnese_id)
-            ->get();
+            ->first();
+
 
         $job = [
-            'paciente' => $result[0]->paciente,
-            'cpf' => $result[0]->cpf,
-            'nasc' => $result[0]->nasc,
-            'empresa' => $result[0]->empresa,
-            'clinica' => $result[0]->clinica,
-            'endereco' => $result[0]->endereco . ' ' . $result[0]->numero . ', ' . $result[0]->bairro . ', ' . $result[0]->cidade . ' - ' . $result[0]->estado . ' ' . $result[0]->obs,
+            'paciente' => $result->paciente,
+            'cpf' => $result->cpf,
+            'nasc' => $result->nasc,
+            'empresa' => $result->empresa,
+            'clinica' => $result->clinica,
+            'endereco' => $result->endereco . ' ' . $result->numero . ', ' . $result->bairro . ', ' . $result->cidade . ' - ' . $result->estado . ' ' . $result->obs,
         ];
 
         $user = User::find($user_id);
@@ -148,6 +149,19 @@ class Anamnesi extends Model
         $data = (count($meta) > 0) ? $meta[0]->response : '';
 
         return $data;
+    }
+    protected function procedure_disponivel($anamnese_id,$id){
+        $total =  DB::table('order_products as op')
+            ->join('orders as o','op.order_id','=','o.id')
+            ->where(['o.user_id'=>Auth::user()->id,'op.product_id'=>$id,'op.status'=>1])
+            ->count(); // não disonivel
+
+        $total +=  DB::table('order_products as op')
+            ->join('orders as o','op.order_id','=','o.id')
+            ->where(['o.user_id'=>Auth::user()->id,'op.product_id'=>$id,'op.status'=>1,'op.anamnesis_id'=>$anamnese_id])
+            ->count(); // nao disponivel para outras anamineses
+
+        return $total;
     }
     protected function count_procedure($anamnese_id, $procedure_id = null)
     {
@@ -203,11 +217,11 @@ class Anamnesi extends Model
         unset($exames->user_id_logged);
         unset($exames->requester);
         unset($exames->step);
-
         foreach ($exames->exames as $key => $exame) {
             $data = [
                 'order_id' => $exames->order,
-                'product_id' =>  $exame->id,
+                'product_id' =>  $exame,
+                'user_id' =>  Auth::user()->id,
                 'created_at' => date('Y-m-d H:i:s')
             ];
             $exist = \DB::table('exame')->where($data)->count();

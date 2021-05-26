@@ -285,8 +285,18 @@ class AnamineseController extends Controller
             ->get();
 
 //        $procedures = DB::table('procedures')->get();
-        $procedures = DB::table('products')
-            ->wherein('category_id',[4,5,7,8])
+
+        $procedures = DB::table('order_products as op')
+            ->join('products as p','op.product_id','=','p.id')
+            ->join('orders as o','op.order_id','=','o.id')
+            ->select(
+                'p.id',
+                'p.name',
+                'op.status as disponivel',
+                'p.slug'
+            )
+            ->wherein('p.category_id',[4,5,7,8])
+            ->where(['o.user_id'=>Auth::user()->id])
             ->get();
 
         $tipo = DB::table('anamnese_type')->get();
@@ -342,6 +352,7 @@ class AnamineseController extends Controller
         if($companie_id['success']){
 
             $func = $request->input('user_funcionario');
+
             if($func == ''){
                 return response()->json([
                     'success'=> false,
@@ -365,10 +376,21 @@ class AnamineseController extends Controller
                 'sexo' => $request->input('pessoa_sexo')
             ];
 
+            $pessoa = DB::table('user_data')->where('user_id',$func);
+            $user_data = $pessoa->first();
+            foreach ($user_data as $key => $item) {
+                if($item == '')
+                    return response()->json([
+                        'success'=> false,
+                        'message'=> 'Não é possivel vincular para esta pessoal, pois seu cadastro esta incompleto!'
+                    ],500);
 
-            $update_pessoa = DB::table('user_data')
-                ->where('user_id',$func)
-                ->update($pessoa);
+            }
+
+
+
+
+            $update_pessoa = $pessoa->update($pessoa);
 
 
             // atualiza empresa  --------------------------------------------------------
@@ -387,14 +409,18 @@ class AnamineseController extends Controller
 
             // registra procedimentos -------------------------------------
             // checar ----
-             $ehcreate = DB::table('anamnesis')->where(['id'=>$id,'step'=>'step_rh'])->count();
-             if($ehcreate == 1){
-                 Anamnesi::add_procedure($id,$request->medico['procedure']);
-             }else{
-                 Anamnesi::add_procedure($id,$request->medico['procedure'],true);
-             }
+            if(!is_null($request->medico['procedure'])){
+                $ehcreate = DB::table('anamnesis')
+                    ->where('id',$id)
+                    ->wherein('step',['step_rh','step_funci'])
+                    ->count();
+                if($ehcreate == 1){
+                    Anamnesi::add_procedure($id,$request->medico['procedure']);
+                }else{
+                    Anamnesi::add_procedure($id,$request->medico['procedure'],true);
+                }
 
-
+            }
 
             // atualiza anamnese --------------------------------------------------------
 
@@ -694,6 +720,5 @@ class AnamineseController extends Controller
         ],200);
 
     }
-
 }
 

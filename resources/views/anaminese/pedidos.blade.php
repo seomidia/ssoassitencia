@@ -33,7 +33,22 @@
                                 </thead>
                                 <tbody>
                                 @foreach($orders as $key => $order)
-                                    <tr id="{{$key}}">
+                                    <tr id="{{$key}}" class="
+                                                             @if(
+                                                                    $order[0]->status == 'Paga'
+                                                                    || $order[0]->status == 'Disponível'
+                                                                    ) bg-success @endif
+                                                             @if(
+                                                                    $order[0]->status == 'Cancelada'
+                                                                    || $order[0]->status == 'Devolvida'
+                                                                    ) bg-danger @endif
+                                                             @if(
+                                                                    $order[0]->status == 'Aguardando pagamento'
+                                                                    || $order[0]->status == 'pedding'
+                                                                    || $order[0]->status == 'Em disputa'
+                                                                    || $order[0]->status == 'Em análise'
+                                                                    ) bg-warning @endif
+                                        ">
                                         <td style="text-align: center">#{{$key}}</td>
                                         <td style="text-align: center">{{$order[0]->payment_type}}</td>
                                         <td style="text-align: center">{{$order[0]->code}}</td>
@@ -79,6 +94,20 @@
                     toastr.success('Iniciando Anaminese...');
                     setTimeout(function (){
                         window.location.href = 'encaminhamento/cadastro/' + response;
+                    },2000);
+                }).fail(function (jqXHR, textStatus) {
+                    toastr.error(jqXHR.responseJSON.message);
+                })
+            })
+            $('.createService').click(function(event){
+                event.preventDefault();
+
+                $('#voyager-loader').show('slow');
+                var url = $(this).attr('href');
+                $.get(url, function (response) {
+                    toastr.success('Criando serviço...');
+                    setTimeout(function (){
+                        window.location.href = 'pedidos';
                     },2000);
                 }).fail(function (jqXHR, textStatus) {
                     toastr.error(jqXHR.responseJSON.message);

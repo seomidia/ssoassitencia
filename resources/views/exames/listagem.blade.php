@@ -89,8 +89,9 @@
                                             <a  href="@if($item->path_file) {{asset($item->path_file)}} @else {{'#'}} @endif" style="padding: 5px 12px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="ver-exame btn btn-sm btn-danger pull-center">Ver</a>
                                             @endif
                                             @if(in_array($permissao,[1,7]))
-                                            <a href="{{$item->id}}" style="padding: 5px 12px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="upload btn btn-sm btn-danger pull-center">Upload</a>
-                                                @endif
+                                                <a href="{{$item->id}}" style="padding: 5px 12px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="upload btn btn-sm btn-danger pull-center">Upload</a>
+                                            @endif
+                                                <a href="{{$item->id}}" style="padding: 5px 12px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="troca btn btn-sm btn-danger text-center">Transferir</a>
                                         </td>
                                         </td>
                                     </tr>
@@ -168,6 +169,71 @@
 
 
             })
+
+
+            $('a.troca').on('click',function(event){
+                event.preventDefault();
+                Swal.fire({
+                    title: 'Encaminhar exame',
+                    html:
+                        'CPF <input id="cpf" onkeyup="getPessoa(this,)"  autocomplete="off"   type="text"  class="form-control my-1" placeholder="CPF do destinatário">' +
+                        '<input id="exid" type="hidden" >' +
+                        '<input id="user_id" type="hidden" >' +
+                        'NOME<input id="nome" style="font-size: 20px;font-weight: bold;"  type="text"  disabled class="form-control my-1" placeholder="Nome do destinatario">' ,
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Encaminhar',
+                    cancelButtonText: 'Cancelar',
+                    preConfirm: () => {
+                        return [
+                            document.getElementById('user_id').value,
+                            document.getElementById('exid').value
+                        ]
+                    }
+                }).then((preConfirm) => {
+                    Swal.fire({
+                        title: 'Atenção',
+                        text: "Você tem certeza que deseja encaminhar?",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Sim, encaminhar!'
+                    }).then((result) => {
+                        console.log(preConfirm);
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                url: "trans-exame",
+                                type: 'post',
+                                data:{
+                                   user_id:preConfirm.value[0],
+                                   exid:preConfirm.value[1]
+                                },
+                                dataType: 'json',
+                                success: function(response){
+                                    Swal.fire(
+                                        'Sucesso!',
+                                        'Exame encaminhado!',
+                                        'success'
+                                    );
+                                    setTimeout(function (){
+                                        window.location.href = 'exames';
+                                    },3000);
+                                }
+                            }).fail(function (jqXHR, textStatus) {
+                                Swal.fire(
+                                    'Atenção!',
+                                    'Não foi possivel realizar o encaminhamento, tente novamente mais tarde!',
+                                    'warning'
+                                );
+                            })
+                        }
+                    })
+                });
+                var exid = $(this).attr('href');
+                $('#exid').val(exid);
+            })
             $('a.ver-exame').click(function(event){
                 event.preventDefault();
                 $('iframe').attr('src','');
@@ -175,6 +241,21 @@
                 $('iframe').attr('src',href);
                 $('.modal').modal('show');
             });
+
+
         });
+        function getPessoa(val,exid){
+            var cpf = val.value;
+                $.ajax({
+                    url: "/json/getpessoa/" + cpf,
+                    type: 'post',
+                    dataType: 'json',
+                    success: function(response){
+                        $('#nome').val(response.data.nome)
+                        $('#user_id').val(response.data.id)
+                    }
+                })
+        };
+
     </script>
 @stop

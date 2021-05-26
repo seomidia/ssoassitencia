@@ -2,11 +2,13 @@
 
 namespace App;
 
+use Illuminate\Http\Request;
 use Laravel\Scout\Searchable;
 use TCG\Voyager\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\PeopleController;
 
 class Order extends Model
 {
@@ -21,20 +23,24 @@ class Order extends Model
 
         // checa se user existe, se nao existir será cadastrado --------------------
 
-        $UserCount = User::where('email',Auth::user()->email);
-
+        $UserCount = User::where('email',$code['dados'][2]);
         if($UserCount->count() == 0){
-                return [
-                    'status' => false,
-                    'message' => 'Usuario não existe'
-                ];
+            $request = new \Illuminate\Http\Request();
+            $request->replace([
+                'nome'=>$code['dados'][1],
+                'cpf'=>$code['dados'][3],
+                'telefone'=>$code['dados'][4],
+                'email'=>$code['dados'][2]
+            ]);
+            $createUser = PeopleController::CreatePessoa($request);
         }
 
         // obtem dados de usuario cadastrado --------------------------
-        $user = $UserCount->get();
+        $user = $UserCount->first();
+
         $orderD = [
-            'user_id' =>  $user[0]->id,
-            'session_id' => $_COOKIE["session_id"],
+            'user_id' =>  $user->id,
+            'session_id' => $_COOKIE["session_key"],
             'payment_type' => 'Pagseguro online',
             'total' => $code['total'],
             'code' => $code['code'],
@@ -48,19 +54,22 @@ class Order extends Model
         $order_products = DB::table('order_products');
 
         // migrar da table cart_products para a order_products ---------------------
-        $cart_list = $cart->where('session_id',$_COOKIE["session_id"])->get();
+        $cart_list = $cart->where('session_id',$_COOKIE["session_key"])->get();
+
         foreach ($cart_list as $item){
-            $order_products->insert([
+            $data = [
                 'order_id' => $order->id,
                 'product_id' => $item->product_id,
                 'qtd' => $item->qtd,
                 'created_at' => date('Y-m-d H:m:s'),
                 'updated_at' => date('Y-m-d H:m:s')
-            ]);
+            ];
+
+            $order_products->insert($data);
 
         }
         // deleta registros da cart_products --------------------------------
-        $cart->where('session_id','=',$_COOKIE["session_id"])->delete();
+        $cart->where('session_id','=',$_COOKIE["session_key"])->delete();
 
         // criar um novo registro na order_shipping ------------------------
 

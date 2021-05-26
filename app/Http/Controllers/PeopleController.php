@@ -11,7 +11,7 @@ use TCG\Voyager\Models\User;
 
 class PeopleController extends Controller
 {
-    function phoneValidate($phone)
+    public static function phoneValidate($phone)
     {
         $regex = '/^(?:(?:\+|00)?(55)\s?)?(?:\(?([1-9][0-9])\)?\s?)?(?:((?:9\d|[2-9])\d{3})\-?(\d{4}))$/';
 
@@ -25,7 +25,7 @@ class PeopleController extends Controller
             return true;
         }
     }
-    function validaCPF($cpf) {
+    public static function validaCPF($cpf) {
 
         // Extrai somente os números
         $cpf = preg_replace( '/[^0-9]/is', '', $cpf );
@@ -53,21 +53,20 @@ class PeopleController extends Controller
         return true;
 
     }
-    function CreatePessoa(Request $request){
-
+    public static function CreatePessoa(Request $request){
         $cpf = $request->input('cpf');
         $telefone = $request->input('telefone');
 
         $cpf = str_replace(['.','-'],['',''],$cpf);
 
-        if(!$this->validaCPF($cpf)){
+        if(!self::validaCPF($cpf)){
             return response()->json([
                 'success'=> false,
                 'message'=> 'O CPF é invalido'
             ],500);
         }
         $tel = str_replace(['(',')','-',' '],['','','',''],$telefone);
-        if(!$this->phoneValidate($tel)){
+        if(!self::phoneValidate($tel)){
             return response()->json([
                 'success'=> false,
                 'message'=> 'O Telefone é invalido'
@@ -94,7 +93,6 @@ class PeopleController extends Controller
         ];
 
         $user_id = \App\User::User_register($data);
-
         if($user_id['success']){
 
             $user_data = DB::table('user_data')->insert([
@@ -114,7 +112,6 @@ class PeopleController extends Controller
                 'cidade' => $request->input('cidade'),
                 'estado' => $request->input('uf'),
             ]);
-
 
             if($user_data){
 

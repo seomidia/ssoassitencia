@@ -32,7 +32,6 @@ class ProductController extends Controller
 
         return view('category',['produtos'=>$colection]);
     }
-
     public function search(Request $request){
         $s = $request->input('s');
         $cat = DB::table('categories as c')
@@ -50,12 +49,10 @@ class ProductController extends Controller
 
         return view('busca',['produtos' => $colection,'buscar' => $s]);
     }
-
     public function getproduto(Request $request){
         $ids = $request->id;
 
-
-        if($_COOKIE["prod_consulta"] != '' && !is_null($ids)){
+        if(isset($_COOKIE["prod_consulta"]) && $_COOKIE["prod_consulta"] != '' && !is_null($ids)){
             if(!in_array($_COOKIE["prod_consulta"],$ids))
                 $ids[] = $_COOKIE["prod_consulta"];
         }
@@ -71,7 +68,7 @@ class ProductController extends Controller
             ->wherein('p.id',$ids)
             ->get();
         }else{
-            $session_id = $_COOKIE["session_id"];
+            $session_id = $_COOKIE["session_key"];
 
             $limpaCart = DB::table('cart_products')
                 ->where('session_id',$session_id)
@@ -80,7 +77,6 @@ class ProductController extends Controller
         }
 
     }
-
     public function getservico($id){
 
         return DB::table('products as p')

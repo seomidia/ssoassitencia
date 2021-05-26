@@ -231,21 +231,23 @@
                                         </div>
 
                                     </div>
-                                @if(\App\Anamnesi::count_procedure($anamnese_id) > 0)
                                 <div class="row">
                                     <h3 class="border-left mb-5">Exames</h3>
                                     <div class="form-group  col-md-12">
-                                        <label for="pessoa_cpf">Procedimentos diagnóstico</label>
-                                        <select class="form-control select2" name="medico[procedure][]" multiple="">
-                                            @foreach($procedures as $key => $procedure)
-                                                <option @if(\App\Anamnesi::count_procedure($anamnese_id,$procedure->id) > 0) selected @endif value="{{$procedure->id}}">{{$procedure->name}}</option>
-                                            @endforeach
-                                        </select>
-
+                                        <label for="pessoa_cpf">Procedimentos diagnóstico</label><br><br>
+                                        @foreach($procedures as $key => $procedure)
+                                            <input type="checkbox" id="{{$procedure->slug}}" class="form-control-checkbox procedure" name="medico[procedure][]"
+                                                   @if(\App\Anamnesi::procedure_disponivel($anamnese_id,$procedure->id) == 1) disabled style="display: none" @endif
+                                                   @if(\App\Anamnesi::procedure_disponivel($anamnese_id,$procedure->id) == 2) checked @endif
+                                                   value="{{$procedure->id}}" > &nbsp;
+                                            <label
+                                                @if(in_array(\App\Anamnesi::procedure_disponivel($anamnese_id,$procedure->id),[2])) style="font-weight: bold;color: darkred" @endif
+                                                @if(\App\Anamnesi::procedure_disponivel($anamnese_id,$procedure->id) == 1) style="display: none" @endif
+                                                for="{{$procedure->slug}}">{{$procedure->name}}</label>&nbsp;&nbsp;&nbsp;
+                                        @endforeach
                                         <small id="aviso" class="form-text text-muted"></small>
                                     </div>
                                 </div>
-                                @endif
 
                                 <div class="row">
                                     <div class="form-group  col-md-4">
@@ -397,6 +399,13 @@
         }
 
         $(document).ready(function(){
+            /// remove procedure ------------------------------
+
+            $('.ul.select2-selection__rendered li.select2-selection__choice').click(function(){
+                var id = $(this).attr('id');
+                console.log(id);
+            });
+
             $('.select2-selection--multiple').css('height','100px');
             document.getElementById('empresa_cnpj').addEventListener('input', function (e) {
                 var x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,3})(\d{0,3})(\d{0,4})(\d{0,2})/);
@@ -485,20 +494,25 @@
             });
 
             // select ambiente de trabalho ---------------------------------
+            $('input[type="checkbox"].procedure').on('change',function(){
+                 var value = $(this).attr('value');
+                 var id = window.location.pathname.split('/')[window.location.pathname.split('/').length - 1]
+                    $.ajax({
+                        url: "/admin/checking-procedure",
+                        type: 'post',
+                        dataType: 'json',
+                        data:{
+                          exid:value,
+                          anamnese_id: id
+                        },
+                        success: function(response){
+                            toastr.success('Exame disponivel para anamnesi '+ id);
+                        }
+                    }).fail(function (jqXHR, textStatus) {
+                        toastr.error(  'Erro ao vincular o exame: <br>' + jqXHR.responseJSON.message);
+                    })
 
-            $.ajax({
-                url: "/json/getworkplace/",
-                type: 'get',
-                dataType: 'json',
-                success: function(response){
-                    for(var i = 0; i < response.data.length; i++){
-                        $('select[name="ambiente_Trabalho"]').append('<option value="'+ response.data[i].name+'">'+response.data[i].name +'</option>');
-                    }
-                }
-            }).fail(function (jqXHR, textStatus) {
-                toastr.error(  'Erro ao obter os ambientes de trabalho: <br>' + jqXHR.responseJSON.message);
             })
-
             // select cargo ---------------------------------
 
             $.ajax({
@@ -566,6 +580,7 @@
                         window.location.href = '/admin/encaminhamento';
                     },2000);
                 }).fail(function (jqXHR, textStatus) {
+                    $('#voyager-loader').hide();
                     toastr.error(jqXHR.responseJSON.message);
                 })
             })
@@ -603,6 +618,10 @@
             }).fail(function (jqXHR, textStatus) {
                 toastr.error(textStatus);
             })
+
+
+
+
         });
 
         function getlocal(response){

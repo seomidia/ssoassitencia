@@ -19467,7 +19467,7 @@ function addCart() {
       } else {
         for (var i = 0; i < response.length; i++) {
           total = total + response[i].price;
-          table += '<tr><td>' + response[i].name + '</td><td>1x</td><td>' + currencyFormatted(response[i].price, 'R$') + '</td></tr>';
+          table += '<tr><td>' + response[i].product_name + '</td><td>1x</td><td>' + currencyFormatted(response[i].price, 'R$') + '</td></tr>';
         }
       }
 
@@ -19479,7 +19479,8 @@ function addCart() {
 }
 
 jQuery(document).ready(function ($) {
-  // criar sessão -----------------------------------
+  addCart(); // criar sessão -----------------------------------
+
   if (Cookies.get('session_key') == undefined) Cookies.set('session_key', Math.floor(Math.random() * 1000000000000000000 + 1));
   $('#cart-update').click(function () {
     $(".update-card").trigger("click");
@@ -19491,9 +19492,7 @@ jQuery(document).ready(function ($) {
     var _this = this;
 
     event.preventDefault();
-    var text = 'Empresa não emcontrada, deseja cadastra-la?';
-    var agendar = $('input[name="agendar"]').val();
-    if (agendar == 'outra_pessoa') text = 'Após a compra, encaminhe o exame para seu respectivo paciente!';
+    var text = 'Após a compra, encaminhe o exame para seu respectivo paciente!';
     Swal.fire({
       title: 'Atenção',
       text: text,
@@ -19505,13 +19504,21 @@ jQuery(document).ready(function ($) {
       cancelButtonText: 'Não'
     }).then(function (result) {
       if (result.isConfirmed) {
-        Swal.mixin({
-          input: 'text',
-          confirmButtonText: 'Proximo &rarr;',
+        Swal.fire({
+          title: 'Dados para Pagamento',
           showCancelButton: true,
-          progressSteps: ['1', '2', '3', '4']
-        }).queue(['Nome', 'E-mail', 'CPF', 'Telefone']).then(function (result) {
-          if (result.value) {
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Finalizar',
+          cancelButtonText: 'Cancelar',
+          html: '<input id="cep"   type="text"  class="form-control my-1" placeholder="Seu CEP">' + '<input id="nome"  type="text"  class="form-control my-1" placeholder="Seu Nome">' + '<input id="email" type="email" class="form-control my-1" placeholder="Seu E-mail">' + '<input id="cpf"   type="text"  class="form-control my-1" placeholder="Seu CPF"> ' + '<input id="tel"   type="tel"   class="form-control my-1" placeholder="Seu Telefone">' + '<input id="nasc"  type="date"  class="form-control my-1" placeholder="Seu Nascimento">',
+          preConfirm: function preConfirm() {
+            return [document.getElementById('cep').value, document.getElementById('nome').value, document.getElementById('email').value, document.getElementById('cpf').value, document.getElementById('tel').value, document.getElementById('nasc').value];
+          }
+        }).then(function (preConfirm) {
+          console.log(preConfirm.value);
+
+          if (preConfirm.isConfirmed) {
             $.ajax({
               url: window.location.origin + '/finalizar',
               headers: {
@@ -19519,14 +19526,14 @@ jQuery(document).ready(function ($) {
               },
               data: {
                 'prod': $(_this).serializeArray(),
-                'comprador': result.value
+                'comprador': preConfirm.value
               },
               type: 'post',
               dataType: 'json',
               success: function success(response) {
                 window.open(response, "_blank");
                 setTimeout(function () {
-                  window.location.href = '/';
+                  window.location.href = '/obrigado';
                 }, 2000);
               }
             }).fail(function (jqXHR, textStatus) {

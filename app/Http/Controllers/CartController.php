@@ -28,7 +28,7 @@ class CartController extends Controller
      */
     public function index(Request $request,$product_id)
     {
-        $session_id = $_COOKIE["session_id"];
+        $session_id = $_COOKIE["session_key"];
 
         $get_categoria = DB::table('products as p')
             ->join('categories as c','p.category_id','=','c.id')
@@ -64,7 +64,7 @@ class CartController extends Controller
     public function add(Request $request)
     {
         $product_id = $request->input('product_id');
-        $session_id = $_COOKIE["session_id"];
+        $session_id = $_COOKIE["session_key"];
         $existe = Cart::CheckCart($session_id,$product_id);
 
         if($existe == 0){
@@ -78,16 +78,19 @@ class CartController extends Controller
     }
     static function addficha($product_ids)
     {
-        $session_id = $_COOKIE["session_id"];
-        $existe = Cart::CheckCart($session_id,$product_ids);
+
+        $session_id = $_COOKIE["session_key"];
 
         $limpaCart = DB::table('cart_products')
             ->where('session_id',$session_id)
             ->delete();
 
+        $existe = Cart::CheckCart($session_id,$product_ids);
+
+
         if($existe == 0){
             foreach ( $product_ids as $item) {
-                DB::table('cart_products')->insert([
+                $addcart =DB::table('cart_products')->insert([
                     'session_id' => $session_id,
                     'product_id' => $item,
                     'qtd' => 1
@@ -98,7 +101,7 @@ class CartController extends Controller
 
     public function update(Request $request,$id)
     {
-        $session_id = $_COOKIE["session_id"];
+        $session_id = $_COOKIE["session_key"];
         $qtd = $request->input('cart_qtd');
 
 
@@ -110,7 +113,7 @@ class CartController extends Controller
 
     public function destroy($id)
     {
-        $session_id = $_COOKIE["session_id"];
+        $session_id = $_COOKIE["session_key"];
 
         DB::table('cart_products')
             ->where('session_id', '=', $session_id)

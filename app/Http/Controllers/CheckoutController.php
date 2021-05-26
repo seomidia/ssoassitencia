@@ -134,29 +134,32 @@ class CheckoutController extends Controller
     }
 
     public function getUserData($field){
-        $date = DB::table('user_data')
-            ->select($field)
-            ->where('user_id',Auth::user()->id)
-            ->get();
-        return $date[0]->$field;
+        if(Auth::check()){
+            $date = DB::table('user_data')
+                ->select($field)
+                ->where('user_id',Auth::user()->id)
+                ->get();
+            return $date[0]->$field;
+        }
+        return "Não definido";
     }
     public function finalizar(Request $request)
     {
+        foreach ($request->comprador as $key => $value){
+            if($value == '')
+                return response()->json([
+                    'success'=> false,
+                    'message'=> 'Todos os campos são obrigatório para conclusão da compra!'
+                ],500);
+        }
 
-
-        if(Auth::check()) {
-            if(!is_null($request->prod))
-                 $cartProd = $request->prod;
-            $cartProd[] =[
-                'name' =>'prod[]',
-                'value' => $_COOKIE["prod_consulta"]
-            ];
+            $cartProd = $request->prod;
+            $comprador = $request->comprador;
             foreach ($cartProd as $ids) {
                 $prods[] = $ids['value'];
             }
 
-
-            $prod = DB::table('products')
+        $prod = DB::table('products')
                 ->wherein('id', $prods)
                 ->get();
             $total = 0;
@@ -181,34 +184,35 @@ class CheckoutController extends Controller
                 'items' => $item,
                 'shipping' => [
                     'address' => [
-                        'postalCode' => $this->getUserData('cep'),
-                        'street' => $this->getUserData('endereco'),
-                        'number' => $this->getUserData('numero'),
-                        'district' => $this->getUserData('bairro'),
-                        'city' => $this->getUserData('cidade'),
-                        'state' => $this->getUserData('estado'),
+                        'postalCode' => preg_replace('/[^0-9]/', '', $comprador[0]),
+                        'street' => 'Rua Luiz celso bornancin',
+                        'number' => '0',
+                        'district' => 'Uberaba',
+                        'city' =>  'Curitiba',
+                        'state' => 'PR',
                         'country' => 'BRA',
                     ],
                     'type' => 2,
                     'cost' => ''
                 ],
                 'sender' => [
-                    'email' => Auth::user()->email,
-                    'name' => Auth::user()->name,
+                    'email' => $comprador[2],
+                    'name' => $comprador[1],
                     'documents' => [
                         [
-                            'number' => $this->getUserData('cpf'),
+                            'number' => preg_replace('/[^0-9]/', '', $comprador[3]),
                             'type' => 'CPF'
                         ]
                     ],
                     'phone' => [
-                        'number' => substr($this->getUserData('telefone'), -9, 9),
-                        'areaCode' => substr($this->getUserData('telefone'), 0, -9),
+                        'number' => substr($comprador[4], -9, 9),
+                        'areaCode' => substr($comprador[4], 0, -9),
                     ],
-                    'bornDate' => date("Y-m-d", strtotime(str_replace('/', '-', $this->getUserData('nasc')))),
+                    'bornDate' => date("Y-m-d", strtotime($comprador[5])),
                 ],
                 'reference' => $referencia
             ];
+
 
             $checkout = PagSeguro::checkout()->createFromArray($data);
             $credentials = PagSeguro::credentials()->get();
@@ -216,15 +220,11 @@ class CheckoutController extends Controller
             if ($information) {
                 $code['code'] = $referencia;
                 $code['total'] = $total;
+                $code['dados'] = $comprador;
                 Order::CreateOrder($code);
             }
             return response()->json($information->getLink());
-        }else{
-            return response()->json([
-                'status' => false,
-                'message' => 'É necessarios estar logado para finalizar o agendamento!'
-            ],500);
-        }
+
     }
 //print_r($information->getCode());
 //print_r($information->getDate());
