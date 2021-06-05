@@ -371,7 +371,7 @@ class AnamineseController extends Controller
                 ->where('id',$func)
                 ->update($user);
 
-            $pessoa = [
+            $pessoad = [
                 'cpf' => str_replace(['.','-'],['',''],$request->input('pessoa_cpf')),
                 'rg' => $request->input('pessoa_rg'),
                 'nasc' => $request->input('pessoa_nascimento'),
@@ -382,7 +382,7 @@ class AnamineseController extends Controller
             $pessoa = DB::table('user_data')->where('user_id',$func);
             $user_data = $pessoa->first();
             foreach ($user_data as $key => $item) {
-                if($item == '')
+                if($item == '' && $key != 'created_at' && $key != 'updated_at')
                     return response()->json([
                         'success'=> false,
                         'message'=> 'Não é possivel vincular para esta pessoal, pois seu cadastro esta incompleto!'
@@ -393,7 +393,7 @@ class AnamineseController extends Controller
 
 
 
-            $update_pessoa = $pessoa->update($pessoa);
+            $update_pessoa = $pessoa->update($pessoad);
 
 
             // atualiza empresa  --------------------------------------------------------

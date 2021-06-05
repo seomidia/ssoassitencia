@@ -95,7 +95,7 @@ class PeopleController extends Controller
         $user_id = \App\User::User_register($data);
         if($user_id['success']){
 
-            $user_data = DB::table('user_data')->insert([
+            $dados = [
                 'user_id' => $user_id['data']['user_id'],
                 'cpf' => str_replace(['.','-'],['',''],$request->input('cpf')),
                 'rg' => $request->input('rg'),
@@ -111,13 +111,24 @@ class PeopleController extends Controller
                 'bairro' => $request->input('bairro'),
                 'cidade' => $request->input('cidade'),
                 'estado' => $request->input('uf'),
-            ]);
+            ];
+
+            if(isset($user_id['data']['user_id'])){
+                $user_data = DB::table('user_data')->insert($dados);
+                $msg = 'Pessoa cadastrada com sucesso!';
+            }else{
+                $user_data = DB::table('user_data')
+                ->where('user_id',$user_id['data']['user_id'])
+                ->update($dados);
+                $msg = 'Pessoa atualizada com sucesso!';
+            }
+
 
             if($user_data){
 
                 return response()->json([
                     'success'=> true,
-                    'message'=> 'Pessoa cadastrada com sucesso!',
+                    'message'=> $msg,
                     'data' => [
                         'id' => $user_id['data']['user_id'],
                         'cpf' => str_replace(['.','-'],['',''],$request->input('cpf')),

@@ -84,9 +84,27 @@ class User extends \TCG\Voyager\Models\User
             }
 
         }else{
+            $cpf = preg_replace('/[^0-9]/', '', $data['cpf']);
+            $userU = DB::table('user_data')
+            ->select('user_id')
+            ->where('cpf',$cpf)
+            ->first();
+
+            unset($data['password']);
+
+            $userd = [
+                'name'           => $data['nome'],
+                'email'          => $data['email'],
+            ];
+
+            DB::table('users')->where(['id'=>$userU->user_id])->update($userd);
+
             return [
-                'success'=> false,
-                'message'=> 'Usuário já esta cadastrado!'
+                'success'=> true,
+                'data' => [
+                    'user_id' => $userU->user_id,
+                ],
+            'message'=> 'Usuário atualizado com sucesso!'
             ];
         }
 

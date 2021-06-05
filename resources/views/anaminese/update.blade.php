@@ -575,6 +575,7 @@
                     },2000);
                 }).fail(function (jqXHR, textStatus) {
                     $('#voyager-loader').hide();
+                    $('button#create_pessoa').text('Atualizar pessoa');
                     toastr.error(jqXHR.responseJSON.message);
                 })
             })
