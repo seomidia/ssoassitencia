@@ -236,21 +236,26 @@
                                     <div class="form-group  col-md-12">
                                         <label for="pessoa_cpf">Procedimentos diagnóstico</label><br><br>
                                         @foreach($procedures as $key => $procedure)
-                                            <input type="checkbox" id="{{$procedure->slug}}" class="form-control-checkbox procedure" name="medico[procedure][]"
-                                                   @if(\App\Anamnesi::procedure_disponivel($anamnese_id,$procedure->id) == 1) disabled style="display: none" @endif
-                                                   @if(\App\Anamnesi::procedure_disponivel($anamnese_id,$procedure->id) == 2) checked @endif
-                                                   value="{{$procedure->id}}" > &nbsp;
-                                            <label
-                                                @if(in_array(\App\Anamnesi::procedure_disponivel($anamnese_id,$procedure->id),[2])) style="font-weight: bold;color: darkred" @endif
-                                                @if(\App\Anamnesi::procedure_disponivel($anamnese_id,$procedure->id) == 1) style="display: none" @endif
-                                                for="{{$procedure->slug}}">{{$procedure->name}}</label>&nbsp;&nbsp;&nbsp;
+                                            @if(
+                                                $procedure->status == 0 && is_null($procedure->anamnesis_id) ||
+                                                $procedure->status == 1 && $procedure->anamnesis_id == $anamnese_id
+                                            )
+                                                <input @if($procedure->status == 1 && $procedure->anamnesis_id == $anamnese_id) checked @endif  type="checkbox" id="{{$procedure->slug}}" class="form-control-checkbox procedure" name="medico[procedure][]"
+                                                value="{{$procedure->id}}" > &nbsp;
+                                                <label
+                                                @if($procedure->status == 1 && $procedure->anamnesis_id == $anamnese_id)
+                                                    style="font-weight: bold;color: darkred"
+                                                    @endif
+                                                    for="{{$procedure->slug}}">{{$procedure->name}}
+                                                </label>&nbsp;&nbsp;&nbsp;
+                                            @endif
                                         @endforeach
                                         <small id="aviso" class="form-text text-muted"></small>
                                     </div>
                                 </div>
 
                                 <div class="row">
-                                    <div class="form-group  col-md-4">
+                                    <div class="form-group  col-md-6">
                                         <h3 class="border-left mb-5">Profissional</h3>
                                         <label for="pessoa_cpf">Cargo</label>
                                         <select class="form-control select2" name="cargo" onchange="getRiscos(this)">
@@ -261,18 +266,7 @@
                                         </select>
                                         <small id="aviso" class="form-text text-muted"></small>
                                     </div>
-                                    <div class="form-group  col-md-4 pessoa_cpf">
-                                        <h3 class="border-left mb-5">Tipo</h3>
-                                        <label for="pessoa_cpf">Tipo de consulta</label>
-                                        <select class="form-control select2" name="anamnese_type">
-                                            <option value="">Selecione</option>
-                                            @foreach($tipo as $key => $tipos)
-                                                <option value="{{$tipos->name}}" @if($item->type == $tipos->name) selected @endif>{{$tipos->name}}</option>
-                                            @endforeach
-                                        </select>
-                                        <small id="aviso" class="form-text text-muted"></small>
-                                    </div>
-                                    <div class="form-group  col-md-4">
+                                    <div class="form-group  col-md-6">
                                         <h3 class="border-left mb-5">Local de Consulta</h3>
                                         <label for="pessoa_cpf">Clinica</label>
                                         <select class="form-control select2" name="location_id">

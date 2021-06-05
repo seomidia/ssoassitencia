@@ -32,6 +32,123 @@
 @section('content')
 
 
+
+<div class="modal fade" id="create_pessoa" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="exampleModalLabel" style="float: left;">Cadastro de pessoa</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form name="cadastro_pessoa" action="#" type="post">
+                    @csrf
+
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Nome:</label>
+                            <input type="text" class="form-control" name="nome">
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label for="message-text" class="col-form-label">E-mail:</label>
+                                <input type="email" class="form-control" name="email">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="message-text" class="col-form-label">Telefone:</label>
+                                <input type="text" class="form-control" name="telefone" data-mask="(00) 0000-0000">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label for="message-text" class="col-form-label">CPF:</label>
+                                <input id="cpf" type="text" class="form-control" name="cpf" maxlength="14" onkeypress='mascaraMutuario(this,cpfCnpj)'>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="message-text" class="col-form-label">RG:</label>
+                                <input id="cpf" type="text" class="form-control" name="rg" maxlength="12">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="message-text" class="col-form-label">Nascimento:</label>
+                                <input type="date" class="form-control" name="nascimento">
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-5">
+                                <label for="message-text" class="col-form-label">Estado civil:</label>
+                                <select class="form-control" name="estado_civil">
+                                    <option value="">Selecione</option>
+                                    <option value="solteiro">Solteiro</option>
+                                    <option value="casado">Casado</option>
+                                    <option value="uniao_estavel">União estável</option>
+                                    <option value="outros">Outros</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-5">
+                                <label for="message-text" class="col-form-label">Sexo:</label>
+                                <select class="form-control" name="sexo">
+                                    <option value="">Selecione</option>
+                                    <option value="masculino">Masculino</option>
+                                    <option value="feminino">Feminino</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-2">
+                                <label for="message-text" class="col-form-label">Idade:</label>
+                                <input type="text" class="form-control" name="idade">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label for="message-text" class="col-form-label">CEP:</label>
+                                <input type="text" class="form-control cep"  name="cep">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="message-text" class="col-form-label">Endereço:</label>
+                                <input type="text" class="form-control" id="company_endereco" name="endereco">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label for="message-text" class="col-form-label">Numero:</label>
+                                <input type="text" class="form-control" name="numero">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="message-text" class="col-form-label">Complemento:</label>
+                                <input type="text" class="form-control"  name="complemento" >
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="message-text" class="col-form-label">Bairro:</label>
+                                <input type="text" class="form-control" id="company_bairro" name="bairro">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label for="message-text" class="col-form-label">Cidade:</label>
+                                <input type="text" class="form-control" id="company_cidade" name="cidade">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="message-text" class="col-form-label">Estado:</label>
+                                <input type="text" class="form-control" id="company_estado" name="uf">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
     <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content" style="border: 1px solid #fff;height: 900px;">
@@ -176,7 +293,7 @@
                 Swal.fire({
                     title: 'Encaminhar exame',
                     html:
-                        'CPF <input id="cpf" onkeyup="getPessoa(this,)"  autocomplete="off"   type="text"  class="form-control my-1" placeholder="CPF do destinatário">' +
+                        'CPF <input id="cpf" onkeyup="getPessoa(this,)" maxlength="14" onkeypress="mascaraMutuario(this,cpfCnpj)"  autocomplete="off"   type="text"  class="form-control my-1" placeholder="CPF do destinatário">' +
                         '<input id="exid" type="hidden" >' +
                         '<input id="user_id" type="hidden" >' +
                         'NOME<input id="nome" style="font-size: 20px;font-weight: bold;"  type="text"  disabled class="form-control my-1" placeholder="Nome do destinatario">' ,
@@ -192,6 +309,8 @@
                         ]
                     }
                 }).then((preConfirm) => {
+                    if(preConfirm.isConfirmed){
+
                     Swal.fire({
                         title: 'Atenção',
                         text: "Você tem certeza que deseja encaminhar?",
@@ -201,7 +320,6 @@
                         cancelButtonColor: '#d33',
                         confirmButtonText: 'Sim, encaminhar!'
                     }).then((result) => {
-                        console.log(preConfirm);
                         if (result.isConfirmed) {
                             $.ajax({
                                 url: "trans-exame",
@@ -230,6 +348,8 @@
                             })
                         }
                     })
+                }
+
                 });
                 var exid = $(this).attr('href');
                 $('#exid').val(exid);
@@ -242,8 +362,68 @@
                 $('.modal').modal('show');
             });
 
+            $('form[name="cadastro_pessoa"]').submit(function(event){
+                event.preventDefault();
+                $.post('{{ route('voyager.create.People') }}', $(this).serializeArray(), function (response) {
+                    $('input[name="user_id"]').val(response.data.id);
+                    $('#cpf').val(response.data.cpf);
+
+                    $('#create_pessoa').modal('hide');
+
+                    toastr.success(response.message);
+                }).fail(function (jqXHR, textStatus) {
+                    toastr.error(jqXHR.responseJSON.message);
+                })
+            })
+
 
         });
+
+        function mascaraMutuario(o,f){
+            v_obj=o
+            v_fun=f
+            setTimeout('execmascara()',1)
+        }
+        function execmascara(){
+            v_obj.value=v_fun(v_obj.value)
+        }
+        function cpfCnpj(v){
+
+            //Remove tudo o que não é dígito
+            v=v.replace(/\D/g,"")
+
+            if (v.length <= 14) { //CPF
+
+                //Coloca um ponto entre o terceiro e o quarto dígitos
+                v=v.replace(/(\d{3})(\d)/,"$1.$2")
+
+                //Coloca um ponto entre o terceiro e o quarto dígitos
+                //de novo (para o segundo bloco de números)
+                v=v.replace(/(\d{3})(\d)/,"$1.$2")
+
+                //Coloca um hífen entre o terceiro e o quarto dígitos
+                v=v.replace(/(\d{3})(\d{1,2})$/,"$1-$2")
+
+            } else { //CNPJ
+
+                //Coloca ponto entre o segundo e o terceiro dígitos
+                v=v.replace(/^(\d{2})(\d)/,"$1.$2")
+
+                //Coloca ponto entre o quinto e o sexto dígitos
+                v=v.replace(/^(\d{2})\.(\d{3})(\d)/,"$1.$2.$3")
+
+                //Coloca uma barra entre o oitavo e o nono dígitos
+                v=v.replace(/\.(\d{3})(\d)/,".$1/$2")
+
+                //Coloca um hífen depois do bloco de quatro dígitos
+                v=v.replace(/(\d{4})(\d)/,"$1-$2")
+
+            }
+
+            return v
+
+        }
+
         function getPessoa(val,exid){
             var cpf = val.value;
                 $.ajax({
@@ -253,6 +433,26 @@
                     success: function(response){
                         $('#nome').val(response.data.nome)
                         $('#user_id').val(response.data.id)
+                    }
+                }).fail(function (jqXHR, textStatus) {
+                    var total = cpf.length;
+                    if(total >= 14){
+                        Swal.fire({
+                        title: 'Atenção',
+                        text: "Esta pessoal não esta cadastrada, deseja cadastrar?",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Sim!',
+                        customClass: {
+                            confirmButton: 'createpeople'
+                        }
+                    }).then((result) => {
+                        if(result.isConfirmed){
+                            $('#create_pessoa').modal('show');
+                        }
+                    });
                     }
                 })
         };

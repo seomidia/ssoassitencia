@@ -91,7 +91,6 @@ class OrderController extends Controller
             ->map(function ($item) {
                 return array_merge($item->toArray());
             });
-
         return view('anaminese.pedidos',['orders'=>$colection]);
     }
 }

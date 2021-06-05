@@ -292,12 +292,15 @@ class AnamineseController extends Controller
             ->select(
                 'p.id',
                 'p.name',
-                'op.status as disponivel',
+                'op.status',
+                'op.product_id',
+                'op.anamnesis_id',
                 'p.slug'
             )
             ->wherein('p.category_id',[4,5,7,8])
-            ->where(['o.user_id'=>Auth::user()->id])
+            ->where('o.user_id',Auth::user()->id)
             ->get();
+
 
         $tipo = DB::table('anamnese_type')->get();
         $riscos = DB::table('office_risk_relationship as orr')

@@ -15,6 +15,9 @@ use Illuminate\Support\Facades\Route;
 
 
 
+Route::get('/version',function(){
+phpinfo();
+});
 Route::get('/', 'HomeController@index')->name('home');
 Route::get('/trabalhe-conosco', 'HomeController@trabalheconosco')->name('trabalheconosco');
 Route::post('/trabalhe-conosco', 'HomeController@trabalheEnvia')->name('trabalheEnvia');

@@ -153,14 +153,17 @@ class Anamnesi extends Model
     protected function procedure_disponivel($anamnese_id,$id){
         $total =  DB::table('order_products as op')
             ->join('orders as o','op.order_id','=','o.id')
-            ->where(['o.user_id'=>Auth::user()->id,'op.product_id'=>$id,'op.status'=>1])
+            ->where(['o.user_id'=>Auth::user()->id,'op.product_id'=>$id,'op.status'=>0,'op.anamnesis_id'=>null])
             ->count(); // não disonivel
 
-        $total +=  DB::table('order_products as op')
-            ->join('orders as o','op.order_id','=','o.id')
-            ->where(['o.user_id'=>Auth::user()->id,'op.product_id'=>$id,'op.status'=>1,'op.anamnesis_id'=>$anamnese_id])
-            ->count(); // nao disponivel para outras anamineses
+        return $total;
+    }
 
+    protected function procedure_use($anamnese_id,$id){
+        $total =  DB::table('order_products as op')
+        ->join('orders as o','op.order_id','=','o.id')
+        ->where(['o.user_id'=>Auth::user()->id,'op.product_id'=>$id,'op.status'=>1,'op.anamnesis_id'=>$anamnese_id])
+        ->count(); // nao disponivel para outras anamineses
         return $total;
     }
     protected function count_procedure($anamnese_id, $procedure_id = null)

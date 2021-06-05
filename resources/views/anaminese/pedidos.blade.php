@@ -34,26 +34,26 @@
                                 <tbody>
                                 @foreach($orders as $key => $order)
                                     <tr id="{{$key}}" class="
-                                                             @if(
-                                                                    $order[0]->status == 'Paga'
-                                                                    || $order[0]->status == 'Disponível'
-                                                                    ) bg-success @endif
-                                                             @if(
-                                                                    $order[0]->status == 'Cancelada'
-                                                                    || $order[0]->status == 'Devolvida'
-                                                                    ) bg-danger @endif
-                                                             @if(
-                                                                    $order[0]->status == 'Aguardando pagamento'
-                                                                    || $order[0]->status == 'pedding'
-                                                                    || $order[0]->status == 'Em disputa'
-                                                                    || $order[0]->status == 'Em análise'
-                                                                    ) bg-warning @endif
+                                            @if(
+                                                $order[0]->status == 'Paga'
+                                                || $order[0]->status == 'Disponível'
+                                                ) bg-success @endif
+                                            @if(
+                                                $order[0]->status == 'Cancelada'
+                                                || $order[0]->status == 'Devolvida'
+                                                ) bg-danger @endif
+                                            @if(
+                                                $order[0]->status == 'Aguardando pagamento'
+                                                || $order[0]->status == 'pedding'
+                                                || $order[0]->status == 'Em disputa'
+                                                || $order[0]->status == 'Em análise'
+                                                ) bg-warning @endif
                                         ">
                                         <td style="text-align: center">#{{$key}}</td>
                                         <td style="text-align: center">{{$order[0]->payment_type}}</td>
                                         <td style="text-align: center">{{$order[0]->code}}</td>
                                         <td style="vertical-align: middle;text-align: center">R$ {{\App\Http\Controllers\Controller::formatCash($order[0]->total)}}</td>
-                                        <td style="text-align: center">{{$order[0]->status}}</td>
+                                        <td style="text-align: center">@if($order[0]->status == 'pedding') Pendente @else {{$order[0]->status}} @endif</td>
                                         <td style="vertical-align: middle;text-align: center">{{\App\Http\Controllers\Controller::data($order[0]->created_at,'time')}}</td>
                                     </tr>
                                     <tr id="content-{{$key}}" style="display: none">
