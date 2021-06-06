@@ -74,11 +74,18 @@ class Anamnesi extends Model
     }
     static function get_procedures($anamnese_id)
     {
-        return DB::table('procedure_relationship as pr')
-            ->leftjoin('procedures as p', 'pr.procedures_id', '=', 'p.id')
-            ->select('p.*')
-            ->where('pr.anamnesis_id', $anamnese_id)
+        return DB::table('order_products as op')
+            ->leftjoin('products as p', 'op.product_id', '=', 'p.id')
+            ->leftjoin('exame_file as ef', 'op.product_id', '=', 'ef.exame_id')
+            ->select('p.*','ef.*')
+            ->where('op.anamnesis_id', $anamnese_id)
             ->get();
+
+        // return DB::table('procedure_relationship as pr')
+        // ->leftjoin('procedures as p', 'pr.procedures_id', '=', 'p.id')
+        // ->select('p.*')
+        // ->where('pr.anamnesis_id', $anamnese_id)
+        // ->get();
 
     }
     static function get_risk($office_id)
@@ -140,15 +147,19 @@ class Anamnesi extends Model
             'message' => $data['message'],
         ];
     }
-    protected function get_meta_question($anamnese_id, $question)
+    protected function get_meta_question($anamnese_id, $question, $outros = null)
     {
         $meta = DB::table('meta_resposes')
             ->where(['anamnesis_id' => $anamnese_id, 'question' => $question])
-            ->get();
+            ->first();
 
-        $data = (count($meta) > 0) ? $meta[0]->response : '';
-
-        return $data;
+            if(!is_null($outros)){
+                $out = ($meta) ? $meta->response2 : '';
+                return $out;
+            }else{
+                $data = ($meta) ? $meta->response : '';
+                return $data;
+            }
     }
     protected function procedure_disponivel($anamnese_id,$id){
         $total =  DB::table('order_products as op')
@@ -280,7 +291,6 @@ class Anamnesi extends Model
                 } else {
                     $d['response'] = $item;
                     $d['updated_at'] = date('Y-m-d H:i:s');
-
                     DB::table('meta_resposes')
                         ->where(
                             [
@@ -298,7 +308,8 @@ class Anamnesi extends Model
 
                 if(is_Array($item)){
                     foreach ($item as $key2 => $per) {
-                        $c['response'] = $per;
+                        $c['response'] = (is_array($per)) ? $per[0] : $per;
+                        $c['response2'] = (is_array($per) && isset($per[1])) ? $per[1] : '';
                         $c['updated_at'] = date('Y-m-d H:i:s');
                         DB::table('meta_resposes')
                             ->where(
@@ -363,7 +374,8 @@ class Anamnesi extends Model
                         $c['anamnesis_id'] = $from['anamnesis_id'];
                         $c['section'] = 'medico';
                         $c['question'] = $key2;
-                        $c['response'] = $per;
+                        $c['response'] = (is_array($per)) ? $per[0] : $per;
+                        $c['response2'] = (is_array($per) && isset($per[1])) ? $per[1] : '';
                         $c['created_at'] = date('Y-m-d H:i:s');
                         DB::table('meta_resposes')->insert($c);
 

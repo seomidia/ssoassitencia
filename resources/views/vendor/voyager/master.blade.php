@@ -124,6 +124,7 @@ if (\Illuminate\Support\Str::startsWith(Auth::user()->avatar, 'http://') || \Ill
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 <script>
+    
     @if(Session::has('alerts'))
         let alerts = {!! json_encode(Session::get('alerts')) !!};
         helpers.displayAlerts(alerts, toastr);
@@ -142,6 +143,18 @@ if (\Illuminate\Support\Str::startsWith(Auth::user()->avatar, 'http://') || \Ill
         toastr.error("toastr alert-type " + alertType + " is unknown");
     }
     @endif
+
+    $(document).ready(function(){
+        $('.tabs').on('click','a',function(e){
+            e.preventDefault();
+            var tabId = $(this).attr('data-tab');
+            $(this).closest('.tabs').find('a').removeClass('ativo');
+            $(this).addClass('ativo');
+            $('.tab-panel').removeClass('ativo');
+            $('#'+tabId).addClass('ativo');
+        });
+
+    })
 </script>
 @include('voyager::media.manager')
 @yield('javascript')

@@ -213,7 +213,6 @@ class CheckoutController extends Controller
                 'reference' => $referencia
             ];
 
-
             $checkout = PagSeguro::checkout()->createFromArray($data);
             $credentials = PagSeguro::credentials()->get();
             $information = $checkout->send($credentials); // Retorna um objeto de laravel\pagseguro\Checkout\Information\Information

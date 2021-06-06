@@ -107,7 +107,9 @@ class AnamineseController extends Controller
         $user        = $request->input('employee');
         $anamnese_id = $request->input('anamnese');
         $photo = $request->input('photo_employee');
-
+        DB::table('anamnesis')
+        ->where('id',$anamnese_id)
+        ->update(['user_id_examining_doctor'=>Auth::user()->id]);
         if($user == ''){
             return response()->json([
                 'success' => false,
@@ -263,25 +265,25 @@ class AnamineseController extends Controller
     public function cadastro($id){
         $user_logged = Auth::user()->id;
         $dados = DB::table('anamnesis as a')
-            ->leftjoin('companies as c','a.companies_id','=','c.id')
-            ->leftjoin('users as u','a.user_id_employee','=','u.id')
-            ->leftjoin('user_data as ud','a.user_id_employee','=','ud.user_id')
-            ->leftjoin('office as o','a.office_id','=','o.id')
-            ->leftjoin('schedule as s','a.id','=','s.anamnesis_id')
-            ->select(
-                'a.*',
-                'c.*',
-                'ud.rg',
-                'ud.cpf',
-                'ud.nasc',
-                'ud.idade',
-                'ud.sexo',
-                'u.name as funcionario',
-                'o.name as cargo',
-                's.day',
-                's.time'
-            )
-            ->where('a.id',$id)
+        ->leftjoin('companies as c','a.companies_id','=','c.id')
+        ->leftjoin('users as u','a.user_id_employee','=','u.id')
+        ->leftjoin('user_data as ud','a.user_id_employee','=','ud.user_id')
+        ->leftjoin('office as o','a.office_id','=','o.id')
+        ->leftjoin('schedule as s','a.id','=','s.anamnesis_id')
+        ->select(
+            'a.*',
+            'c.*',
+            'ud.rg',
+            'ud.cpf',
+            'ud.nasc',
+            'ud.idade',
+            'ud.sexo',
+            'u.name as funcionario',
+            'o.name as cargo',
+            's.day',
+            's.time'
+        )
+            ->where(['a.id'=>$id,'a.user_id_logged'=>Auth::user()->id])
             ->get();
 
 //        $procedures = DB::table('procedures')->get();

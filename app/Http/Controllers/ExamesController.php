@@ -16,16 +16,36 @@ class ExamesController extends Controller
             ->leftjoin('exame_file as ef','e.id','=','ef.exame_id')
             ->select(
                 'e.id',
+                'e.product_id',
+                'os.id as order_id',
                 'p.name',
                 'e.status',
                 'e.created_at',
                 'ef.path_file'
-            )
-            ->where('e.user_id',Auth::user()->id)
-            ->get();
+            );
 
             $role = \DB::table('user_roles')->where('user_id',Auth::user()->id)->get();
             $permissao = (count($role) > 0) ? $role[0]->role_id : '';
+
+            if(in_array($permissao,['',7])){
+                $exames = $exames->get();
+            }else{
+                $exames = $exames->where('e.user_id',Auth::user()->id)->get();
+            }
+
+            foreach ($exames as $key => $value) {
+                $anaminese = \DB::table('order_products')
+                ->where(['order_id'=>$value->order_id,'product_id'=>$value->product_id])
+                ->whereNotNull('anamnesis_id')
+                ->first();
+                if(in_array($permissao,['',7])){
+                    $value->anamnesi = null;
+                }else{
+                    $value->anamnesi = (isset($anaminese->anamnesis_id)) ? $anaminese->anamnesis_id : null;
+                }
+    
+            }
+
 
         return view('exames.listagem',['exames'=>$exames,'permissao' =>$permissao]);
     }
@@ -111,7 +131,8 @@ class ExamesController extends Controller
             ->select(
                 'op.id',
                 'op.status',
-                'op.anamnesis_id'
+                'op.anamnesis_id',
+                'o.id as order_id'
             )
             ->where(['o.user_id'=>Auth::user()->id,'op.product_id'=>$data['exid']]);
 
@@ -122,7 +143,15 @@ class ExamesController extends Controller
         if($result->status == 0){
             $status = true;
             $anamnesis_id = $data['anamnese_id'];
+            $exame =  new \stdClass();
+            $exame->order = $result->order_id;
+            $exame->exames = [$data['exid']];
+            \App\Anamnesi::add_exame($exame);
         }else{
+            \DB::table('exame')
+            ->where(['order_id'=>$result->order_id,'product_id'=>$data['exid']])
+            ->delete();
+
             $status = false;
             $anamnesis_id = null;
         }

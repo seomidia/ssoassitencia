@@ -57,7 +57,8 @@ class PeopleController extends Controller
         $cpf = $request->input('cpf');
         $telefone = $request->input('telefone');
 
-        $cpf = str_replace(['.','-'],['',''],$cpf);
+        $cpf = preg_replace('/[^0-9]/', '', $cpf);
+        $tel = preg_replace('/[^0-9]/', '',$telefone);
 
         if(!self::validaCPF($cpf)){
             return response()->json([
@@ -65,7 +66,7 @@ class PeopleController extends Controller
                 'message'=> 'O CPF é invalido'
             ],500);
         }
-        $tel = str_replace(['(',')','-',' '],['','','',''],$telefone);
+
         if(!self::phoneValidate($tel)){
             return response()->json([
                 'success'=> false,
@@ -82,8 +83,7 @@ class PeopleController extends Controller
         }
 
 
-        $cpf = $request->input('cpf');
-        $senha = preg_replace('/[^0-9]/', '', $cpf);
+        $senha = $cpf;
 
         $data = [
             'nome'           => $request->input('nome'),
@@ -113,7 +113,7 @@ class PeopleController extends Controller
                 'estado' => $request->input('uf'),
             ];
 
-            if(isset($user_id['data']['user_id'])){
+            if(isset($user_id['data']['method']) && $user_id['data']['method'] == 'create'){
                 $user_data = DB::table('user_data')->insert($dados);
                 $msg = 'Pessoa cadastrada com sucesso!';
             }else{

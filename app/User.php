@@ -48,9 +48,11 @@ class User extends \TCG\Voyager\Models\User
 
     protected  function User_register(array $data, $role_name = 'paciente')
     {
+        $cpf = preg_replace('/[^0-9]/', '', $data['cpf']);
         $role = Role::where('name', $role_name)->firstOrFail();
         $total = DB::table('users')->where('email',$data['email'])->count();
-        $totalcpf = DB::table('user_data')->where('cpf',$data['cpf'])->count();
+        $totalcpf = DB::table('user_data')->where('cpf',$cpf)->count();
+
         if($total == 0 && $totalcpf == 0){
                 $user = \TCG\Voyager\Models\User::create([
                     'name'           => $data['nome'],
@@ -72,6 +74,7 @@ class User extends \TCG\Voyager\Models\User
                 return [
                     'success'=> true,
                     'data' => [
+                        'method' => 'create',
                         'user_id' => $user->id
                     ],
                     'message'=> ''
@@ -84,7 +87,6 @@ class User extends \TCG\Voyager\Models\User
             }
 
         }else{
-            $cpf = preg_replace('/[^0-9]/', '', $data['cpf']);
             $userU = DB::table('user_data')
             ->select('user_id')
             ->where('cpf',$cpf)
@@ -102,6 +104,7 @@ class User extends \TCG\Voyager\Models\User
             return [
                 'success'=> true,
                 'data' => [
+                    'method' => 'update',
                     'user_id' => $userU->user_id,
                 ],
             'message'=> 'Usuário atualizado com sucesso!'

@@ -149,7 +149,7 @@
 
 
 
-    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal modal-exame fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content" style="border: 1px solid #fff;height: 900px;">
                 <iframe class="responsive-iframe" width="100%" height="100%" src=""></iframe>
@@ -208,7 +208,10 @@
                                             @if(in_array($permissao,[1,7]))
                                                 <a href="{{$item->id}}" style="padding: 5px 12px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="upload btn btn-sm btn-danger pull-center">Upload</a>
                                             @endif
+
+                                            @if(is_null($item->anamnesi) && $item->status != 1)
                                                 <a href="{{$item->id}}" style="padding: 5px 12px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="troca btn btn-sm btn-danger text-center">Transferir</a>
+                                            @endif    
                                         </td>
                                         </td>
                                     </tr>
@@ -359,7 +362,7 @@
                 $('iframe').attr('src','');
                 var href = $(this).attr('href');
                 $('iframe').attr('src',href);
-                $('.modal').modal('show');
+                $('.modal-exame').modal('show');
             });
 
             $('form[name="cadastro_pessoa"]').submit(function(event){
