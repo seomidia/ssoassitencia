@@ -156,7 +156,7 @@ if (\Illuminate\Support\Str::startsWith(Auth::user()->avatar, 'http://') || \Ill
     @endif
 
     $(document).ready(function(){
-        $('#dataTable').DataTable({
+        table = $('#dataTable').DataTable({
                 "language":{
                     "emptyTable": "Nenhum registro encontrado",
                     "info": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
@@ -339,6 +339,7 @@ if (\Illuminate\Support\Str::startsWith(Auth::user()->avatar, 'http://') || \Ill
                         }
                     },
                     "decimal": ","
+            
             }
         });
         $('[data-toggle="tooltip"]').tooltip();

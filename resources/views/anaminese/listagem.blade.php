@@ -81,6 +81,9 @@
                                             @if($item->step == 'step_med')
                                                 alert-primary
                                             @endif
+                                            @if($item->step == 'step_med_p')
+                                                alert-warning
+                                            @endif
                                             aviso">
                                             @if($item->step == 'step_rh')
                                                 Não iniciado
@@ -93,6 +96,9 @@
                                             @endif
                                             @if($item->step == 'step_med')
                                                 Medico
+                                            @endif
+                                            @if($item->step == 'step_med_p')
+                                                Exames complementares
                                             @endif
                                         </div>
                                     </td>
@@ -131,7 +137,6 @@
                                                         <a href="/admin/encaminhamento/{{$item->id}}/delete" id="delete"  class="btn btn-sm btn-danger pull-center" style="padding: 2px 7px;"><i class="voyager-trash"></i></a>
                                                    @endif
                                             @endif
-                                    </td>
                                     </td>
                                 </tr>
                                     @endforeach

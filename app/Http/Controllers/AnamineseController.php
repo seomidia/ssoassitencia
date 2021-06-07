@@ -234,10 +234,18 @@ class AnamineseController extends Controller
                 'c.nome as empresa',
                 'u.name as funcionario',
                 'o.name as cargo'
-            )
-            ->where('requester',Auth::user()->id)
-            ->orderBy('a.id', 'desc')
-            ->get();
+            );
+
+            $role = \DB::table('user_roles')->where('user_id',Auth::user()->id)->get();
+            $permissao = (count($role) > 0) ? $role[0]->role_id : '';
+
+            if(in_array($permissao,['',7])){
+                $listagem = $listagem->get();
+            }else{
+                $listagem = $listagem->where('requester',Auth::user()->id)
+                ->orderBy('a.id', 'desc')
+                ->get();
+            }
 
         $order = DB::table('orders as o')
             ->join('order_products as op','o.id','=','op.order_id')
@@ -523,11 +531,21 @@ class AnamineseController extends Controller
                 'c.nome as empresa',
                 'u.name as funcionario',
                 'o.name as cargo'
-            )
-            ->where('user_id_employee',Auth::user()->id)
-            ->whereIn('step',['step_funci','step_med'])
-            ->orderBy('a.id', 'desc')
-            ->get();
+            );
+            
+
+            $role = \DB::table('user_roles')->where('user_id',Auth::user()->id)->get();
+            $permissao = (count($role) > 0) ? $role[0]->role_id : '';
+
+            if(in_array($permissao,['',7])){
+                $listagem = $listagem->get();
+            }else{
+                $exames = $exames->where('user_id_employee',Auth::user()->id)
+                ->whereIn('step',['step_funci','step_med'])
+                ->orderBy('a.id', 'desc')
+                ->get();
+            }
+
 
         return view('anaminese.funcionario.listagem',['anamnese' => $listagem]);
     }

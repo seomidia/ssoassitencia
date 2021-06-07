@@ -36,7 +36,7 @@
                 <div class="panel panel-bordered">
                     <div class="panel-body">
                         <div class="table-responsive desktop">
-                            <table class="table table-hover">
+                            <table id="datatable" class="table table-hover">
                                 <thead>
                                 <tr>
                                     <th style="text-align: center">#Codigo</th>
@@ -60,11 +60,14 @@
                                                 <td class="field" style="text-align: center">{{$item->ambiente_trabalho}}</td>
                                                 <td style="text-align: center;vertical-align: middle;">
                                                     <div  class="
-                                            @if($item->step == 'step_funci')
+                                                    @if($item->step == 'step_funci')
                                                         alert-success
-                                            @endif
+                                                    @endif
                                                     @if($item->step == 'step_med')
                                                         alert-primary
+                                                    @endif
+                                                    @if($item->step == 'step_med_p')
+                                                        alert-warning
                                                     @endif
                                                         aviso">
                                                         @if($item->step == 'step_funci')
@@ -73,46 +76,50 @@
                                                         @if($item->step == 'step_med')
                                                             Medico
                                                         @endif
-                                                    </div>
+                                                        @if($item->step == 'step_med_p')
+                                                              Exames complementares
+                                                         @endif
+                                                            </div>
                                                 </td>
                                                 <td  style="text-align: center;vertical-align: middle;">
-                                                    <div  class="
-                                        @if(!is_null($item->apt))
-                                                    @if(in_array($item->apt,[0,'-1','-2','-3']))
-                                                        alert-danger
-                                                    @endif
-                                                    @if(in_array($item->apt,[1,2,3]))
-                                                        alert-success
-                                                    @endif
-                                                    @else
-                                                        alert-primary
-        @endif
-                                                        aviso">
+                                                            <div  class="
                                                         @if(!is_null($item->apt))
+                                                            @if(in_array($item->apt,[0,'-1','-2','-3']))
+                                                                alert-danger
+                                                            @endif
                                                             @if(in_array($item->apt,[1,2,3]))
-                                                                Apto
+                                                                alert-success
                                                             @endif
-                                                                @if(in_array($item->apt,[0,'-1','-2','-3']))
-                                                                Não Apto
+                                                            @else
+                                                                alert-primary
                                                             @endif
-                                                        @else
-                                                            Não avaliado
-                                                        @endif
-                                                    </div>
+                                                                aviso">
+                                                                @if(!is_null($item->apt))
+                                                                    @if(in_array($item->apt,[1,2,3]))
+                                                                        Apto
+                                                                    @endif
+                                                                        @if(in_array($item->apt,[0,'-1','-2','-3']))
+                                                                        Não Apto
+                                                                    @endif
+                                                                @else
+                                                                    Não avaliado
+                                                                @endif
+                                                            </div>
                                                 </td>
-                                                </td  style="text-align: center;vertical-align: middle;">
-                                                <td style="vertical-align: middle">
+                                                <td  style="text-align: center;vertical-align: middle;">
                                                    @if($item->step == 'step_med' && !is_null($item->apt))
                                                        <a href="/admin/anamnese/atestado/{{$item->id}}/" style="padding: 5px 12px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="atestado btn btn-sm @if(in_array($item->apt,[1,2,3])) btn-success @endif @if(in_array($item->apt,[0,'-1','-2','-3'])) btn-danger @endif pull-center">Atestado</a>
                                                        <a  href="/admin/anamnese/atestado/{{$item->id}}/send" style="padding: 5px 12px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="send btn btn-sm @if(in_array($item->apt,[1,2,3])) btn-success @endif @if(in_array($item->apt,[0,'-1','-2','-3'])) btn-danger @endif pull-center"><i class="fa fa-send" aria-hidden="true"></i></a>
                                                      @else
+                                                     @if(in_array($item->step,['step_site','step_funci','step_rh']))
+
                                                         <a href="/admin/anaminese/questionario/{{$item->id}}" @if($item->step == 'step_med') disabled @endif  class="btn btn-sm btn-primary pull-center btn2  @if($item->step == 'step_med') disabled @endif" ><i class="voyager-edit"></i>Questões</a>
                                                         <a href="{{$item->id}}" @if($item->step == 'step_med') disabled @endif class="btn btn-sm btn-primary pull-center btn2  @if($item->step != 'step_med') devolver @else disabled @endif"><i class="voyager-move"></i>Devolver</a>
                                                    @endif
-                                                </td>
+                                                   @endif
                                                 </td>
                                             </tr>
-                                            <tr style="display: none" class="justificar-{{$item->id}}">
+                                            {{-- <tr style="display: none" class="justificar-{{$item->id}}">
                                                 <td colspan="8" class="text-danger" style="text-align: right">
                                                     <form name="devolver" action="/admin/anaminese/devolver" type="post">
                                                         <textarea name="motivo" class="form-control" placeholder="Informe a causa da devolução"></textarea>
@@ -121,7 +128,7 @@
                                                         <a href="#" class="btn btn-sm  btn-danger pull-center cancelar" style="padding: 2px 7px;">Cancelar</a>
                                                     </form>
                                                 </td>
-                                            </tr>
+                                            </tr> --}}
 
                                         @endforeach
 
@@ -167,15 +174,21 @@
                                                 @if($item->step == 'step_funci')
                                             alert-success
 @endif
-                                        @if($item->step == 'step_med')
-                                            alert-primary
+@if($item->step == 'step_med')
+alert-primary
 @endif
-                                            " style="padding: 3px;font-weight: bold;font-size: 13px;margin-top: 6px;">
+@if($item->step == 'step_med_p')
+alert-warning
+@endif
+" style="padding: 3px;font-weight: bold;font-size: 13px;margin-top: 6px;">
                                             @if($item->step == 'step_funci')
                                                 Disponivel
                                             @endif
                                             @if($item->step == 'step_med')
                                                 Medico
+                                            @endif
+                                            @if($item->step == 'step_med_p')
+                                                Exames complementares
                                             @endif
                                         </div>
 
