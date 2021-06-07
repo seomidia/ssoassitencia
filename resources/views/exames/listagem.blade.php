@@ -32,6 +32,9 @@
 @section('content')
 
 
+<td colspan="5">
+
+
 
 <div class="modal fade" id="create_pessoa" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -143,23 +146,20 @@
 
             </div>
         </div>
-    </div>
+</div>
 
-
-
-
-
-    <div class="modal modal-exame fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content" style="border: 1px solid #fff;height: 900px;">
-                <iframe class="responsive-iframe" width="100%" height="100%" src=""></iframe>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times-circle" aria-hidden="true"></i>
-                        Fechar</button>
-                </div>
+<div class="modal modal-exame fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="border: 1px solid #fff;height: 900px;">
+            <iframe class="responsive-iframe" width="100%" height="100%" src=""></iframe>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times-circle" aria-hidden="true"></i>
+                    Fechar</button>
             </div>
         </div>
     </div>
+</div>
+
 
     <div class="page-content browse container-fluid">
         <div class="row">
@@ -167,7 +167,7 @@
                 <div class="panel panel-bordered">
                     <div class="panel-body">
                         <div class="table-responsive">
-                            <table id="dataTable" class="table table-hover">
+                            <table id="dataTable" class="table table-striped table-bordered">
                                 <thead>
                                 <tr>
                                     <th style="text-align: center">Codigo</th>
@@ -213,19 +213,8 @@
                                                 <a href="{{$item->id}}" style="padding: 5px 12px 10px 10px;font-weight: bold;font-size: 13px;margin-top: 6px;"  class="troca btn btn-sm btn-danger text-center">Transferir</a>
                                             @endif    
                                         </td>
-                                        </td>
                                     </tr>
-                                        <tr id="upload-{{$item->id}}" style="display: none">
-                                            <td colspan="5">
-                                                <form  name="form-{{$item->id}}" enctype="multipart/form-data">
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <input  type="file" name="arquivo-{{$item->id}}">
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </td>
-                                        </tr>
+
                                     @endforeach
                                 @else
                                     <tr>
@@ -249,10 +238,64 @@
 
             $('a.upload').click(function (event) {
                 event.preventDefault();
-                var href = $(this).attr('href');
-                $('#upload-'+href).toggle();
+                var href = $(this).attr('href');              
+               // $('#upload-'+href).toggle();
+                    Swal.fire({
+                        title: 'Anexar arquivo',
+                        input: 'file',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Anexar',
+                        cancelButtonText: 'Cancelar',
+                        inputAttributes: {
+                            'accept': 'pdf/*',
+                            'aria-label': 'Upload your profile picture',
+                            'name':'arquivo-' + href
+                        },
+                    }).then((preConfirm) => {
+                        if(preConfirm.isConfirmed){
+                            var id = $('input[type="file"]').attr('name').split('-')[1];
+                            var file = preConfirm.value;
+                            
+
+                            var formData = new FormData();
+                            formData.append('exame_id',id);
+                            formData.append('arquivo',file);
+
+
+                            var url = window.location.origin + '/admin/upload-exame';
+                            $.ajax({
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                },
+                                url: url,
+                                type:'post',
+                                data: formData,
+                                contentType: false,
+                                processData: false,
+                                success: function(response){
+                                    console.log(response);
+                                    toastr.success(response.message);
+                                    $('#upload-'+id).toggle();
+                                    $('#aviso-'+id).removeClass('alert-danger');
+                                    $('#aviso-'+id).addClass('alert-success');
+                                    $('#aviso-'+id).html('Pronto');
+
+
+                                }
+                            }).fail(function (jqXHR, textStatus) {
+                                if(file != null){
+                                    toastr.error(jqXHR.responseJSON.message);
+                                }else{
+                                    toastr.error('É necessario informar um arquivo!');
+                                }
+                            })
+                        }
+
+                    });
             });
-            $('form').on('change',function(){
+            /* $('form').on('change',function(){
                 var id = $(this).attr('name').split('-')[1];
                 var form = $('form[name="form-'+ id +'"]')[0];
                 // var file = form[0][0].files[0];
@@ -288,7 +331,7 @@
                 })
 
 
-            })
+            }) */
 
 
             $('a.troca').on('click',function(event){
