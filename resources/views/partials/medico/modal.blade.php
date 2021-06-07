@@ -18,11 +18,11 @@
                     <td colspan="7">
 
                         <ul class="tabs">
-                            <li class="tab-button"><a href="#" class="tab-link ativo" data-tab="tab1">Questionário</a></li>
-                            <li class="tab-button"><a href="#" class="tab-link" data-tab="tab2"> Avaliação</a></li>
+                            <li class="tab-button"><a href="#" class="tab-link ativo" data-tab="tab1-{{$amnesis->id}}">Questionário</a></li>
+                            <li class="tab-button"><a href="#" class="tab-link" data-tab="tab2-{{$amnesis->id}}"> Avaliação</a></li>
                           </ul>
                           <div class="tab-pane">
-                            <div class="tab-panel ativo" id="tab1">
+                            <div class="tab-panel ativo" id="tab1-{{$amnesis->id}}">
 
                                 <table class="table">
                                     <tr>
@@ -49,7 +49,7 @@
                                 
 
                             </div>
-                            <div class="tab-panel" id="tab2">
+                            <div class="tab-panel" id="tab2-{{$amnesis->id}}">
                                 <table class="table">
                                     <tr style="background: #ddd;color: #333;">
                                         <th scope="col" colspan="4" style="text-align: center"><h4>Avaliação médica</h4></th>

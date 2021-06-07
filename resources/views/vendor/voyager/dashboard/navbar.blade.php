@@ -57,7 +57,7 @@
                     <li class="profile-img">
                         <div class="voyager-activity" style="font-size: 18px"></div>
                         <div class="profile-body">
-                           Anamneses a ser liberadas
+                           Exames complementares liberados
                         </div>
                     </li>
                     <li class="divider"></li>
@@ -67,6 +67,7 @@
                                     ->leftjoin('user_data as ud','a.user_id_employee','=','ud.user_id')
                                     ->select(
                                         'a.id as anaminese_id',
+                                        'a.message',
                                         'u.name',
                                         'ud.cpf',
                                         'ud.nasc',
@@ -77,10 +78,11 @@
                                         'step'=> 'step_med_p',
                                         ])
                                     ->get();
-                        @endphp
+
+@endphp
                     @if($total > 0)
                     @foreach($list as $key => $itens)
-                       <li><a class="detalhe" href="{{$itens->anaminese_id}}">{{$itens->name}}</a></li>
+                       <li><a data-toggle="tooltip" data-placement="top" title="{{$itens->message}}" class="detalhe" style="text-align:center" href="{{$itens->anaminese_id}}">{{$itens->name}}</a></li>
                     @endforeach
                     @else
                         {{'Não existe liberações pendentes.'}}

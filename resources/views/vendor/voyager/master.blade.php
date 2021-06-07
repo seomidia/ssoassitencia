@@ -145,6 +145,7 @@ if (\Illuminate\Support\Str::startsWith(Auth::user()->avatar, 'http://') || \Ill
     @endif
 
     $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
         $('.tabs').on('click','a',function(e){
             e.preventDefault();
             var tabId = $(this).attr('data-tab');

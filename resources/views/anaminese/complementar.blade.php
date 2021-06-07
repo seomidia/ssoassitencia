@@ -71,6 +71,47 @@
                                                 Complementar
                                             @endif
                                         </div>
+
+                                        <div class="modal  modal-primary fade" tabindex="-1" id="obg_modal-{{$item->id}}" role="dialog">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="{{ __('voyager::generic.close') }}"><span aria-hidden="true">&times;</span></button>
+                                                        <h4 class="modal-title"><i class="voyager-info-circled"></i> {{ __('Observações gerais') }}?</h4>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <form action="#" name="obs" method="POST">
+                                    
+                                                            <textarea id="default" class="form-control" rows="10" name="obs_geral" style="margin-bottom: 5px"></textarea>
+                                                                <br>
+                                                                <table class="table">
+                                                                    <tr><td>Procedimentos diagnóstico</td></tr>
+                                                                    <tr>
+                                                                        
+                                                                        <td colspan="3">
+                                                                            <ul class="nav">
+                                                                            @foreach(\App\Anamnesi::get_procedures($item->id) as $key => $procedure)
+                                                                                <li class="nav-link @if($procedure->path_file){{'alert-primary'}} @else {{'alert-danger'}} @endif" style="list-style:none;font-size: 15px;font-weight: bold;padding: 5px;border-bottom: 1px solid;margin-bottom: 5px;">
+                                                                                    @if($procedure->path_file)
+                                                                                       <a target="_black" href="{{asset($procedure->path_file)}}">{{$procedure->name}}</a>
+                                                                                       @else 
+                                                                                       {{$procedure->name}}
+                                                                                       @endif
+                                                                                </li>
+                                                                            @endforeach
+                                                                            </ul>
+                                                                        </td>
+                            
+                                                                </table>
+                                                            <input type="hidden" name="user_id"  value="">
+                                                            <input type="submit" class="btn pull-right delete-confirm" value="{{ __('Salvar') }}">
+                                                        </form>
+                                                        <button type="button" class="btn btn-default btn-danger pull-right" data-dismiss="modal">{{ __('Cancelar') }}</button>
+                                                    </div>
+                                                </div><!-- /.modal-content -->
+                                            </div><!-- /.modal-dialog -->
+                                        </div><!-- /.modal -->
+                                    
                                     </td>
                                     <td style="vertical-align: middle">
                                          <a href="{{$item->id}}&{{$item->user_id_employee}}"  class="btn btn-sm btn-primary pull-center obs" style="padding: 2px 7px;"><i class="voyager-edit"></i></a>
@@ -86,31 +127,6 @@
             </div>
         </div>
     </div>
-
-
-
-    <div class="modal modal-primary fade" tabindex="-1" id="obg_modal" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="{{ __('voyager::generic.close') }}"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title"><i class="voyager-info-circled"></i> {{ __('Observações gerais') }}?</h4>
-                </div>
-                <div class="modal-footer">
-                    <form action="#" name="obs" method="POST">
-
-                        <textarea id="default" class="form-control" rows="10" name="obs_geral" style="margin-bottom: 5px"></textarea>
-                            <br>
-                        <input type="hidden" name="user_id"  value="">
-                        <input type="submit" class="btn pull-right delete-confirm" value="{{ __('Salvar') }}">
-                    </form>
-                    <button type="button" class="btn btn-default btn-danger pull-right" data-dismiss="modal">{{ __('Cancelar') }}</button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
-
-
 @stop
 
 @section('javascript')
@@ -122,7 +138,7 @@
                 var url  = window.location.origin + '/admin/complementares/' + id[0] + '/status';
                 $('input[name="user_id"]').val(id[1]);
                 $('form[name="obs"]').attr('action',url);
-                $('#obg_modal').modal('show');
+                $('#obg_modal-'+id).modal('show');
             });
 
             $('form[name="obs"]').submit(function (event){

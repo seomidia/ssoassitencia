@@ -120,11 +120,6 @@ class AnamineseController extends Controller
                 'success' => false,
                 'message' => 'Anamnese é inixistente!'
             ],500);
-        }elseif($photo == ''){
-            return response()->json([
-                'success' => false,
-                'message' => 'Foto do Funcionário é obrigatório!'
-            ],500);
         }elseif(!isset($request->medico['aparelho-auditivo-e-visual'])){
             return response()->json([
                 'success' => false,
